@@ -1,9 +1,9 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalkulator Matematika Lengkap</title>
+    <title>Kalkulator Multi Fungsi</title>
     <style>
         :root {
             --bg-color: #f4f6f9;
@@ -20,113 +20,81 @@
             --result-bg: #2a2a2a;
         }
         * { box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; transition: background 0.3s, color 0.3s; }
-        body { background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 15px; display: flex; justify-content: center; }
-        .container { width: 100%; max-width: 500px; background: var(--card-bg); padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: relative; }
-        h2 { text-align: center; margin-top: 0; font-size: 22px; }
-        .theme-toggle { position: absolute; top: 20px; right: 20px; cursor: pointer; background: none; border: none; font-size: 20px; }
-        select, input, button { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid var(--border-color); font-size: 16px; background: var(--card-bg); color: var(--text-color); }
-        select:focus, input:focus { border-color: #007bff; outline: none; }
+        body { background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 20px; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 480px; background: var(--card-bg); padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: relative; }
+        h2 { text-align: center; margin-top: 0; }
+        .theme-toggle { position: absolute; top: 20px; right: 20px; cursor: pointer; background: none; border: none; font-size: 20px; width: auto; padding: 0; margin: 0; }
+        select, input, button, textarea { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid var(--border-color); font-size: 16px; background: var(--card-bg); color: var(--text-color); }
+        select:focus, input:focus, textarea:focus { border-color: #007bff; outline: none; }
         button { background-color: #007bff; color: white; border: none; font-weight: bold; cursor: pointer; }
         button:hover { background-color: #0056b3; }
+        textarea { resize: vertical; min-height: 100px; font-family: inherit; }
         .kalkulator-section { display: none; margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border-color); }
-        .result { background: var(--result-bg); padding: 12px; border-radius: 8px; font-weight: bold; margin-top: 10px; text-align: center; font-size: 15px; }
+        .result { background: var(--result-bg); padding: 12px; border-radius: 8px; font-weight: bold; margin-top: 10px; text-align: center; }
+        .note { font-size: 12px; color: #888; }
         .history-section { margin-top: 20px; padding-top: 15px; border-top: 2px dashed var(--border-color); }
         .history-list { padding-left: 20px; font-size: 14px; max-height: 120px; overflow-y: auto; }
         .history-list li { margin-bottom: 5px; }
+        .status-saved { font-size: 12px; color: #28a745; display: none; margin-top: 4px; text-align: right; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button>
-    <h2>📐 E-Kalkulator Matematika</h2>
+    <h2>🧮 Kalkulator Multi</h2>
     
-    <label for="menu">Pilih Rumus Matematika:</label>
+    <label for="menu">Pilih Menu:</label>
     <select id="menu" onchange="tampilkanKalkulator()">
-        <option value="">-- Pilih Kategori --</option>
-        <optgroup label="🌐 Bangun Datar">
-            <option value="persegi">Persegi (Luas & Keliling)</option>
-            <option value="segitiga">Segitiga (Luas & Sisi Miring)</option>
-            <option value="lingkaran">Lingkaran (Luas & Keliling)</option>
-        </optgroup>
-        <optgroup label="📦 Bangun Ruang">
-            <option value="kubus">Kubus (Volume & Permukaan)</option>
-            <option value="bola">Bola (Volume & Permukaan)</option>
-            <option value="tabung">Tabung (Volume & Permukaan)</option>
-        </optgroup>
-        <optgroup label="📊 Aljabar & Statistik">
-            <option value="kuadrat">Persamaan Kuadrat (Akar Rumus ABC)</option>
-            <option value="rata">Rata-Rata (Mean Berkelompok)</option>
-        </optgroup>
+        <option value="">-- Pilih --</option>
+        <option value="kotak">Luas & Keliling Kotak</option>
+        <option value="segitiga">Luas Segitiga</option>
+        <option value="bola">Volume & Luas Bola</option>
+        <option value="tekanan">Konversi Beban (kg) ke PSI</option>
+        <option value="catatan">📝 Catatan / Memo Rumus</option>
     </select>
 
-    <!-- PERSEGI -->
-    <div id="sec-persegi" class="kalkulator-section">
-        <h3>Persegi</h3>
+    <!-- KOTAK -->
+    <div id="sec-kotak" class="kalkulator-section">
+        <h3>Kalkulator Kotak (Persegi)</h3>
         <input type="number" id="sisi" placeholder="Masukkan panjang sisi (cm)">
-        <button onclick="hitungPersegi()">Hitung</button>
-        <div id="res-persegi" class="result" style="display:none;"></div>
+        <button onclick="hitungKotak()">Hitung</button>
+        <div id="res-kotak" class="result" style="display:none;"></div>
     </div>
 
     <!-- SEGITIGA -->
     <div id="sec-segitiga" class="kalkulator-section">
-        <h3>Segitiga Siku-Siku</h3>
-        <input type="number" id="alas" placeholder="Masukkan panjang alas (cm)">
+        <h3>Kalkulator Segitiga</h3>
+        <input type="number" id="alas" placeholder="Masukkan alas (cm)">
         <input type="number" id="tinggi" placeholder="Masukkan tinggi (cm)">
-        <button onclick="hitungSegitiga()">Hitung Luas & Pythagoras</button>
+        <button onclick="hitungSegitiga()">Hitung</button>
         <div id="res-segitiga" class="result" style="display:none;"></div>
-    </div>
-
-    <!-- LINGKARAN -->
-    <div id="sec-lingkaran" class="kalkulator-section">
-        <h3>Lingkaran</h3>
-        <input type="number" id="jariLingkaran" placeholder="Masukkan jari-jari (r)">
-        <button onclick="hitungLingkaran()">Hitung</button>
-        <div id="res-lingkaran" class="result" style="display:none;"></div>
-    </div>
-
-    <!-- KUBUS -->
-    <div id="sec-kubus" class="kalkulator-section">
-        <h3>Kubus</h3>
-        <input type="number" id="rusuk" placeholder="Masukkan panjang rusuk/sisi (cm)">
-        <button onclick="hitungKubus()">Hitung</button>
-        <div id="res-kubus" class="result" style="display:none;"></div>
     </div>
 
     <!-- BOLA -->
     <div id="sec-bola" class="kalkulator-section">
-        <h3>Bola</h3>
-        <input type="number" id="jariBola" placeholder="Masukkan jari-jari (r)">
+        <h3>Kalkulator Bola</h3>
+        <input type="number" id="jari" placeholder="Masukkan jari-jari (cm)">
         <button onclick="hitungBola()">Hitung</button>
         <div id="res-bola" class="result" style="display:none;"></div>
     </div>
 
-    <!-- TABUNG -->
-    <div id="sec-tabung" class="kalkulator-section">
-        <h3>Tabung</h3>
-        <input type="number" id="rTabung" placeholder="Masukkan jari-jari alas (r)">
-        <input type="number" id="tTabung" placeholder="Masukkan tinggi tabung (t)">
-        <button onclick="hitungTabung()">Hitung</button>
-        <div id="res-tabung" class="result" style="display:none;"></div>
+    <!-- TEKANAN -->
+    <div id="sec-tekanan" class="kalkulator-section">
+        <h3>Konversi Beban ke PSI</h3>
+        <input type="number" id="beban" placeholder="Masukkan beban (kg)">
+        <input type="number" id="luasArea" placeholder="Masukkan luas permukaan (cm²)">
+        <p class="note">*Catatan: Tekanan butuh nilai luas area permukaan tekanan (cm²).</p>
+        <button onclick="hitungPSI()">Hitung PSI</button>
+        <div id="res-tekanan" class="result" style="display:none;"></div>
     </div>
 
-    <!-- PERSAMAAN KUADRAT -->
-    <div id="sec-kuadrat" class="kalkulator-section">
-        <h3>Persamaan Kuadrat (ax² + bx + c = 0)</h3>
-        <input type="number" id="valA" placeholder="Masukkan nilai a">
-        <input type="number" id="valB" placeholder="Masukkan nilai b">
-        <input type="number" id="valC" placeholder="Masukkan nilai c">
-        <button onclick="hitungKuadrat()">Cari Akar (Rumus ABC)</button>
-        <div id="res-kuadrat" class="result" style="display:none;"></div>
-    </div>
-
-    <!-- RATA-RATA -->
-    <div id="sec-rata" class="kalkulator-section">
-        <h3>Hitung Rata-Rata (Mean)</h3>
-        <input type="text" id="dataAngka" placeholder="Contoh input: 80, 85, 90, 75">
-        <p style="font-size:11px; margin:0; color:#888;">*Pisahkan setiap angka menggunakan tanda koma</p>
-        <button onclick="hitungRataRata()">Hitung Mean</button>
-        <div id="res-rata" class="result" style="display:none;"></div>
+    <!-- CATATAN -->
+    <div id="sec-catatan" class="kalkulator-section">
+        <h3>📝 Catatan & Memo</h3>
+        <textarea id="memoText" placeholder="Tulis rumus penting atau catatan Anda di sini..."></textarea>
+        <button onclick="simpanCatatan()">Simpan Catatan</button>
+        <div id="statusSaved" class="status-saved">✓ Catatan berhasil disimpan!</div>
     </div>
 
     <!-- RIWAYAT -->
@@ -139,6 +107,13 @@
 </div>
 
 <script>
+    // Ambil catatan yang tersimpan saat halaman dimuat
+    window.onload = function() {
+        if(localStorage.getItem("memoKalkulator")) {
+            document.getElementById("memoText").value = localStorage.getItem("memoKalkulator");
+        }
+    };
+
     function toggleTheme() {
         const body = document.documentElement;
         const btn = document.getElementById("themeBtn");
@@ -160,12 +135,59 @@
         }
     }
 
+    function simpanCatatan() {
+        let teks = document.getElementById("memoText").value;
+        localStorage.setItem("memoKalkulator", teks);
+        
+        let status = document.getElementById("statusSaved");
+        status.style.display = "block";
+        setTimeout(() => { status.style.display = "none"; }, 2000);
+    }
+
     function tambahRiwayat(teks) {
         let list = document.getElementById("historyList");
-        if(list.innerText.includes("Belum ada riwayat")) list.innerHTML = "";
+        if(list.innerText.includes("Belum ada riwayat")) {
+            list.innerHTML = "";
+        }
         let li = document.createElement("li");
         li.innerHTML = teks;
         list.insertBefore(li, list.firstChild);
+    }
+
+    function hitungKotak() {
+        let s = parseFloat(document.getElementById("sisi").value);
+        if(!s) return alert("Masukkan angka yang valid");
+        let luas = s * s;
+        let keliling = 4 * s;
+        tampilkanHasil("res-kotak", `Luas: ${luas} cm² <br> Keliling: ${keliling} cm`);
+        tambahRiwayat(`Kotak (sisi ${s}cm) &rarr; L: ${luas}cm², K: ${keliling}cm`);
+    }
+
+    function hitungSegitiga() {
+        let a = parseFloat(document.getElementById("alas").value);
+        let t = parseFloat(document.getElementById("tinggi").value);
+        if(!a || !t) return alert("Masukkan angka yang valid");
+        let luas = 0.5 * a * t;
+        tampilkanHasil("res-segitiga", `Luas: ${luas} cm²`);
+        tambahRiwayat(`Segitiga (a:${a}, t:${t}) &rarr; L: ${luas}cm²`);
+    }
+
+    function hitungBola() {
+        let r = parseFloat(document.getElementById("jari").value);
+        if(!r) return alert("Masukkan angka yang valid");
+        let volume = (4/3) * Math.PI * Math.pow(r, 3);
+        let luasPermukaan = 4 * Math.PI * Math.pow(r, 2);
+        tampilkanHasil("res-bola", `Volume: ${volume.toFixed(2)} cm³ <br> Luas Permukaan: ${luasPermukaan.toFixed(2)} cm²`);
+        tambahRiwayat(`Bola (r ${r}cm) &rarr; V: ${volume.toFixed(1)}cm³, LP: ${luasPermukaan.toFixed(1)}cm²`);
+    }
+
+    function hitungPSI() {
+        let kg = parseFloat(document.getElementById("beban").value);
+        let area = parseFloat(document.getElementById("luasArea").value);
+        if(!kg || !area) return alert("Masukkan angka yang valid");
+        let psi = (kg / area) * 14.2233;
+        tampilkanHasil("res-tekanan", `Tekanan: ${psi.toFixed(2)} PSI`);
+        tambahRiwayat(`Konversi ${kg}kg / ${area}cm² &rarr; ${psi.toFixed(1)} PSI`);
     }
 
     function tampilkanHasil(id, teks) {
@@ -173,46 +195,7 @@
         el.innerHTML = teks;
         el.style.display = "block";
     }
+</script>
 
-    function hitungPersegi() {
-        let s = parseFloat(document.getElementById("sisi").value);
-        if(!s) return alert("Masukkan angka!");
-        let l = s * s; let k = 4 * s;
-        tampilkanHasil("res-persegi", `Luas: ${l} cm² <br> Keliling: ${k} cm`);
-        tambahRiwayat(`Persegi (s=${s}) &rarr; L:${l}, K:${k}`);
-    }
-
-    function hitungSegitiga() {
-        let a = parseFloat(document.getElementById("alas").value);
-        let t = parseFloat(document.getElementById("tinggi").value);
-        if(!a || !t) return alert("Masukkan angka!");
-        let luas = 0.5 * a * t;
-        let miring = Math.sqrt((a*a) + (t*t));
-        tampilkanHasil("res-segitiga", `Luas: ${luas} cm² <br> Sisi Miring: ${miring.toFixed(2)} cm`);
-        tambahRiwayat(`Segitiga (a:${a}, t:${t}) &rarr; L:${luas}, Miring:${miring.toFixed(1)}`);
-    }
-
-    function hitungLingkaran() {
-        let r = parseFloat(document.getElementById("jariLingkaran").value);
-        if(!r) return alert("Masukkan angka!");
-        let l = Math.PI * r * r;
-        let k = 2 * Math.PI * r;
-        tampilkanHasil("res-lingkaran", `Luas: ${l.toFixed(2)} <br> Keliling: ${k.toFixed(2)}`);
-        tambahRiwayat(`Lingkaran (r:${r}) &rarr; L:${l.toFixed(1)}, K:${k.toFixed(1)}`);
-    }
-
-    function hitungKubus() {
-        let s = parseFloat(document.getElementById("rusuk").value);
-        if(!s) return alert("Masukkan angka!");
-        let v = Math.pow(s, 3);
-        let lp = 6 * (s * s);
-        tampilkanHasil("res-kubus", `Volume: ${v} cm³ <br> Luas Permukaan: ${lp} cm²`);
-        tambahRiwayat(`Kubus (s=${s}) &rarr; V:${v}, LP:${lp}`);
-    }
-
-    function hitungBola() {
-        let r = parseFloat(document.getElementById("jariBola").value);
-        if(!r) return alert("Masukkan angka!");
-        let v = (4/3) * Math.PI * Math.pow(r, 3);
-        let lp = 4 * Math.PI * Math.pow(r, 2);
-        tampilkanHasil("res-bola", `Volume: ${v.toFixed(2)} cm³ <br> Luas Permukaan: ${lp.toFixed(2)} cm²`);
+</body>
+</html>
