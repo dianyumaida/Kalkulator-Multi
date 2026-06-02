@@ -3,167 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menu Dropdown Bertingkat</title>
+    <title>Menu Kotak Pilihan Simpel</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            background-color: #f5f5f5;
             display: flex;
             justify-content: center;
             padding-top: 50px;
         }
 
-        /* Kotak Utama Menu */
-        .dropdown-box {
-            width: 320px;
+        /* SATU KOTAK UTUH (Sesuai Gambar) */
+        .kotak-pilih {
+            width: 300px;
             background-color: #ffffff;
             border: 2px solid #333333;
-            border-radius: 8px;
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: 4px 4px 10px rgba(0,0,0,0.1);
         }
 
-        /* Struktur Baris Menu */
-        .menu-row {
+        /* Desain Baris Umum */
+        .baris {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 15px;
-            border-bottom: 1px solid #cccccc;
-            cursor: pointer;
-            user-select: none;
-            background-color: #ffffff;
+            border-bottom: 1px solid #dddddd;
+            font-size: 16px;
         }
 
-        .menu-row:last-child {
+        /* Menghilangkan garis di baris paling bawah */
+        .baris:last-child {
             border-bottom: none;
         }
 
-        /* Header "Pilih" */
-        .header-pilih {
-            background-color: #eaeaea;
+        /* Baris Judul Paling Atas */
+        .judul {
+            background-color: #f0f0f0;
             font-weight: bold;
-            font-size: 18px;
-            cursor: default;
         }
 
-        /* Teks Menu Utama (a0, b0) */
-        .menu-text {
-            font-size: 16px;
-            font-weight: 500;
-        }
-
-        /* Komponen Lingkaran Radio Button */
-        .radio-dot {
-            width: 12px;
-            height: 12px;
-            border: 2px solid #333333;
-            border-radius: 50%;
-            display: inline-block;
-            transition: background-color 0.2s;
-        }
-
-        /* Efek ketika radio button aktif terpilih */
-        .active .radio-dot {
-            background-color: #00bcd4; /* Warna biru/hitam saat aktif */
-        }
-
-        /* Wadah untuk Sub-Menu (a1, b1) */
-        .sub-menu-container {
-            display: none; /* Tersembunyi sebelum menu utama diklik */
-            background-color: #fdfdfd;
-        }
-
-        /* Baris khusus untuk Sub-Menu (Menjorok ke kanan) */
-        .sub-menu-container .menu-row {
-            padding-left: 45px; /* Menggeser teks ke kanan sesuai sketsa */
+        /* KUNCI: Menjorok ke dalam untuk sub-menu (a1, b1) */
+        .sub-menu {
+            padding-left: 45px; /* Memberi jarak ke kanan */
             background-color: #fafafa;
-            border-bottom: 1px dashed #dddddd;
+            color: #555555;
         }
 
-        /* Memunculkan sub-menu saat kelas 'show' ditambahkan */
-        .show {
-            display: block;
+        /* Lingkaran Bulat di Sebelah Kanan */
+        .bulatan-radio {
+            width: 14px;
+            height: 14px;
+            border: 2px solid #666666;
+            border-radius: 50%;
         }
     </style>
 </head>
 <body>
 
-<div class="dropdown-box">
-    
-    <!-- Baris Judul Atas -->
-    <div class="menu-row header-pilih">
-        <span>Pilih</span>
-        <span class="radio-dot" style="opacity: 0.3;"></span>
-    </div>
-
-    <!-- MENU KELOMPOK A -->
-    <div class="main-menu">
-        <div class="menu-row" onclick="toggleMenu('group-a', this)">
-            <span class="menu-text">a0</span>
-            <span class="radio-dot"></span>
-        </div>
-        <!-- Sub-menu dari a0 -->
-        <div id="group-a" class="sub-menu-container">
-            <div class="menu-row sub-item" onclick="selectRadio(this)">
-                <span class="menu-text">a1</span>
-                <span class="radio-dot"></span>
-            </div>
-            <div class="menu-row sub-item" onclick="selectRadio(this)">
-                <span class="menu-text">b1</span>
-                <span class="radio-dot"></span>
-            </div>
-        </div>
-    </div>
-
-    <!-- MENU KELOMPOK B -->
-    <div class="main-menu">
-        <div class="menu-row" onclick="toggleMenu('group-b', this)">
-            <span class="menu-text">b0</span>
-            <span class="radio-dot"></span>
-        </div>
-        <!-- Sub-menu dari b0 -->
-        <div id="group-b" class="sub-menu-container">
-            <div class="menu-row sub-item" onclick="selectRadio(this)">
-                <span class="menu-text">b1</span>
-                <span class="radio-dot"></span>
-            </div>
-        </div>
-    </div>
-
-</div>
-
-<!-- JAVASCRIPT UNTUK AKSI BUKA/TUTUP DAN PILIH RADIO -->
-<script>
-    // Fungsi untuk membuka atau menutup sub-menu
-    function toggleMenu(id, element) {
-        var subMenu = document.getElementById(id);
+    <!-- Semua komponen masuk dalam satu container ini -->
+    <div class="kotak-pilih">
         
-        // Reset tanda aktif pada menu utama lain terlebih dahulu
-        document.querySelectorAll('.menu-row').forEach(row => row.classList.remove('active'));
-        
-        if (subMenu.classList.contains('show')) {
-            subMenu.classList.remove('show');
-        } else {
-            // Tutup semua sub-menu yang terbuka
-            document.querySelectorAll('.sub-menu-container').forEach(menu => menu.classList.remove('show'));
-            // Buka sub-menu yang dipilih
-            subMenu.classList.add('show');
-            element.classList.add('active');
-        }
-    }
+        <!-- Judul Atas -->
+        <div class="baris judul">
+            <span>Pilih</span>
+            <div class="bulatan-radio" style="opacity: 0.2;"></div>
+        </div>
 
-    // Fungsi saat sub-item paling dalam diklik
-    function selectRadio(element) {
-        // Hapus tanda aktif dari semua sub-item agar tidak ganda
-        document.querySelectorAll('.sub-item').forEach(item => item.classList.remove('active'));
-        // Aktifkan bulatan radio pada item yang diklik
-        element.classList.add('active');
-        
-        // Menghentikan efek klik agar tidak memicu menu induknya tutup
-        event.stopPropagation(); 
-    }
-</script>
+        <!-- Menu Utama A -->
+        <div class="baris">
+            <span>a0</span>
+            <div class="bulatan-radio"></div>
+        </div>
+
+        <!-- Sub Menu dari A (Menjorok) -->
+        <div class="baris sub-menu">
+            <span>a1</span>
+            <div class="bulatan-radio"></div>
+        </div>
+
+        <div class="baris sub-menu">
+            <span>b1</span>
+            <div class="bulatan-radio"></div>
+        </div>
+
+        <!-- Menu Utama B -->
+        <div class="baris">
+            <span>b0</span>
+            <div class="bulatan-radio"></div>
+        </div>
+
+        <!-- Sub Menu dari B (Menjorok) -->
+        <div class="baris sub-menu">
+            <span>b1</span>
+            <div class="bulatan-radio"></div>
+        </div>
+
+    </div>
 
 </body>
 </html>
