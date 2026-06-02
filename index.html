@@ -3,163 +3,186 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalkulator Sudut Berpelurus dengan Keypad</title>
+    <title>Kalkulator Sudut Multi-Style</title>
     <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f2f5;
+            background-color: #e9ecef;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            margin: 0;
+            padding: 20px;
         }
-        .container {
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            text-align: center;
-            width: 400px;
+        /* Desain Kotak Utama ala Kalkulator Multi */
+        .calculator-box {
+            background: #22252d;
+            width: 380px;
+            padding: 20px;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
-        h2 { color: #333; margin-top: 0; margin-bottom: 5px; }
-        p { color: #666; font-size: 14px; margin-bottom: 15px; }
         
-        .input-group {
-            margin-bottom: 10px;
+        /* Layar Display Utama */
+        .screen-display {
+            background: #292d36;
+            border-radius: 20px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: right;
+        }
+        .screen-title {
+            color: #4caf50;
+            font-size: 14px;
             text-align: left;
+            margin-bottom: 5px;
+            font-weight: bold;
+            text-transform: uppercase;
         }
-        label { display: block; font-weight: bold; margin-bottom: 5px; color: #444; }
+        .main-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            font-size: 32px;
+            text-align: right;
+            font-weight: bold;
+            outline: none;
+            padding-bottom: 5px;
+        }
         
+        /* Slider section */
+        .slider-container {
+            margin: 15px 0;
+            padding: 0 5px;
+        }
         input[type="range"] {
             width: 100%;
-            margin-bottom: 10px;
-        }
-        input[type="text"] {
-            width: 100%;
-            padding: 10px;
-            border: 2px solid #ddd;
-            border-radius: 6px;
-            box-sizing: border-box;
-            font-size: 18px;
-            text-align: center;
-            font-weight: bold;
+            height: 6px;
+            background: #444;
+            border-radius: 5px;
+            outline: none;
         }
 
-        /* Desain Grid Keypad Kalkulator */
-        .keypad {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-top: 15px;
-        }
-        .btn-key {
-            padding: 12px;
-            font-size: 18px;
-            font-weight: bold;
-            background-color: #f8f9fa;
-            border: 1px solid #dcdcdc;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: background 0.1s;
-        }
-        .btn-key:active {
-            background-color: #e2e6ea;
-        }
-        .btn-clear {
-            background-color: #ffebee;
-            color: #c62828;
-            border-color: #ffcdd2;
-        }
-        .btn-back {
-            background-color: #fff3e0;
-            color: #ef6c00;
-            border-color: #ffe0b2;
-        }
-
+        /* Grafik Visual Canvas */
         canvas {
-            background: #fafafa;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            margin-top: 15px;
+            background: #292d36;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            width: 100%;
+            display: block;
+        }
+
+        /* Desain Grid Tombol Keypad */
+        .keypad-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+        .btn {
+            border: none;
+            outline: none;
+            padding: 18px;
+            font-size: 20px;
+            font-weight: bold;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
         }
         
-        .info-box {
+        /* Pembagian Warna Tombol Khusus */
+        .btn-number {
+            background-color: #292d36;
+            color: #ffffff;
+        }
+        .btn-number:active { background-color: #373e4a; }
+        
+        .btn-func {
+            background-color: #273c3a;
+            color: #4caf50;
+        }
+        .btn-func:active { background-color: #1e524d; }
+
+        .btn-operator {
+            background-color: #ff9500;
+            color: white;
+        }
+        .btn-operator:active { background-color: #e08400; }
+
+        .btn-clear {
+            background-color: #f44336;
+            color: white;
+        }
+        .btn-clear:active { background-color: #d32f2f; }
+
+        /* Hasil Info di bagian bawah */
+        .info-panel {
+            grid-column: span 4;
+            background: #292d36;
+            padding: 12px;
+            border-radius: 12px;
             display: flex;
             justify-content: space-between;
-            margin-top: 15px;
-            font-weight: bold;
+            color: #aaa;
+            font-size: 14px;
+            margin-top: 5px;
         }
-        .text-a { color: #ff3b30; }
-        .text-b { color: #007aff; }
-        
-        .btn-animasi {
-            width: 100%;
-            padding: 10px;
-            background-color: #34c759;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: background 0.2s;
-        }
-        .btn-animasi:hover {
-            background-color: #2eaf4f;
-        }
-        .btn-animasi.playing {
-            background-color: #ff3b30;
-        }
+        .info-panel span strong { font-size: 16px; }
+        .color-a { color: #ff4757; }
+        .color-b { color: #2ed573; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h2>Sudut Berpelurus</h2>
-    <p>Masukkan nilai menggunakan keypad atau geser slider.</p>
+<div class="calculator-box">
+    <div class="screen-display">
+        <div class="screen-title">Sudut A + Sudut B = 180°</div>
+        <input type="text" id="angkaA" value="60" readonly class="main-input">
+    </div>
 
-    <!-- Slider Interaktif -->
-    <div class="input-group">
-        <label for="sliderA">Atur Sudut A:</label>
+    <!-- Grafik Visual Sudut -->
+    <canvas id="grafikSudut" width="340" height="150"></canvas>
+
+    <div class="slider-container">
         <input type="range" id="sliderA" min="0" max="180" value="60" oninput="hentikanAnimasi(); updateSudut(this.value)">
     </div>
 
-    <!-- Layar Input Angka (Readonly agar keyboard asli HP tidak muncul) -->
-    <div class="input-group">
-        <input type="text" id="angkaA" value="60" readonly>
-    </div>
-
-    <!-- Layout Tombol Keypad Ala Kalkulator -->
-    <div class="keypad">
-        <button class="btn-key" onclick="tekanKeypad('7')">7</button>
-        <button class="btn-key" onclick="tekanKeypad('8')">8</button>
-        <button class="btn-key" onclick="tekanKeypad('9')">9</button>
+    <!-- Tata Letak Tombol Grid Persis Gaya Kalkulator Multi -->
+    <div class="keypad-grid">
+        <!-- Baris 1 -->
+        <button class="btn btn-clear" onclick="tekanKeypad('C')">C</button>
+        <button class="btn btn-func" onclick="tekanKeypad('⌫')">⌫</button>
+        <button class="btn btn-func" onclick="updateSudut(90)">90°</button>
+        <button id="btnPlay" class="btn btn-operator" onclick="toggleAnimasi()">▶</button>
         
-        <button class="btn-key" onclick="tekanKeypad('4')">4</button>
-        <button class="btn-key" onclick="tekanKeypad('5')">5</button>
-        <button class="btn-key" onclick="tekanKeypad('6')">6</button>
+        <!-- Baris 2 -->
+        <button class="btn btn-number" onclick="tekanKeypad('7')">7</button>
+        <button class="btn btn-number" onclick="tekanKeypad('8')">8</button>
+        <button class="btn btn-number" onclick="tekanKeypad('9')">9</button>
+        <button class="btn btn-func" onclick="updateSudut(180)">180°</button>
         
-        <button class="btn-key" onclick="tekanKeypad('1')">1</button>
-        <button class="btn-key" onclick="tekanKeypad('2')">2</button>
-        <button class="btn-key" onclick="tekanKeypad('3')">3</button>
+        <!-- Baris 3 -->
+        <button class="btn btn-number" onclick="tekanKeypad('4')">4</button>
+        <button class="btn btn-number" onclick="tekanKeypad('5')">5</button>
+        <button class="btn btn-number" onclick="tekanKeypad('6')">6</button>
+        <button class="btn btn-func" onclick="updateSudut(45)">45°</button>
         
-        <button class="btn-key btn-clear" onclick="tekanKeypad('C')">C</button>
-        <button class="btn-key" onclick="tekanKeypad('0')">0</button>
-        <button class="btn-key btn-back" onclick="tekanKeypad('⌫')">⌫</button>
-    </div>
+        <!-- Baris 4 -->
+        <button class="btn btn-number" onclick="tekanKeypad('1')">1</button>
+        <button class="btn btn-number" onclick="tekanKeypad('2')">2</button>
+        <button class="btn btn-number" onclick="tekanKeypad('3')">3</button>
+        <button class="btn btn-number" onclick="tekanKeypad('0')">0</button>
 
-    <!-- Tombol Kontrol Animasi -->
-    <button id="btnPlay" class="btn-animasi" onclick="toggleAnimasi()">▶ Putar Otomatis</button>
-
-    <!-- Grafik Visual Bergerak -->
-    <canvas id="grafikSudut" width="350" height="180"></canvas>
-
-    <!-- Informasi Hasil -->
-    <div class="info-box">
-        <span class="text-a">Sudut A = <span id="valA">60</span>°</span>
-        <span class="text-b">Sudut B = <span id="valB">120</span>°</span>
+        <!-- Baris Info Hasil Terintegrasi -->
+        <div class="info-panel">
+            <span class="color-a">Sudut A: <strong id="valA">60</strong>°</span>
+            <span class="color-b">Sudut B: <strong id="valB">120</strong>°</span>
+        </div>
     </div>
 </div>
 
@@ -173,7 +196,6 @@ let IDAnimasi = null;
 let sedangBerputar = false;
 let arahMaju = true;
 
-// Logika Input dari Tombol Keypad
 function tekanKeypad(karakter) {
     hentikanAnimasi();
     let teksSekarang = inputAngka.value;
@@ -182,7 +204,7 @@ function tekanKeypad(karakter) {
         teksSekarang = '0';
     } else if (karakter === '⌫') {
         teksSekarang = teksSekarang.slice(0, -1);
-        if (teksSekarang === '' || teksSekarang === '-') teksSekarang = '0';
+        if (teksSekarang === '') teksSekarang = '0';
     } else {
         if (teksSekarang === '0') {
             teksSekarang = karakter;
@@ -191,9 +213,7 @@ function tekanKeypad(karakter) {
         }
     }
 
-    // Batasi nilai agar maksimal 180 derajat
-    let nilaiAngka = parseFloat(teksSekarang);
-    if (nilaiAngka > 180) {
+    if (parseFloat(teksSekarang) > 180) {
         teksSekarang = '180';
     }
 
@@ -208,88 +228,68 @@ function updateSudut(nilai) {
     if (sudutA > 180) sudutA = 180;
 
     document.getElementById('sliderA').value = sudutA;
-    if (document.activeElement !== inputAngka) {
-        inputAngka.value = Math.round(sudutA);
-    }
-
-    const sudutB = 180 - sudutA;
+    inputAngka.value = Math.round(sudutA);
 
     document.getElementById('valA').innerText = Math.round(sudutA);
-    document.getElementById('valB').innerText = Math.round(sudutB);
+    document.getElementById('valB').innerText = Math.round(180 - sudutA);
 
     gambarGrafik(sudutA);
 }
 
 function gambarGrafik(sudutA) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
     const centerX = canvas.width / 2;
-    const centerY = canvas.height - 30;
-    const radius = 120;
+    const centerY = canvas.height - 20;
+    const radius = 100;
 
-    // Garis Lurus Horizontal
+    // Garis Dasar
     ctx.beginPath();
     ctx.moveTo(centerX - radius - 20, centerY);
     ctx.lineTo(centerX + radius + 20, centerY);
-    ctx.strokeStyle = '#333';
-    ctx.lineWidth = 3;
+    ctx.strokeStyle = '#444';
+    ctx.lineWidth = 4;
     ctx.stroke();
 
     const radian = (sudutA * Math.PI) / 180;
     const targetX = centerX + radius * Math.cos(-radian);
     const targetY = centerY + radius * Math.sin(-radian);
 
-    // Garis Pembagi Sudut
+    // Garis Pembagi
     ctx.beginPath();
     ctx.moveTo(centerX, centerY);
     ctx.lineTo(targetX, targetY);
-    ctx.strokeStyle = '#34c759';
+    ctx.strokeStyle = '#ff9500';
     ctx.lineWidth = 4;
     ctx.stroke();
 
-    // Busur Sudut A (Kanan)
+    // Busur Sudut A
     if (sudutA > 0) {
         ctx.beginPath();
-        ctx.arc(centerX, centerY, 40, 0, -radian, true);
-        ctx.strokeStyle = '#ff3b30';
-        ctx.lineWidth = 2;
+        ctx.arc(centerX, centerY, 30, 0, -radian, true);
+        ctx.strokeStyle = '#ff4757';
+        ctx.lineWidth = 3;
         ctx.stroke();
     }
 
-    // Busur Sudut B (Kiri)
+    // Busur Sudut B
     if (sudutA < 180) {
         ctx.beginPath();
-        ctx.arc(centerX, centerY, 50, -radian, -Math.PI, true);
-        ctx.strokeStyle = '#007aff';
-        ctx.lineWidth = 2;
+        ctx.arc(centerX, centerY, 38, -radian, -Math.PI, true);
+        ctx.strokeStyle = '#2ed573';
+        ctx.lineWidth = 3;
         ctx.stroke();
     }
-
-    // Titik Pusat
-    ctx.beginPath();
-    ctx.arc(centerX, centerY, 6, 0, 2 * Math.PI);
-    ctx.fillStyle = '#333';
-    ctx.fill();
 }
 
 function animasiLoop() {
     let currentVal = parseFloat(document.getElementById('sliderA').value);
-
     if (arahMaju) {
-        currentVal += 0.8;
-        if (currentVal >= 180) {
-            currentVal = 180;
-            arahMaju = false;
-        }
+        currentVal += 1;
+        if (currentVal >= 180) { currentVal = 180; arahMaju = false; }
     } else {
-        currentVal -= 0.8;
-        if (currentVal <= 0) {
-            currentVal = 0;
-            arahMaju = true;
-        }
+        currentVal -= 1;
+        if (currentVal <= 0) { currentVal = 0; arahMaju = true; }
     }
-
-    inputAngka.value = Math.round(currentVal);
     updateSudut(currentVal);
     IDAnimasi = requestAnimationFrame(animasiLoop);
 }
@@ -299,22 +299,19 @@ function toggleAnimasi() {
         hentikanAnimasi();
     } else {
         sedangBerputar = true;
-        btnPlay.innerText = "⏸ Pause Animasi";
-        btnPlay.classList.add('playing');
+        btnPlay.innerText = "⏸";
         animasiLoop();
     }
 }
 
 function hentikanAnimasi() {
     sedangBerputar = false;
-    btnPlay.innerText = "▶ Putar Otomatis";
-    btnPlay.classList.remove('playing');
+    btnPlay.innerText = "▶";
     cancelAnimationFrame(IDAnimasi);
 }
 
 // Inisialisasi awal
-gambarGrafik(60);
+updateSudut(60);
 </script>
-
 </body>
 </html>
