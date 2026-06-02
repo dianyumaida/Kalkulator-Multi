@@ -3,225 +3,235 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalkulator Multi Fungsi</title>
+    <title>Kalkulator Sudut Berpelurus Interaktif & Animasi</title>
     <style>
-        :root {
-            --bg-color: #f4f6f9;
-            --card-bg: white;
-            --text-color: #333;
-            --border-color: #ccc;
-            --result-bg: #e9ecef;
-            --table-border: #ddd;
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
         }
-        [data-theme="dark"] {
-            --bg-color: #121212;
-            --card-bg: #1e1e1e;
-            --text-color: #f4f6f9;
-            --border-color: #444;
-            --result-bg: #2a2a2a;
-            --table-border: #444;
+        .container {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 400px;
         }
-        * { box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; transition: background 0.3s, color 0.3s; }
-        body { background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 20px; display: flex; justify-content: center; }
-        .container { width: 100%; max-width: 480px; background: var(--card-bg); padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: relative; }
-        h2 { text-align: center; margin-top: 0; padding-right: 60px; text-align: left; }
+        h2 { color: #333; margin-top: 0; }
+        p { color: #666; font-size: 14px; margin-bottom: 20px; }
+        .input-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        label { display: block; font-weight: bold; margin-bottom: 5px; color: #444; }
+        input[type="range"] {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        canvas {
+            background: #fafafa;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        .info-box {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        .text-a { color: #ff3b30; }
+        .text-b { color: #007aff; }
         
-        /* Navigasi Tombol Atas */
-        .top-actions { position: absolute; top: 20px; right: 20px; display: flex; gap: 10px; }
-        .top-btn { cursor: pointer; background: none; border: none; font-size: 20px; padding: 5px; margin: 0; width: auto; }
-        
-        select, input, button, textarea { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid var(--border-color); font-size: 16px; background: var(--card-bg); color: var(--text-color); }
-        select:focus, input:focus, textarea:focus { border-color: #007bff; outline: none; }
-        button { background-color: #007bff; color: white; border: none; font-weight: bold; cursor: pointer; }
-        button:hover { background-color: #0056b3; }
-        .btn-danger { background-color: #dc3545; }
-        .btn-danger:hover { background-color: #bd2130; }
-        
-        .btn-wa { background-color: #25d366; color: white; margin-top: 8px; display: none; text-align: center; text-decoration: none; border-radius: 8px; padding: 12px; font-weight: bold; font-size: 16px; }
-        .btn-wa:hover { background-color: #128c7e; }
-        textarea { resize: vertical; min-height: 120px; font-family: inherit; }
-        .kalkulator-section { display: none; margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border-color); }
-        .result { background: var(--result-bg); padding: 12px; border-radius: 8px; font-weight: bold; margin-top: 10px; text-align: center; }
-        .note { font-size: 12px; color: #888; }
-        
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 14px; }
-        th, td { border: 1px solid var(--table-border); padding: 8px; text-align: left; }
-        th { background-color: var(--result-bg); }
-
-        .history-section { margin-top: 20px; padding-top: 15px; border-top: 2px dashed var(--border-color); }
-        .history-list { padding-left: 20px; font-size: 14px; max-height: 120px; overflow-y: auto; }
-        .history-list li { margin-bottom: 5px; }
-        .status-saved { font-size: 12px; color: #28a745; display: none; margin-top: 4px; text-align: right; }
+        /* Gaya Tombol Animasi */
+        .btn-animasi {
+            width: 100%;
+            padding: 10px;
+            background-color: #34c759;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.2s;
+        }
+        .btn-animasi:hover {
+            background-color: #2eaf4f;
+        }
+        .btn-animasi.playing {
+            background-color: #ff3b30;
+        }
+        .btn-animasi.playing:hover {
+            background-color: #d6332a;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="top-actions">
-        <button class="top-btn" onclick="bukaMemoCepat()" title="Buka Catatan">📝</button>
-        <button class="top-btn" onclick="toggleTheme()" id="themeBtn" title="Ubah Tema">🌙</button>
-    </div>
-    <h2>🧮 Multi Calc</h2>
-    
-    <label for="menu">Pilih Menu:</label>
-    <select id="menu" onchange="tampilkanKalkulator()">
-        <option value="">-- Pilih --</option>
-        <option value="kotak">Luas & Keliling Kotak</option>
-        <option value="segitiga">Luas Segitiga</option>
-        <option value="bola">Volume & Luas Bola</option>
-        <option value="tekanan">Konversi Beban (kg) ke PSI</option>
-        <option value="catatan">📝 Catatan & Panduan Rumus</option>
-    </select>
+    <h2>Sudut Berpelurus</h2>
+    <p>Geser nilai secara manual atau jalankan animasi otomatis.</p>
 
-    <!-- KOTAK -->
-    <div id="sec-kotak" class="kalkulator-section">
-        <h3>Kalkulator Kotak (Persegi)</h3>
-        <input type="number" id="sisi" placeholder="Masukkan panjang sisi (cm)">
-        <button onclick="hitungKotak()">Hitung</button>
-        <div id="res-kotak" class="result" style="display:none;"></div>
-        <a id="wa-kotak" class="btn-wa" target="_blank">📲 Bagikan Hasil ke WA</a>
+    <!-- Slider Interaktif -->
+    <div class="input-group">
+        <label for="sliderA">Atur Sudut A:</label>
+        <input type="range" id="sliderA" min="0" max="180" value="60" oninput="hentikanAnimasi(); updateSudut(this.value)">
     </div>
 
-    <!-- SEGITIGA -->
-    <div id="sec-segitiga" class="kalkulator-section">
-        <h3>Kalkulator Segitiga</h3>
-        <input type="number" id="alas" placeholder="Masukkan alas (cm)">
-        <input type="number" id="tinggi" placeholder="Masukkan tinggi (cm)">
-        <button onclick="hitungSegitiga()">Hitung</button>
-        <div id="res-segitiga" class="result" style="display:none;"></div>
-        <a id="wa-segitiga" class="btn-wa" target="_blank">📲 Bagikan Hasil ke WA</a>
+    <!-- Input Angka -->
+    <div class="input-group">
+        <input type="number" id="angkaA" min="0" max="180" value="60" oninput="hentikanAnimasi(); updateSudut(this.value)">
     </div>
 
-    <!-- BOLA -->
-    <div id="sec-bola" class="kalkulator-section">
-        <h3>Kalkulator Bola</h3>
-        <input type="number" id="jari" placeholder="Masukkan jari-jari (cm)">
-        <button onclick="hitungBola()">Hitung</button>
-        <div id="res-bola" class="result" style="display:none;"></div>
-        <a id="wa-bola" class="btn-wa" target="_blank">📲 Bagikan Hasil ke WA</a>
-    </div>
+    <!-- Tombol Kontrol Animasi -->
+    <button id="btnPlay" class="btn-animasi" onclick="toggleAnimasi()">▶ Putar Otomatis</button>
 
-    <!-- TEKANAN -->
-    <div id="sec-tekanan" class="kalkulator-section">
-        <h3>Konversi Beban ke PSI</h3>
-        <input type="number" id="beban" placeholder="Masukkan beban (kg)">
-        <input type="number" id="luasArea" placeholder="Masukkan luas permukaan (cm²)">
-        <p class="note">*Catatan: Tekanan butuh nilai luas area permukaan tekanan (cm²).</p>
-        <button onclick="hitungPSI()">Hitung PSI</button>
-        <div id="res-tekanan" class="result" style="display:none;"></div>
-        <a id="wa-tekanan" class="btn-wa" target="_blank">📲 Bagikan Hasil ke WA</a>
-    </div>
+    <!-- Grafik Visual Bergerak -->
+    <canvas id="grafikSudut" width="350" height="180"></canvas>
 
-    <!-- CATATAN & TABEL RUMUS -->
-    <div id="sec-catatan" class="kalkulator-section">
-        <h3>📝 Memo & Catatan</h3>
-        <textarea id="memoText" placeholder="Tulis rumus penting atau catatan Anda di sini..."></textarea>
-        <div style="display: flex; gap: 10px;">
-            <button onclick="simpanCatatan()" style="flex: 2;">Simpan</button>
-            <button onclick="hapusCatatan()" class="btn-danger" style="flex: 1;">Hapus</button>
-        </div>
-        <div id="statusSaved" class="status-saved">✓ Perubahan disimpan!</div>
-
-        <h3>📋 Tabel Referensi Rumus</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>Bentuk</th>
-                    <th>Rumus Matematika</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><b>Kotak</b></td>
-                    <td>L = s &times; s | K = 4 &times; s</td>
-                </tr>
-                <tr>
-                    <td><b>Segitiga</b></td>
-                    <td>L = &frac12; &times; a &times; t</td>
-                </tr>
-                <tr>
-                    <td><b>Bola</b></td>
-                    <td>V = 4/3 &times; &pi; &times; r&sup3; | LP = 4 &times; &pi; &times; r&sup2;</td>
-                </tr>
-                <tr>
-                    <td><b>PSI</b></td>
-                    <td>(Beban kg / Luas cm&sup2;) &times; 14.2233</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <!-- RIWAYAT -->
-    <div class="history-section">
-        <h4>📜 Riwayat Perhitungan</h4>
-        <ul id="historyList" class="history-list">
-            <li style="list-style:none; color:#888;">Belum ada riwayat.</li>
-        </ul>
+    <!-- Informasi Hasil -->
+    <div class="info-box">
+        <span class="text-a">Sudut A = <span id="valA">60</span>°</span>
+        <span class="text-b">Sudut B = <span id="valB">120</span>°</span>
     </div>
 </div>
 
 <script>
-    window.onload = function() {
-        if(localStorage.getItem("memoKalkulator")) {
-            document.getElementById("memoText").value = localStorage.getItem("memoKalkulator");
+const canvas = document.getElementById('grafikSudut');
+const ctx = canvas.getContext('2d');
+const btnPlay = document.getElementById('btnPlay');
+
+let IDAnimasi = null;
+let sedangBerputar = false;
+let arahMaju = true; // True berarti sudut bertambah, False berarti berkurang
+
+function updateSudut(nilai) {
+    let sudutA = parseFloat(nilai);
+    if (isNaN(sudutA)) sudutA = 0;
+    if (sudutA < 0) sudutA = 0;
+    if (sudutA > 180) sudutA = 180;
+
+    document.getElementById('sliderA').value = sudutA;
+    document.getElementById('angkaA').value = sudutA;
+
+    const sudutB = 180 - sudutA;
+
+    document.getElementById('valA').innerText = Math.round(sudutA);
+    document.getElementById('valB').innerText = Math.round(sudutB);
+
+    gambarGrafik(sudutA);
+}
+
+function gambarGrafik(sudutA) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height - 30;
+    const radius = 120;
+
+    // 1. Garis Lurus Horizontal (180 derajat)
+    ctx.beginPath();
+    ctx.moveTo(centerX - radius - 20, centerY);
+    ctx.lineTo(centerX + radius + 20, centerY);
+    ctx.strokeStyle = '#333';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    const radian = (sudutA * Math.PI) / 180;
+    const targetX = centerX + radius * Math.cos(-radian);
+    const targetY = centerY + radius * Math.sin(-radian);
+
+    // 2. Garis Pembagi Sudut
+    ctx.beginPath();
+    ctx.moveTo(centerX, centerY);
+    ctx.lineTo(targetX, targetY);
+    ctx.strokeStyle = '#34c759';
+    ctx.lineWidth = 4;
+    ctx.stroke();
+
+    // 3. Busur Sudut A (Kanan)
+    if (sudutA > 0) {
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, 40, 0, -radian, true);
+        ctx.strokeStyle = '#ff3b30';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+    }
+
+    // 4. Busur Sudut B (Kiri)
+    if (sudutA < 180) {
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, 50, -radian, -Math.PI, true);
+        ctx.strokeStyle = '#007aff';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+    }
+
+    // 5. Titik Pusat
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, 6, 0, 2 * Math.PI);
+    ctx.fillStyle = '#333';
+    ctx.fill();
+}
+
+// FUNGSI ANIMASI BARU
+function animasiLoop() {
+    let currentVal = parseFloat(document.getElementById('sliderA').value);
+
+    // Efek bolak-balik (ping-pong) saat mentok di 0 atau 180
+    if (arahMaju) {
+        currentVal += 0.8; // Kecepatan putaran (bisa diubah)
+        if (currentVal >= 180) {
+            currentVal = 180;
+            arahMaju = false;
         }
-    };
-
-    function toggleTheme() {
-        const body = document.documentElement;
-        const btn = document.getElementById("themeBtn");
-        if (body.getAttribute("data-theme") === "dark") {
-            body.removeAttribute("data-theme");
-            btn.innerText = "🌙";
-        } else {
-            body.setAttribute("data-theme", "dark");
-            btn.innerText = "☀️";
+    } else {
+        currentVal -= 0.8;
+        if (currentVal <= 0) {
+            currentVal = 0;
+            arahMaju = true;
         }
     }
 
-    function bukaMemoCepat() {
-        document.getElementById("menu").value = "catatan";
-        tampilkanKalkulator();
-    }
+    updateSudut(currentVal);
+    IDAnimasi = requestAnimationFrame(animasiLoop);
+}
 
-    function tampilkanKalkulator() {
-        let menu = document.getElementById("menu").value;
-        let sections = document.querySelectorAll(".kalkulator-section");
-        sections.forEach(sec => sec.style.display = "none");
-        if(menu) {
-            document.getElementById("sec-" + menu).style.display = "block";
-        }
+function toggleAnimasi() {
+    if (sedangBerputar) {
+        hentikanAnimasi();
+    } else {
+        sedangBerputar = true;
+        btnPlay.innerText = "⏸ Pause Animasi";
+        btnPlay.classList.add('playing');
+        animasiLoop();
     }
+}
 
-    function simpanCatatan() {
-        let teks = document.getElementById("memoText").value;
-        localStorage.setItem("memoKalkulator", teks);
-        notifikasiSukses();
-    }
+function hentikanAnimasi() {
+    sedangBerputar = false;
+    btnPlay.innerText = "▶ Putar Otomatis";
+    btnPlay.classList.remove('playing');
+    cancelAnimationFrame(IDAnimasi);
+}
 
-    function hapusCatatan() {
-        if(confirm("Apakah Anda yakin ingin menghapus seluruh catatan?")) {
-            document.getElementById("memoText").value = "";
-            localStorage.removeItem("memoKalkulator");
-        }
-    }
+// Inisialisasi awal
+gambarGrafik(60);
+</script>
 
-    function notifikasiSukses() {
-        let status = document.getElementById("statusSaved");
-        status.style.display = "block";
-        setTimeout(() => { status.style.display = "none"; }, 2000);
-    }
-
-    function tambahRiwayat(teks) {
-        let list = document.getElementById("historyList");
-        if(list.innerText.includes("Belum ada riwayat")) {
-            list.innerHTML = "";
-        }
-        let li = document.createElement("li");
-        li.innerHTML = teks;
-        list.insertBefore(li, list.firstChild);
-    }
-
-    function siapkanTombolWA(idBtn, textPesan) {
-        let btn = document.getElementById(idBtn);
-        btn.href = "https://whatsapp.com" + encodeURIComponent(textPesan);
+</body>
+</html>
