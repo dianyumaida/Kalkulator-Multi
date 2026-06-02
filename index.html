@@ -1,134 +1,218 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dropdown Dinamis</title>
+    <title>Kalkulator Sudut Satu Input Sederhana</title>
     <style>
+        * {
+            box-sizing: border-box;
+            0;
+            padding: 0;
+            'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
         body {
-            font-family: Arial, sans-serif;
-            padding: 30px;
-            background-color: #f5f5f5;
-        }
-
-        /* Kotak Utama */
-        details {
-            width: 300px;
-            background-color: #ffffff;
-            border: 2px solid #333333;
-            border-radius: 8px;
-            overflow: hidden;
-            cursor: pointer;
-        }
-
-        /* Tampilan Header */
-        summary {
-            padding: 15px;
-            font-weight: bold;
-            background-color: #eaeaea;
-            list-style: none;
+            background-color: #e9ecef;
             display: flex;
-            justify-content: space-between;
-        }
-
-        /* Desain Baris Menu */
-        .baris-menu {
-            display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .calculator-box {
+            background: #22252d;
+            width: 380px;
+            padding: 25px;
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .header-banner {
+            border: 2px solid #373e4a;
+            padding: 10px;
+            border-radius: 12px;
+            text-align: center;
+            color: #4caf50;
+            font-weight: bold;
+            font-size: 15px;
+            text-transform: uppercase;
+            background: #292d36;
+            20px;
+        }
+        .sketsa-menu-vertical {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            20px;
+        }
+        
+        .menu-step-btn {
+            width: 100%;
+            background: #292d36;
+            color: #ffffff;
+            border: 1px solid #373e4a;
             padding: 12px 15px;
-            border-top: 1px solid #cccccc;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: bold;
+            text-align: left;
             cursor: pointer;
-            transition: background 0.2s;
+            display: flex;
+            justify-content: space-between;
         }
-
-        .baris-menu:hover {
-            background-color: #f9f9f9;
+        .menu-step-btn.active {
+            background: #ff9500;
+            color: #22252d;
+            border-color: #ff9500;
         }
-
-        /* Sub-Menu Menjorok ke Kanan */
-        .sub-menu {
-            padding-left: 45px;
-            background-color: #fafafa;
+        
+        /* Hanya Satu Display Utama */
+        .screen-display {
+            background: #292d36;
+            border-radius: 20px;
+            padding: 20px;
+            20px;
+            text-align: center;
         }
-
-        /* 1. SEMBUNYIKAN SEMUA TOMBOL RADIO BAWAAN */
-        .baris-menu input[type="radio"] {
-            display: none;
+        .screen-title {
+            color: #888;
+            font-size: 14px;
+            10px;
+            font-weight: bold;
         }
-
-        /* 2. KUNCI CSS: Buat bulatan radio tiruan yang hanya muncul saat aktif */
-        .baris-menu::after {
-            content: '';
-            width: 12px;
-            height: 12px;
-            border: 2px solid #666666;
-            border-radius: 50%;
-            display: inline-block;
-            visibility: hidden; /* Sembunyikan lingkaran secara default */
+        
+        /* Kolom Isian Tunggal */
+        .single-input {
+            width: 80%;
+            background: #22252d;
+            border: 2px solid #373e4a;
+            border-radius: 12px;
+            color: #ffffff;
+            font-size: 36px;
+            text-align: center;
+            font-weight: bold;
+            outline: none;
+            padding: 8px;
+            10px auto;
+            display: block;
         }
-
-        /* 3. Tampilkan lingkaran & beri warna hitam/biru saat kelas '.terpilih' aktif */
-        .baris-menu.terpilih::after {
-            visibility: visible;
-            background-color: #333333; /* Warna isi bulatan saat diklik */
-            border-color: #333333;
+        .single-input:focus {
+            border-color: #ff9500;
+        }
+        
+        /* Box Tempat Menampilkan Hasil */
+        .result-panel {
+            background: #1e2128;
+            padding: 15px;
+            border-radius: 12px;
+            15px;
+            font-size: 18px;
+            color: #ffffff;
+            font-weight: bold;
+            border-left: 5px solid #ff9500;
+        }
+        .color-highlight {
+            color: #4caf50;
+            font-size: 22px;
         }
     </style>
 </head>
 <body>
 
-    <details>
-        <summary>
-            <span>-- Pilih --</span>
-            <span>▼</span>
-        </summary>
+<div class="calculator-box">
+    <!-- Kotak Batas Atas Sesuai Sketsa Gambar -->
+    <div class="header-banner">Pilih Aturan Sudut</div>
+ 
+    <!-- Menu Vertikal Menurun Kebawah -->
+    <div class="sketsa-menu-vertical">
+        <button class="menu-step-btn active" id="btn-mode-180" onclick="gantiMode(180, 'Berpelurus')">
+            <span>A. Sudut Berpelurus</span> <span>180°</span>
+        </button>
+        <button class="menu-step-btn" id="btn-mode-90" onclick="gantiMode(90, 'Berkomplemen')">
+            <span>B. Sudut Berkomplemen</span> <span>90°</span>
+        </button>
+        <button class="menu-step-btn" id="btn-mode-360" onclick="gantiMode(360, 'Satu Putaran')">
+            <span>C. Sudut Satu Putaran</span> <span>360°</span>
+        </button>
+    </div>
+ 
+    <!-- Area Input Tunggal dan Hasil -->
+    <div class="screen-display">
+        <div id="rumusTeks" class="screen-title">Sudut A + Sudut B = 180°</div>
+        
+        <label style="color: #aaa; font-size: 13px; display:block;">Masukkan Sudut A (°):</label>
 
-        <!-- Setiap baris memiliki fungsi onclick untuk memicu JavaScript -->
-        <div class="baris-menu" onclick="pilihMenu(this)">
-            <span>a0</span>
-            <input type="radio" name="pilihan" value="a0">
+        
+        <!-- HANYA SATU KOLOM ISIAN UTAMA -->
+        <input type="number" id="inputUtama" value="60" min="0" max="180" class="single-input" oninput="hitungSudut()">
+ 
+        <div class="result-panel">
+            Sudut B = <span id="hasilSudutB" class="color-highlight">120</span>°
         </div>
+    </div>
+</div>
+ 
+<script>
+let batasMaksimal = 180;
+ 
+function gantiMode(targetBatas, namaMode) {
+    batasMaksimal = targetBatas;
+    
+    // Switch kelas active tombol vertikal
+    document.querySelectorAll('.menu-step-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    document.getElementById(`btn-mode-${targetBatas}`).classList.add('active');
+ 
+    // Update teks panduan rumus di atas input
+    const rumusTeks = document.getElementById('rumusTeks');
+    rumusTeks.innerText = `Sudut A + Sudut B = ${batasMaksimal}° (${namaMode})`;
+ 
+    // Update aturan limit angka di kolom input
+    const inputUtama = document.getElementById('inputUtama');
+    inputUtama.max = batasMaksimal;
+    
+    // Reset nilai default biar proporsional saat ganti mode
+    if(batasMaksimal === 90) inputUtama.value = 30;
+    else if(batasMaksimal === 180) inputUtama.value = 60;
+    else if(batasMaksimal === 360) inputUtama.value = 100;
+ 
+    hitungSudut();
+}
 
-        <div class="baris-menu sub-menu" onclick="pilihMenu(this)">
-            <span>a1</span>
-            <input type="radio" name="pilihan" value="a1">
-        </div>
 
-        <div class="baris-menu sub-menu" onclick="pilihMenu(this)">
-            <span>b1</span>
-            <input type="radio" name="pilihan" value="ab1">
-        </div>
-
-        <div class="baris-menu" onclick="pilihMenu(this)">
-            <span>b0</span>
-            <input type="radio" name="pilihan" value="b0">
-        </div>
-
-        <div class="baris-menu sub-menu" onclick="pilihMenu(this)">
-            <span>b1</span>
-            <input type="radio" name="pilihan" value="bb1">
-        </div>
-    </details>
-
-    <!-- JAVASCRIPT UNTUK MEMINDAHKAN RADIO -->
-    <script>
-        function pilihMenu(elemenAktif) {
-            // 1. Hapus kelas 'terpilih' dari semua baris menu agar radio sebelumnya hilang
-            document.querySelectorAll('.baris-menu').forEach(baris => {
-                baris.classList.remove('terpilih');
-            });
-
-            // 2. Tambahkan kelas 'terpilih' hanya pada baris yang baru saja diklik
-            elemenAktif.classList.add('terpilih');
-
-            // 3. Cari tag <input type="radio"> di dalam baris tersebut lalu centang (check) nilainya
-            const radioAsli = elemenAktif.querySelector('input[type="radio"]');
-            if (radioAsli) {
-                radioAsli.checked = true;
-            }
-        }
-    </script>
-
+// Logika Inti: Satu input diisi langsung keluar hasil sudut pasangannya
+function hitungSudut() {
+    const inputUtama = document.getElementById('inputUtama');
+    let sudutA = parseFloat(inputUtama.value);
+ 
+    // Proteksi validasi input kosong atau tidak valid
+    if (isNaN(sudutA) || inputUtama.value === "") {
+        document.getElementById('hasilSudutB').innerText = "-";
+        return;
+    }
+ 
+    // Batasi input agar tidak melewati aturan sudut terpilih
+    if (sudutA < 0) {
+        sudutA = 0;
+        inputUtama.value = 0;
+    }
+    if (sudutA > batasMaksimal) {
+        sudutA = batasMaksimal;
+        inputUtama.value = batasMaksimal;
+    }
+ 
+    // Rumus Matematika Utama
+    const sudutB = batasMaksimal - sudutA;
+ 
+    // Tampilkan langsung di panel hasil
+    document.getElementById('hasilSudutB').innerText = Math.round(sudutB);
+}
+ 
+// Inisialisasi hitungan pertama saat web dimuat
+hitungSudut();
+</script>
+ 
 </body>
 </html>
+    
