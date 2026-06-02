@@ -3,209 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalkulator Sudut Satu Input Sederhana</title>
+    <title>Kalkulator Pencarian Sudut Bercabang</title>
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Courier New', Courier, monospace; /* Gaya tulisan mirip ketikan/sketsa */
         }
         body {
-            background-color: #e9ecef;
+            background-color: #f4f4f9;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             padding: 20px;
         }
-        .calculator-box {
-            background: #22252d;
-            width: 380px;
-            padding: 25px;
-            border-radius: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-        .header-banner {
-            border: 2px solid #373e4a;
-            padding: 10px;
-            border-radius: 12px;
-            text-align: center;
-            color: #4caf50;
-            font-weight: bold;
-            font-size: 15px;
-            text-transform: uppercase;
-            background: #292d36;
-            margin-bottom: 20px;
-        }
-        .sketsa-menu-vertical {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-bottom: 20px;
-        }
-        .menu-step-btn {
+        .calculator-container {
+            background: #ffffff;
             width: 100%;
-            background: #292d36;
-            color: #ffffff;
-            border: 1px solid #373e4a;
-            padding: 12px 15px;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: bold;
-            text-align: left;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-        }
-        .menu-step-btn.active {
-            background: #ff9500;
-            color: #22252d;
-            border-color: #ff9500;
+            max-width: 400px;
+            padding: 30px;
+            border: 2px dashed #333; /* Desain garis putus-putus estetika sketsa */
+            border-radius: 15px;
         }
         
-        /* Hanya Satu Display Utama */
-        .screen-display {
-            background: #292d36;
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 20px;
+        /* Desain Kotak Input Persis seperti Sketsa Gambar Anda */
+        .input-box-wrapper {
             text-align: center;
+            margin-bottom: 25px;
         }
-        .screen-title {
-            color: #888;
-            font-size: 14px;
-            margin-bottom: 10px;
+        .sketch-input {
+            width: 70%;
+            padding: 12px;
+            font-size: 24px;
             font-weight: bold;
-        }
-        
-        /* Kolom Isian Tunggal */
-        .single-input {
-            width: 80%;
-            background: #22252d;
-            border: 2px solid #373e4a;
-            border-radius: 12px;
-            color: #ffffff;
-            font-size: 36px;
             text-align: center;
-            font-weight: bold;
+            border: 3px solid #000000; /* Kotak hitam tegas */
+            border-radius: 8px;
             outline: none;
-            padding: 8px;
-            margin: 10px auto;
-            display: block;
+            text-transform: uppercase;
         }
-        .single-input:focus {
-            border-color: #ff9500;
+        .sketch-input:focus {
+            background-color: #fffde7;
         }
         
-        /* Box Tempat Menampilkan Hasil */
-        .result-panel {
-            background: #1e2128;
-            padding: 15px;
-            border-radius: 12px;
-            margin-top: 15px;
-            font-size: 18px;
-            color: #ffffff;
+        /* Simbol Panah Kebawah Kebawah */
+        .arrow-down {
+            font-size: 24px;
             font-weight: bold;
-            border-left: 5px solid #ff9500;
+            margin: 5px 0 15px 25px;
+            text-align: left;
+            color: #333;
         }
-        .color-highlight {
-            color: #4caf50;
-            font-size: 22px;
+
+        /* Area Tampilan Hasil Bercabang */
+        .result-branch-area {
+            min-height: 150px;
+            padding-left: 10px;
+        }
+        .branch-group {
+            margin-bottom: 15px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #000;
+            line-height: 1.6;
+        }
+        .sub-branch {
+            padding-left: 40px; /* Membuat teks menjorok ke dalam seperti tangga */
+            color: #555;
+        }
+        
+        /* Pesan jika data tidak ditemukan */
+        .not-found {
+            color: #999;
+            font-style: italic;
+            font-size: 16px;
         }
     </style>
 </head>
 <body>
 
-<div class="calculator-box">
-    <!-- Kotak Batas Atas Sesuai Sketsa Gambar -->
-    <div class="header-banner">Pilih Aturan Sudut</div>
-
-    <!-- Menu Vertikal Menurun Kebawah -->
-    <div class="sketsa-menu-vertical">
-        <button class="menu-step-btn active" id="btn-mode-180" onclick="gantiMode(180, 'Berpelurus')">
-            <span>A. Sudut Berpelurus</span> <span>180°</span>
-        </button>
-        <button class="menu-step-btn" id="btn-mode-90" onclick="gantiMode(90, 'Berkomplemen')">
-            <span>B. Sudut Berkomplemen</span> <span>90°</span>
-        </button>
-        <button class="menu-step-btn" id="btn-mode-360" onclick="gantiMode(360, 'Satu Putaran')">
-            <span>C. Sudut Satu Putaran</span> <span>360°</span>
-        </button>
+<div class="calculator-container">
+    
+    <!-- Kotak Input Utama (Persis Kotak Atas di Gambar) -->
+    <div class="input-box-wrapper">
+        <input type="text" id="kotakIsi" placeholder="Isi Kode..." class="single-input sketch-input" oninput="prosesPencarianSudut()">
     </div>
 
-    <!-- Area Input Tunggal dan Hasil -->
-    <div class="screen-display">
-        <div id="rumusTeks" class="screen-title">Sudut A + Sudut B = 180°</div>
-        
-        <label style="color: #aaa; font-size: 13px; display:block;">Masukkan Sudut A (°):</label>
-        <!-- HANYA SATU KOLOM ISIAN UTAMA -->
-        <input type="number" id="inputUtama" value="60" min="0" max="180" class="single-input" oninput="hitungSudut()">
+    <!-- Simbol Panah Turun Sesuai Sketsa -->
+    <div class="arrow-down">⬇</div>
 
-        <div class="result-panel">
-            Sudut B = <span id="hasilSudutB" class="color-highlight">120</span>°
-        </div>
+    <!-- Tempat Output Hasil Struktur Tangga Kebawah -->
+    <div id="outputCabang" class="result-branch-area">
+        <!-- Hasil pencarian otomatis muncul di sini -->
     </div>
+
 </div>
 
 <script>
-let batasMaksimal = 180;
+// DATABASE DATA: Tempat menyimpan data kode dan hasil sudut yang mau dikeluarkan
+// Anda bisa menambah, mengubah angka, atau mengganti teks di dalam sini dengan bebas
+const databaseSudut = {
+    "131": [
+        { utama: "= Sudut 30", sub: ["= Sudut 31", "  32"] },
+        { utama: "= Sudut 60", sub: ["= Sudut 61", "  62"] }
+    ],
+    "132": [
+        { utama: "= Sudut 40", sub: ["= Sudut 41", "  42"] },
+        { utama: "= Sudut 80", sub: ["= Sudut 81", "  82"] }
+    ],
+    "abc": [
+        { utama: "= Sudut 10", sub: ["= Sudut 11"] },
+        { utama: "= Sudut 20", sub: ["= Sudut 21"] }
+    ]
+};
 
-function gantiMode(targetBatas, namaMode) {
-    batasMaksimal = targetBatas;
+function prosesPencarianSudut() {
+    const nilaiInput = document.getElementById('kotakIsi').value.trim().toLowerCase();
+    const areaOutput = document.getElementById('outputCabang');
     
-    // Switch kelas active tombol vertikal
-    document.querySelectorAll('.menu-step-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    document.getElementById(`btn-mode-${targetBatas}`).classList.add('active');
-
-    // Update teks panduan rumus di atas input
-    const rumusTeks = document.getElementById('rumusTeks');
-    rumusTeks.innerText = `Sudut A + Sudut B = ${batasMaksimal}° (${namaMode})`;
-
-    // Update aturan limit angka di kolom input
-    const inputUtama = document.getElementById('inputUtama');
-    inputUtama.max = batasMaksimal;
-    
-    // Reset nilai default biar proporsional saat ganti mode
-    if(batasMaksimal === 90) inputUtama.value = 30;
-    else if(batasMaksimal === 180) inputUtama.value = 60;
-    else if(batasMaksimal === 360) inputUtama.value = 100;
-
-    hitungSudut();
-}
-
-// Logika Inti: Satu input diisi langsung keluar hasil sudut pasangannya
-function hitungSudut() {
-    const inputUtama = document.getElementById('inputUtama');
-    let sudutA = parseFloat(inputUtama.value);
-
-    // Proteksi validasi input kosong atau tidak valid
-    if (isNaN(sudutA) || inputUtama.value === "") {
-        document.getElementById('hasilSudutB').innerText = "-";
+    // Jika kotak isian kosong
+    if (nilaiInput === "") {
+        areaOutput.innerHTML = '<div class="not-found">Ketik kode (misal: 131) untuk melihat hasil...</div>';
         return;
     }
 
-    // Batasi input agar tidak melewati aturan sudut terpilih
-    if (sudutA < 0) {
-        sudutA = 0;
-        inputUtama.value = 0;
-    }
-    if (sudutA > batasMaksimal) {
-        sudutA = batasMaksimal;
-        inputUtama.value = batasMaksimal;
-    }
+    // Ambil data dari database berdasarkan apa yang diketik
+    const dataDitemukan = databaseSudut[nilaiInput];
 
-    // Rumus Matematika Utama
-    const sudutB = batasMaksimal - sudutA;
+    if (dataDitemukan) {
+        let komponenHTML = "";
 
-    // Tampilkan langsung di panel hasil
-    document.getElementById('hasilSudutB').innerText = Math.round(sudutB);
+        // Looping untuk membuat struktur cabang bertangga kebawah
+        dataDitemukan.forEach(item => {
+            komponenHTML += `<div class="branch-group">${item.utama}</div>`;
+            
+            if (item.sub && item.sub.length > 0) {
+                item.sub.forEach(subItem => {
+                    komponenHTML += `<div class="branch-group sub-branch">${subItem}</div>`;
+                });
+            }
+        });
+
+        areaOutput.innerHTML = komponenHTML;
+    } else {
+        // Jika kode yang diketik belum didaftarkan di database
+        areaOutput.innerHTML = '<div class="not-found">= Data tidak ditemukan</div>';
+    }
 }
 
-// Inisialisasi hitungan pertama saat web dimuat
-hitungSudut();
+// Jalankan fungsi sekali saat pertama kali dibuka
+prosesPencarianSudut();
 </script>
 
 </body>
