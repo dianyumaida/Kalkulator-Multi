@@ -3,76 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dropdown Bercabang</title>
+    <title>Menu Dropdown Bertingkat</title>
     <style>
         body {
-            background-color: #4a4a4a;
             font-family: Arial, sans-serif;
-            padding: 20px;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            padding-top: 50px;
         }
 
-        /* Container Menu Utama */
-        .menu-container {
-            background-color: #1a2525; /* Warna gelap sesuai gambar */
-            border-radius: 16px;
+        /* Kotak Utama Menu */
+        .dropdown-box {
+            width: 320px;
+            background-color: #ffffff;
+            border: 2px solid #333333;
+            border-radius: 8px;
             overflow: hidden;
-            max-width: 400px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            box-shadow: 4px 4px 10px rgba(0,0,0,0.1);
         }
 
-        /* Item Menu */
-        .menu-item {
-            border-bottom: 1px solid #2d3d3d;
-        }
-
-        /* Tombol Pilihan Utama */
-        .menu-button {
-            width: 100%;
-            padding: 15px;
-            background: none;
-            border: none;
-            color: #ffffff;
-            font-size: 16px;
-            text-align: left;
-            cursor: pointer;
+        /* Struktur Baris Menu */
+        .menu-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-        }
-
-        .menu-button:hover {
-            background-color: #223131;
-        }
-
-        /* Lingkaran Radio Button Pasif */
-        .radio-circle {
-            width: 16px;
-            height: 16px;
-            border: 2px solid #a0a0a0;
-            border-radius: 50%;
-        }
-
-        /* Sub-Menu (Pilihan di Dalam Pilihan) */
-        .sub-menu {
-            display: none; /* Tersembunyi secara default */
-            background-color: #121a1a;
-            padding-left: 20px;
-        }
-
-        /* Item di dalam Sub-Menu */
-        .sub-item {
-            padding: 12px 15px;
-            color: #b0c0c0;
-            font-size: 14px;
-            border-bottom: 1px solid #1f2b2b;
+            padding: 15px;
+            border-bottom: 1px solid #cccccc;
             cursor: pointer;
+            user-select: none;
+            background-color: #ffffff;
         }
 
-        .sub-item:hover {
-            color: #00bcd4; /* Efek warna biru muda saat disentuh */
+        .menu-row:last-child {
+            border-bottom: none;
         }
 
-        /* Kelas Aktif untuk Menampilkan Sub-Menu */
+        /* Header "Pilih" */
+        .header-pilih {
+            background-color: #eaeaea;
+            font-weight: bold;
+            font-size: 18px;
+            cursor: default;
+        }
+
+        /* Teks Menu Utama (a0, b0) */
+        .menu-text {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        /* Komponen Lingkaran Radio Button */
+        .radio-dot {
+            width: 12px;
+            height: 12px;
+            border: 2px solid #333333;
+            border-radius: 50%;
+            display: inline-block;
+            transition: background-color 0.2s;
+        }
+
+        /* Efek ketika radio button aktif terpilih */
+        .active .radio-dot {
+            background-color: #00bcd4; /* Warna biru/hitam saat aktif */
+        }
+
+        /* Wadah untuk Sub-Menu (a1, b1) */
+        .sub-menu-container {
+            display: none; /* Tersembunyi sebelum menu utama diklik */
+            background-color: #fdfdfd;
+        }
+
+        /* Baris khusus untuk Sub-Menu (Menjorok ke kanan) */
+        .sub-menu-container .menu-row {
+            padding-left: 45px; /* Menggeser teks ke kanan sesuai sketsa */
+            background-color: #fafafa;
+            border-bottom: 1px dashed #dddddd;
+        }
+
+        /* Memunculkan sub-menu saat kelas 'show' ditambahkan */
         .show {
             display: block;
         }
@@ -80,69 +89,79 @@
 </head>
 <body>
 
-<div class="menu-container">
+<div class="dropdown-box">
     
-    <!-- PILIHAN 1 -->
-    <div class="menu-item">
-        <button class="menu-button" onclick="toggleSubMenu('sub-kotak')">
-            <span>Luas & Keliling Kotak (Persegi)</span>
-            <div class="radio-circle"></div>
-        </button>
-        <!-- Sub Pilihan -->
-        <div id="sub-kotak" class="sub-menu">
-            <div class="sub-item">» Hitung Luas Persegi</div>
-            <div class="sub-item">» Hitung Keliling Persegi</div>
-            <div class="sub-item">» Hitung Sisi (jika diketahui luas)</div>
+    <!-- Baris Judul Atas -->
+    <div class="menu-row header-pilih">
+        <span>Pilih</span>
+        <span class="radio-dot" style="opacity: 0.3;"></span>
+    </div>
+
+    <!-- MENU KELOMPOK A -->
+    <div class="main-menu">
+        <div class="menu-row" onclick="toggleMenu('group-a', this)">
+            <span class="menu-text">a0</span>
+            <span class="radio-dot"></span>
+        </div>
+        <!-- Sub-menu dari a0 -->
+        <div id="group-a" class="sub-menu-container">
+            <div class="menu-row sub-item" onclick="selectRadio(this)">
+                <span class="menu-text">a1</span>
+                <span class="radio-dot"></span>
+            </div>
+            <div class="menu-row sub-item" onclick="selectRadio(this)">
+                <span class="menu-text">b1</span>
+                <span class="radio-dot"></span>
+            </div>
         </div>
     </div>
 
-    <!-- PILIHAN 2 -->
-    <div class="menu-item">
-        <button class="menu-button" onclick="toggleSubMenu('sub-segitiga')">
-            <span>Luas Segitiga</span>
-            <div class="radio-circle"></div>
-        </button>
-        <!-- Sub Pilihan -->
-        <div id="sub-segitiga" class="sub-menu">
-            <div class="sub-item">» Segitiga Sama Sisi</div>
-            <div class="sub-item">» Segitiga Sama Kaki</div>
-            <div class="sub-item">» Segitiga Siku-Siku</div>
+    <!-- MENU KELOMPOK B -->
+    <div class="main-menu">
+        <div class="menu-row" onclick="toggleMenu('group-b', this)">
+            <span class="menu-text">b0</span>
+            <span class="radio-dot"></span>
         </div>
-    </div>
-
-    <!-- PILIHAN 3 -->
-    <div class="menu-item">
-        <button class="menu-button" onclick="toggleSubMenu('sub-bola')">
-            <span>Volume & Luas Permukaan Bola</span>
-            <div class="radio-circle"></div>
-        </button>
-        <!-- Sub Pilihan -->
-        <div id="sub-bola" class="sub-menu">
-            <div class="sub-item">» Hitung Volume Bola</div>
-            <div class="sub-item">» Hitung Luas Permukaan</div>
+        <!-- Sub-menu dari b0 -->
+        <div id="group-b" class="sub-menu-container">
+            <div class="menu-row sub-item" onclick="selectRadio(this)">
+                <span class="menu-text">b1</span>
+                <span class="radio-dot"></span>
+            </div>
         </div>
     </div>
 
 </div>
 
-<!-- JAVASCRIPT UNTUK LOGIKA KLIK -->
+<!-- JAVASCRIPT UNTUK AKSI BUKA/TUTUP DAN PILIH RADIO -->
 <script>
-    function toggleSubMenu(id) {
-        // Ambil elemen sub-menu berdasarkan ID
+    // Fungsi untuk membuka atau menutup sub-menu
+    function toggleMenu(id, element) {
         var subMenu = document.getElementById(id);
         
-        // Cek apakah sub-menu sedang terbuka atau tertutup
+        // Reset tanda aktif pada menu utama lain terlebih dahulu
+        document.querySelectorAll('.menu-row').forEach(row => row.classList.remove('active'));
+        
         if (subMenu.classList.contains('show')) {
             subMenu.classList.remove('show');
         } else {
-            // Tutup semua sub-menu terlebih dahulu agar rapi
-            var allSubMenus = document.querySelectorAll('.sub-menu');
-            allSubMenus.forEach(function(menu) {
-                menu.classList.remove('show');
-            });
-            // Buka sub-menu yang diklik
+            // Tutup semua sub-menu yang terbuka
+            document.querySelectorAll('.sub-menu-container').forEach(menu => menu.classList.remove('show'));
+            // Buka sub-menu yang dipilih
             subMenu.classList.add('show');
+            element.classList.add('active');
         }
+    }
+
+    // Fungsi saat sub-item paling dalam diklik
+    function selectRadio(element) {
+        // Hapus tanda aktif dari semua sub-item agar tidak ganda
+        document.querySelectorAll('.sub-item').forEach(item => item.classList.remove('active'));
+        // Aktifkan bulatan radio pada item yang diklik
+        element.classList.add('active');
+        
+        // Menghentikan efek klik agar tidak memicu menu induknya tutup
+        event.stopPropagation(); 
     }
 </script>
 
