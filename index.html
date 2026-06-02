@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalkulator Sudut Berpelurus Interaktif & Animasi</title>
+    <title>Kalkulator Sudut Berpelurus dengan Keypad</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -22,30 +22,68 @@
             text-align: center;
             width: 400px;
         }
-        h2 { color: #333; margin-top: 0; }
-        p { color: #666; font-size: 14px; margin-bottom: 20px; }
+        h2 { color: #333; margin-top: 0; margin-bottom: 5px; }
+        p { color: #666; font-size: 14px; margin-bottom: 15px; }
+        
         .input-group {
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             text-align: left;
         }
         label { display: block; font-weight: bold; margin-bottom: 5px; color: #444; }
+        
         input[type="range"] {
             width: 100%;
             margin-bottom: 10px;
         }
-        input[type="number"] {
+        input[type="text"] {
             width: 100%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
             box-sizing: border-box;
+            font-size: 18px;
+            text-align: center;
+            font-weight: bold;
         }
+
+        /* Desain Grid Keypad Kalkulator */
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 15px;
+        }
+        .btn-key {
+            padding: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            background-color: #f8f9fa;
+            border: 1px solid #dcdcdc;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.1s;
+        }
+        .btn-key:active {
+            background-color: #e2e6ea;
+        }
+        .btn-clear {
+            background-color: #ffebee;
+            color: #c62828;
+            border-color: #ffcdd2;
+        }
+        .btn-back {
+            background-color: #fff3e0;
+            color: #ef6c00;
+            border-color: #ffe0b2;
+        }
+
         canvas {
             background: #fafafa;
             border: 1px solid #ddd;
             border-radius: 8px;
             margin-top: 15px;
         }
+        
         .info-box {
             display: flex;
             justify-content: space-between;
@@ -55,7 +93,6 @@
         .text-a { color: #ff3b30; }
         .text-b { color: #007aff; }
         
-        /* Gaya Tombol Animasi */
         .btn-animasi {
             width: 100%;
             padding: 10px;
@@ -75,16 +112,13 @@
         .btn-animasi.playing {
             background-color: #ff3b30;
         }
-        .btn-animasi.playing:hover {
-            background-color: #d6332a;
-        }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h2>Sudut Berpelurus</h2>
-    <p>Geser nilai secara manual atau jalankan animasi otomatis.</p>
+    <p>Masukkan nilai menggunakan keypad atau geser slider.</p>
 
     <!-- Slider Interaktif -->
     <div class="input-group">
@@ -92,9 +126,28 @@
         <input type="range" id="sliderA" min="0" max="180" value="60" oninput="hentikanAnimasi(); updateSudut(this.value)">
     </div>
 
-    <!-- Input Angka -->
+    <!-- Layar Input Angka (Readonly agar keyboard asli HP tidak muncul) -->
     <div class="input-group">
-        <input type="number" id="angkaA" min="0" max="180" value="60" oninput="hentikanAnimasi(); updateSudut(this.value)">
+        <input type="text" id="angkaA" value="60" readonly>
+    </div>
+
+    <!-- Layout Tombol Keypad Ala Kalkulator -->
+    <div class="keypad">
+        <button class="btn-key" onclick="tekanKeypad('7')">7</button>
+        <button class="btn-key" onclick="tekanKeypad('8')">8</button>
+        <button class="btn-key" onclick="tekanKeypad('9')">9</button>
+        
+        <button class="btn-key" onclick="tekanKeypad('4')">4</button>
+        <button class="btn-key" onclick="tekanKeypad('5')">5</button>
+        <button class="btn-key" onclick="tekanKeypad('6')">6</button>
+        
+        <button class="btn-key" onclick="tekanKeypad('1')">1</button>
+        <button class="btn-key" onclick="tekanKeypad('2')">2</button>
+        <button class="btn-key" onclick="tekanKeypad('3')">3</button>
+        
+        <button class="btn-key btn-clear" onclick="tekanKeypad('C')">C</button>
+        <button class="btn-key" onclick="tekanKeypad('0')">0</button>
+        <button class="btn-key btn-back" onclick="tekanKeypad('⌫')">⌫</button>
     </div>
 
     <!-- Tombol Kontrol Animasi -->
@@ -114,10 +167,39 @@
 const canvas = document.getElementById('grafikSudut');
 const ctx = canvas.getContext('2d');
 const btnPlay = document.getElementById('btnPlay');
+const inputAngka = document.getElementById('angkaA');
 
 let IDAnimasi = null;
 let sedangBerputar = false;
-let arahMaju = true; // True berarti sudut bertambah, False berarti berkurang
+let arahMaju = true;
+
+// Logika Input dari Tombol Keypad
+function tekanKeypad(karakter) {
+    hentikanAnimasi();
+    let teksSekarang = inputAngka.value;
+
+    if (karakter === 'C') {
+        teksSekarang = '0';
+    } else if (karakter === '⌫') {
+        teksSekarang = teksSekarang.slice(0, -1);
+        if (teksSekarang === '' || teksSekarang === '-') teksSekarang = '0';
+    } else {
+        if (teksSekarang === '0') {
+            teksSekarang = karakter;
+        } else {
+            teksSekarang += karakter;
+        }
+    }
+
+    // Batasi nilai agar maksimal 180 derajat
+    let nilaiAngka = parseFloat(teksSekarang);
+    if (nilaiAngka > 180) {
+        teksSekarang = '180';
+    }
+
+    inputAngka.value = teksSekarang;
+    updateSudut(teksSekarang);
+}
 
 function updateSudut(nilai) {
     let sudutA = parseFloat(nilai);
@@ -126,7 +208,9 @@ function updateSudut(nilai) {
     if (sudutA > 180) sudutA = 180;
 
     document.getElementById('sliderA').value = sudutA;
-    document.getElementById('angkaA').value = sudutA;
+    if (document.activeElement !== inputAngka) {
+        inputAngka.value = Math.round(sudutA);
+    }
 
     const sudutB = 180 - sudutA;
 
@@ -143,7 +227,7 @@ function gambarGrafik(sudutA) {
     const centerY = canvas.height - 30;
     const radius = 120;
 
-    // 1. Garis Lurus Horizontal (180 derajat)
+    // Garis Lurus Horizontal
     ctx.beginPath();
     ctx.moveTo(centerX - radius - 20, centerY);
     ctx.lineTo(centerX + radius + 20, centerY);
@@ -155,7 +239,7 @@ function gambarGrafik(sudutA) {
     const targetX = centerX + radius * Math.cos(-radian);
     const targetY = centerY + radius * Math.sin(-radian);
 
-    // 2. Garis Pembagi Sudut
+    // Garis Pembagi Sudut
     ctx.beginPath();
     ctx.moveTo(centerX, centerY);
     ctx.lineTo(targetX, targetY);
@@ -163,7 +247,7 @@ function gambarGrafik(sudutA) {
     ctx.lineWidth = 4;
     ctx.stroke();
 
-    // 3. Busur Sudut A (Kanan)
+    // Busur Sudut A (Kanan)
     if (sudutA > 0) {
         ctx.beginPath();
         ctx.arc(centerX, centerY, 40, 0, -radian, true);
@@ -172,7 +256,7 @@ function gambarGrafik(sudutA) {
         ctx.stroke();
     }
 
-    // 4. Busur Sudut B (Kiri)
+    // Busur Sudut B (Kiri)
     if (sudutA < 180) {
         ctx.beginPath();
         ctx.arc(centerX, centerY, 50, -radian, -Math.PI, true);
@@ -181,20 +265,18 @@ function gambarGrafik(sudutA) {
         ctx.stroke();
     }
 
-    // 5. Titik Pusat
+    // Titik Pusat
     ctx.beginPath();
     ctx.arc(centerX, centerY, 6, 0, 2 * Math.PI);
     ctx.fillStyle = '#333';
     ctx.fill();
 }
 
-// FUNGSI ANIMASI BARU
 function animasiLoop() {
     let currentVal = parseFloat(document.getElementById('sliderA').value);
 
-    // Efek bolak-balik (ping-pong) saat mentok di 0 atau 180
     if (arahMaju) {
-        currentVal += 0.8; // Kecepatan putaran (bisa diubah)
+        currentVal += 0.8;
         if (currentVal >= 180) {
             currentVal = 180;
             arahMaju = false;
@@ -207,6 +289,7 @@ function animasiLoop() {
         }
     }
 
+    inputAngka.value = Math.round(currentVal);
     updateSudut(currentVal);
     IDAnimasi = requestAnimationFrame(animasiLoop);
 }
