@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalkulator Sudut dengan Menu Daftar Isi</title>
+    <title>Kalkulator Sudut Layout Sketsa</title>
     <style>
         * {
             box-sizing: border-box;
@@ -19,76 +19,32 @@
             min-height: 100vh;
             padding: 20px;
         }
+        
+        /* Kotak Utama Kalkulator */
         .calculator-box {
             background: #22252d;
             width: 390px;
-            padding: 20px;
+            padding: 25px;
             border-radius: 30px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
-        
-        /* Desain Menu Berbentuk Daftar Isi (Table of Contents) */
-        .toc-container {
-            background: #292d36;
-            padding: 12px;
-            border-radius: 20px;
-            margin-bottom: 15px;
-            border: 1px solid #373e4a;
-        }
-        .toc-title {
-            color: #888;
-            font-size: 11px;
+
+        /* Kotak Header Panjang (Sesuai elemen persegi panjang atas di foto) */
+        .header-banner {
+            border: 2px solid #373e4a;
+            padding: 10px;
+            border-radius: 12px;
+            text-align: center;
+            color: #4caf50;
             font-weight: bold;
+            font-size: 16px;
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-bottom: 8px;
-            padding-left: 5px;
-        }
-        .toc-list {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-        .toc-item {
-            width: 100%;
-            padding: 10px 14px;
-            background: #22252d;
-            color: #aaa;
-            border: 1px solid #373e4a;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 600;
-            text-align: left;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .toc-item:hover {
-            color: #ffffff;
-            border-color: #4caf50;
-        }
-        /* Style untuk Menu Daftar Isi yang Sedang Aktif */
-        .toc-item.active {
-            background: #273c3a;
-            color: #4caf50;
-            border-color: #4caf50;
-        }
-        .toc-item .badge {
-            font-size: 11px;
-            background: #373e4a;
-            padding: 2px 6px;
-            border-radius: 6px;
-            color: #fff;
-        }
-        .toc-item.active .badge {
-            background: #4caf50;
-            color: #22252d;
-            font-weight: bold;
+            background: #292d36;
+            margin-bottom: 20px;
         }
         
+        /* Layar Tampilan Angka Digital */
         .screen-display {
             background: #292d36;
             border-radius: 20px;
@@ -133,6 +89,43 @@
             display: block;
         }
 
+        /* STRUKTUR DAFTAR VERTIKAL TURUN (Sesuai Huruf Kebawah di Sketsa Foto) */
+        .sketsa-menu-vertical {
+            display: flex;
+            flex-direction: column; /* Menyusun item berjejer ke bawah */
+            gap: 8px;
+            margin-bottom: 20px;
+            padding: 5px;
+        }
+        .menu-step-btn {
+            width: 100%;
+            background: #292d36;
+            color: #ffffff;
+            border: 1px solid #373e4a;
+            padding: 12px 15px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: bold;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            justify-content: space-between;
+        }
+        .menu-step-btn:hover {
+            border-color: #ff9500;
+        }
+        /* Penanda ketika tombol menu tersebut aktif */
+        .menu-step-btn.active {
+            background: #ff9500;
+            color: #22252d;
+            border-color: #ff9500;
+        }
+        .menu-step-btn .deg-badge {
+            opacity: 0.8;
+        }
+
+        /* Grid Tombol Utama di Bagian Bawah */
         .keypad-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -179,56 +172,53 @@
 <body>
 
 <div class="calculator-box">
-    <!-- Menu Berbentuk Daftar Isi (Table of Contents) -->
-    <div class="toc-container">
-        <div class="toc-title">Daftar Isi Modul Sudut</div>
-        <ul class="toc-list">
-            <button class="toc-item active" id="toc-180" onclick="gantiModeSudut(180)">
-                <span>1. Sudut Berpelurus</span>
-                <span class="badge">180°</span>
-            </button>
-            <button class="toc-item" id="toc-90" onclick="gantiModeSudut(90)">
-                <span>2. Sudut Berkomplemen</span>
-                <span class="badge">90°</span>
-            </button>
-            <button class="toc-item" id="toc-360" onclick="gantiModeSudut(360)">
-                <span>3. Sudut Satu Putaran</span>
-                <span class="badge">360°</span>
-            </button>
-        </ul>
+    <!-- Kotak Batas Atas Sesuai Sketsa Gambar -->
+    <div class="header-banner">Modul Navigasi Geometri</div>
+
+    <!-- Menu Vertikal Menurun Kebawah Berurutan -->
+    <div class="sketsa-menu-vertical">
+        <button class="menu-step-btn active" id="btn-mode-180" onclick="gantiModeSudut(180)">
+            <span>A. Sudut Berpelurus</span> <span class="deg-badge">180°</span>
+        </button>
+        <button class="menu-step-btn" id="btn-mode-90" onclick="gantiModeSudut(90)">
+            <span>B. Sudut Berkomplemen</span> <span class="deg-badge">90°</span>
+        </button>
+        <button class="menu-step-btn" id="btn-mode-360" onclick="gantiModeSudut(360)">
+            <span>C. Sudut Satu Putaran</span> <span class="deg-badge">360°</span>
+        </button>
     </div>
 
+    <!-- Layar Utama Kalkulator -->
     <div class="screen-display">
         <div id="rumusTeks" class="screen-title">Sudut A + Sudut B = 180°</div>
         <input type="text" id="angkaA" value="60" readonly class="main-input">
     </div>
 
-    <canvas id="grafikSudut" width="350" height="160"></canvas>
+    <!-- Area Grafik Busur Lingkaran -->
+    <canvas id="grafikSudut" width="340" height="160"></canvas>
 
+    <!-- Slider Penggeser Jari-Jari -->
     <div class="slider-container">
         <input type="range" id="sliderA" min="0" max="180" value="60" oninput="hentikanAnimasi(); updateSudut(this.value)">
     </div>
 
+    <!-- Keypad Angka & Sinkronisasi Fungsi -->
     <div class="keypad-grid">
-        <!-- Baris 1 -->
         <button class="btn btn-clear" onclick="tekanKeypad('C')">C</button>
         <button class="btn btn-func" onclick="tekanKeypad('⌫')">⌫</button>
         <button id="btnShortcut1" class="btn btn-func" onclick="updateSudut(90)">90°</button>
         <button id="btnPlay" class="btn btn-operator" onclick="toggleAnimasi()">▶</button>
         
-        <!-- Baris 2 -->
         <button class="btn btn-number" onclick="tekanKeypad('7')">7</button>
         <button class="btn btn-number" onclick="tekanKeypad('8')">8</button>
         <button class="btn btn-number" onclick="tekanKeypad('9')">9</button>
         <button id="btnShortcut2" class="btn btn-func" onclick="updateSudut(180)">180°</button>
         
-        <!-- Baris 3 -->
         <button class="btn btn-number" onclick="tekanKeypad('4')">4</button>
         <button class="btn btn-number" onclick="tekanKeypad('5')">5</button>
         <button class="btn btn-number" onclick="tekanKeypad('6')">6</button>
         <button id="btnShortcut3" class="btn btn-func" onclick="updateSudut(45)">45°</button>
         
-        <!-- Baris 4 -->
         <button class="btn btn-number" onclick="tekanKeypad('1')">1</button>
         <button class="btn btn-number" onclick="tekanKeypad('2')">2</button>
         <button class="btn btn-number" onclick="tekanKeypad('3')">3</button>
@@ -253,18 +243,16 @@ let sedangBerputar = false;
 let arahMaju = true;
 let batasMaksimal = 180; 
 
-// Logika Baru Sinkronisasi dengan Menu Daftar Isi
 function gantiModeSudut(targetBatas) {
     hentikanAnimasi();
     batasMaksimal = targetBatas;
     
-    // Perbarui status 'active' pada tombol daftar isi
-    document.querySelectorAll('.toc-item').forEach(item => {
-        item.classList.remove('active');
+    // Perbarui penanda visual tombol aktif (pindah warna jingga)
+    document.querySelectorAll('.menu-step-btn').forEach(btn => {
+        btn.classList.remove('active');
     });
-    document.getElementById(`toc-${targetBatas}`).classList.add('active');
+    document.getElementById(`btn-mode-${targetBatas}`).classList.add('active');
 
-    // Sinkronisasi batas slider
     sliderA.max = batasMaksimal;
     
     const rumusTeks = document.getElementById('rumusTeks');
@@ -287,3 +275,4 @@ function gantiModeSudut(targetBatas) {
     } else if (batasMaksimal === 360) {
         rumusTeks.innerText = "Sudut A + Sudut B = 360°";
         btn1.innerText = "90°";  btn1.setAttribute('onclick', 'updateSudut(90)');
+        btn2.innerText = "180°"; btn2.setAttribute('onclick', 'updateSudut(180)');
