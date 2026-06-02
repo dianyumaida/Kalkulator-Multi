@@ -3,100 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalkulator Multi Fungsi</title>
+    <title>Dropdown Bercabang</title>
     <style>
-        body { Arial, sans-serif; 20px; background-color: #f4f4f9; color: #333; }
-        .container { max-width: 600px; auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        h1, h2 { text-align: center; color: #007bff; }
-        select, input, button { width: 100%; padding: 10px; 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        button { background-color: #007bff; color: white; border: none; cursor: pointer; font-size: 16px; }
-        button:hover { background-color: #0056b3; }
-        .section { display: none; 20px; padding: 15px; border-top: 2px solid #007bff; }
-        .result { font-weight: bold; 15px; padding: 10px; background: #e9f5ff; border-left: 5px solid #007bff; }
+        body {
+            background-color: #4a4a4a;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        /* Container Menu Utama */
+        .menu-container {
+            background-color: #1a2525; /* Warna gelap sesuai gambar */
+            border-radius: 16px;
+            overflow: hidden;
+            max-width: 400px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        /* Item Menu */
+        .menu-item {
+            border-bottom: 1px solid #2d3d3d;
+        }
+
+        /* Tombol Pilihan Utama */
+        .menu-button {
+            width: 100%;
+            padding: 15px;
+            background: none;
+            border: none;
+            color: #ffffff;
+            font-size: 16px;
+            text-align: left;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .menu-button:hover {
+            background-color: #223131;
+        }
+
+        /* Lingkaran Radio Button Pasif */
+        .radio-circle {
+            width: 16px;
+            height: 16px;
+            border: 2px solid #a0a0a0;
+            border-radius: 50%;
+        }
+
+        /* Sub-Menu (Pilihan di Dalam Pilihan) */
+        .sub-menu {
+            display: none; /* Tersembunyi secara default */
+            background-color: #121a1a;
+            padding-left: 20px;
+        }
+
+        /* Item di dalam Sub-Menu */
+        .sub-item {
+            padding: 12px 15px;
+            color: #b0c0c0;
+            font-size: 14px;
+            border-bottom: 1px solid #1f2b2b;
+            cursor: pointer;
+        }
+
+        .sub-item:hover {
+            color: #00bcd4; /* Efek warna biru muda saat disentuh */
+        }
+
+        /* Kelas Aktif untuk Menampilkan Sub-Menu */
+        .show {
+            display: block;
+        }
     </style>
 </head>
 <body>
- 
-<div class="container">
-    <h1>Kalkulator Multi Fungsi</h1>
-    <label for="menu">Pilih Menu Kalkulator:</label>
-    <select id="menu" onchange="tampilkanMenu()">
-        <option value="">-- Pilih --</option>
-        <option value="kotak">Luas & Keliling Kotak (Persegi)</option>
-        <option value="segitiga">Luas Segitiga</option>
-        <option value="bola">Volume & Luas Permukaan Bola</option>
-        <option value="tekanan">Konversi Beban (kg) ke Tekanan (PSI)</option>
-    </select>
- 
-    <!-- MENU KOTAK -->
-    <div id="sec-kotak" class="section">
-        <h2>Kalkulator Kotak</h2>
-        <input type="number" id="sisi" placeholder="Masukkan panjang sisi (cm)" min="0">
-        <button onclick="hitungKotak()">Hitung</button>
-        <div id="res-kotak" class="result" style="display:none;"></div>
-    </div>
+
+<div class="menu-container">
     
+    <!-- PILIHAN 1 -->
+    <div class="menu-item">
+        <button class="menu-button" onclick="toggleSubMenu('sub-kotak')">
+            <span>Luas & Keliling Kotak (Persegi)</span>
+            <div class="radio-circle"></div>
+        </button>
+        <!-- Sub Pilihan -->
+        <div id="sub-kotak" class="sub-menu">
+            <div class="sub-item">» Hitung Luas Persegi</div>
+            <div class="sub-item">» Hitung Keliling Persegi</div>
+            <div class="sub-item">» Hitung Sisi (jika diketahui luas)</div>
+        </div>
+    </div>
+
+    <!-- PILIHAN 2 -->
+    <div class="menu-item">
+        <button class="menu-button" onclick="toggleSubMenu('sub-segitiga')">
+            <span>Luas Segitiga</span>
+            <div class="radio-circle"></div>
+        </button>
+        <!-- Sub Pilihan -->
+        <div id="sub-segitiga" class="sub-menu">
+            <div class="sub-item">» Segitiga Sama Sisi</div>
+            <div class="sub-item">» Segitiga Sama Kaki</div>
+            <div class="sub-item">» Segitiga Siku-Siku</div>
+        </div>
+    </div>
+
+    <!-- PILIHAN 3 -->
+    <div class="menu-item">
+        <button class="menu-button" onclick="toggleSubMenu('sub-bola')">
+            <span>Volume & Luas Permukaan Bola</span>
+            <div class="radio-circle"></div>
+        </button>
+        <!-- Sub Pilihan -->
+        <div id="sub-bola" class="sub-menu">
+            <div class="sub-item">» Hitung Volume Bola</div>
+            <div class="sub-item">» Hitung Luas Permukaan</div>
+        </div>
+    </div>
+
+</div>
+
+<!-- JAVASCRIPT UNTUK LOGIKA KLIK -->
 <script>
-    function tampilkanMenu() {
-        const menu = document.getElementById('menu').value;
-        const sections = document.querySelectorAll('.section');
-        sections.forEach(sec => sec.style.display = 'none');
+    function toggleSubMenu(id) {
+        // Ambil elemen sub-menu berdasarkan ID
+        var subMenu = document.getElementById(id);
         
-        if (menu) {
-            document.getElementById(`sec-${menu}`).style.display = 'block';
+        // Cek apakah sub-menu sedang terbuka atau tertutup
+        if (subMenu.classList.contains('show')) {
+            subMenu.classList.remove('show');
+        } else {
+            // Tutup semua sub-menu terlebih dahulu agar rapi
+            var allSubMenus = document.querySelectorAll('.sub-menu');
+            allSubMenus.forEach(function(menu) {
+                menu.classList.remove('show');
+            });
+            // Buka sub-menu yang diklik
+            subMenu.classList.add('show');
         }
     }
- 
-    function hitungKotak() {
-        const s = parseFloat(document.getElementById('sisi').value);
-        if (isNaN(s) || s <= 0) return alert("Masukkan nilai yang valid");
-        
-        const luas = s * s;
-        const keliling = 4 * s;
-        
-        const res = document.getElementById('res-kotak');
-        res.innerHTML = `Luas: ${luas.toFixed(2)} cm² <br> Keliling: ${keliling.toFixed(2)} cm`;
-        res.style.display = 'block';
-    }
- 
-    function hitungSegitiga() {
-        const a = parseFloat(document.getElementById('alas').value);
-        const t = parseFloat(document.getElementById('tinggi').value);
-        if (isNaN(a) || isNaN(t) || a <= 0 || t <= 0) return alert("Masukkan nilai yang valid");
-        
-        const luas = 0.5 * a * t;
-        
-        const res = document.getElementById('res-segitiga');
-        res.innerHTML = `Luas Segitiga: ${luas.toFixed(2)} cm²`;
-        res.style.display = 'block';
-    }
- 
-    function hitungBola() {
-        const r = parseFloat(document.getElementById('jari').value);
-        if (isNaN(r) || r <= 0) return alert("Masukkan nilai yang valid");
-        
-        const volume = (4/3) * Math.PI * Math.pow(r, 3);
-        const luasPermukaan = 4 * Math.PI * Math.pow(r, 2);
-        
-        const res = document.getElementById('res-bola');
-        res.innerHTML = `Volume Bola: ${volume.toFixed(2)} cm³ <br> Luas Permukaan: ${luasPermukaan.toFixed(2)} cm²`;
-        res.style.display = 'block';
-    }
- 
-    function hitungTekanan() {
-        const kg = parseFloat(document.getElementById('beban').value);
-        const area = parseFloat(document.getElementById('luas').value);
-        if (isNaN(kg) || isNaN(area) || kg <= 0 || area <= 0) return alert("Masukkan nilai yang valid");
-        
-        // 1 kg/cm² sama dengan 14.2233 PSI
-        const kgPerCm2 = kg / area;
-        const psi = kgPerCm2 * 14.2233;
-        
-        const res = document.getElementById('res-tekanan');
-        res.innerHTML = `Tekanan Gaya: ${kgPerCm2.toFixed(4)} kg/cm² <br> <strong>Hasil Konversi: ${psi.toFixed(2)} PSI</strong>`;
-        res.style.display = 'block';
-    }
 </script>
- 
+
 </body>
 </html>
