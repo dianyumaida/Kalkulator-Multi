@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalkulator Sudut Multi-Mode Interaktif</title>
+    <title>Kalkulator Sudut dengan Menu Daftar Isi</title>
     <style>
         * {
             box-sizing: border-box;
@@ -21,27 +21,72 @@
         }
         .calculator-box {
             background: #22252d;
-            width: 380px;
+            width: 390px;
             padding: 20px;
             border-radius: 30px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
         
-        /* Desain Menu Pilihan Dropdown */
-        .menu-container {
-            margin-bottom: 15px;
-        }
-        .select-menu {
-            width: 100%;
-            padding: 12px;
+        /* Desain Menu Berbentuk Daftar Isi (Table of Contents) */
+        .toc-container {
             background: #292d36;
-            color: #4caf50;
-            border: 2px solid #373e4a;
-            border-radius: 14px;
-            font-size: 16px;
+            padding: 12px;
+            border-radius: 20px;
+            margin-bottom: 15px;
+            border: 1px solid #373e4a;
+        }
+        .toc-title {
+            color: #888;
+            font-size: 11px;
             font-weight: bold;
-            outline: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            padding-left: 5px;
+        }
+        .toc-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .toc-item {
+            width: 100%;
+            padding: 10px 14px;
+            background: #22252d;
+            color: #aaa;
+            border: 1px solid #373e4a;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            text-align: left;
             cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .toc-item:hover {
+            color: #ffffff;
+            border-color: #4caf50;
+        }
+        /* Style untuk Menu Daftar Isi yang Sedang Aktif */
+        .toc-item.active {
+            background: #273c3a;
+            color: #4caf50;
+            border-color: #4caf50;
+        }
+        .toc-item .badge {
+            font-size: 11px;
+            background: #373e4a;
+            padding: 2px 6px;
+            border-radius: 6px;
+            color: #fff;
+        }
+        .toc-item.active .badge {
+            background: #4caf50;
+            color: #22252d;
+            font-weight: bold;
         }
         
         .screen-display {
@@ -53,7 +98,7 @@
         }
         .screen-title {
             color: #888;
-            font-size: 14px;
+            font-size: 13px;
             text-align: left;
             margin-bottom: 5px;
             font-weight: bold;
@@ -134,13 +179,23 @@
 <body>
 
 <div class="calculator-box">
-    <!-- Menu Pilihan Jenis Sudut -->
-    <div class="menu-container">
-        <select id="menuSudut" class="select-menu" onchange="gantiModeSudut()">
-            <option value="180">Sudut Berpelurus (180°)</option>
-            <option value="90">Sudut Berkomplemen (90°)</option>
-            <option value="360">Sudut Satu Putaran (360°)</option>
-        </select>
+    <!-- Menu Berbentuk Daftar Isi (Table of Contents) -->
+    <div class="toc-container">
+        <div class="toc-title">Daftar Isi Modul Sudut</div>
+        <ul class="toc-list">
+            <button class="toc-item active" id="toc-180" onclick="gantiModeSudut(180)">
+                <span>1. Sudut Berpelurus</span>
+                <span class="badge">180°</span>
+            </button>
+            <button class="toc-item" id="toc-90" onclick="gantiModeSudut(90)">
+                <span>2. Sudut Berkomplemen</span>
+                <span class="badge">90°</span>
+            </button>
+            <button class="toc-item" id="toc-360" onclick="gantiModeSudut(360)">
+                <span>3. Sudut Satu Putaran</span>
+                <span class="badge">360°</span>
+            </button>
+        </ul>
     </div>
 
     <div class="screen-display">
@@ -148,7 +203,7 @@
         <input type="text" id="angkaA" value="60" readonly class="main-input">
     </div>
 
-    <canvas id="grafikSudut" width="340" height="160"></canvas>
+    <canvas id="grafikSudut" width="350" height="160"></canvas>
 
     <div class="slider-container">
         <input type="range" id="sliderA" min="0" max="180" value="60" oninput="hentikanAnimasi(); updateSudut(this.value)">
@@ -191,23 +246,27 @@ const canvas = document.getElementById('grafikSudut');
 const ctx = canvas.getContext('2d');
 const btnPlay = document.getElementById('btnPlay');
 const inputAngka = document.getElementById('angkaA');
-const menuSudut = document.getElementById('menuSudut');
 const sliderA = document.getElementById('sliderA');
 
 let IDAnimasi = null;
 let sedangBerputar = false;
 let arahMaju = true;
-let batasMaksimal = 180; // Default awal berpelurus
+let batasMaksimal = 180; 
 
-// Fungsi Sinkronisasi Saat Menu Dropdown Berubah
-function gantiModeSudut() {
+// Logika Baru Sinkronisasi dengan Menu Daftar Isi
+function gantiModeSudut(targetBatas) {
     hentikanAnimasi();
-    batasMaksimal = parseInt(menuSudut.value);
+    batasMaksimal = targetBatas;
     
-    // Perbarui attribute batas maksimal slider
+    // Perbarui status 'active' pada tombol daftar isi
+    document.querySelectorAll('.toc-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    document.getElementById(`toc-${targetBatas}`).classList.add('active');
+
+    // Sinkronisasi batas slider
     sliderA.max = batasMaksimal;
     
-    // Sesuaikan teks rumus & tombol pintas (shortcut) secara otomatis
     const rumusTeks = document.getElementById('rumusTeks');
     const btn1 = document.getElementById('btnShortcut1');
     const btn2 = document.getElementById('btnShortcut2');
@@ -218,7 +277,7 @@ function gantiModeSudut() {
         btn1.innerText = "90°";  btn1.setAttribute('onclick', 'updateSudut(90)');
         btn2.innerText = "180°"; btn2.setAttribute('onclick', 'updateSudut(180)');
         btn3.innerText = "45°";  btn3.setAttribute('onclick', 'updateSudut(45)');
-        updateSudut(60); // Reset ke nilai default mode ini
+        updateSudut(60); 
     } else if (batasMaksimal === 90) {
         rumusTeks.innerText = "Sudut A + Sudut B = 90°";
         btn1.innerText = "30°";  btn1.setAttribute('onclick', 'updateSudut(30)');
@@ -228,64 +287,3 @@ function gantiModeSudut() {
     } else if (batasMaksimal === 360) {
         rumusTeks.innerText = "Sudut A + Sudut B = 360°";
         btn1.innerText = "90°";  btn1.setAttribute('onclick', 'updateSudut(90)');
-        btn2.innerText = "180°"; btn2.setAttribute('onclick', 'updateSudut(180)');
-        btn3.innerText = "270°"; btn3.setAttribute('onclick', 'updateSudut(270)');
-        updateSudut(120);
-    }
-}
-
-function tekanKeypad(karakter) {
-    hentikanAnimasi();
-    let teksSekarang = inputAngka.value;
-
-    if (karakter === 'C') {
-        teksSekarang = '0';
-    } else if (karakter === '⌫') {
-        teksSekarang = teksSekarang.slice(0, -1);
-        if (teksSekarang === '') teksSekarang = '0';
-    } else {
-        if (teksSekarang === '0') {
-            teksSekarang = karakter;
-        } else {
-            teksSekarang += karakter;
-        }
-    }
-
-    if (parseFloat(teksSekarang) > batasMaksimal) {
-        teksSekarang = batasMaksimal.toString();
-    }
-
-    inputAngka.value = teksSekarang;
-    updateSudut(teksSekarang);
-}
-
-function updateSudut(nilai) {
-    let sudutA = parseFloat(nilai);
-    if (isNaN(sudutA)) sudutA = 0;
-    if (sudutA < 0) sudutA = 0;
-    if (sudutA > batasMaksimal) sudutA = batasMaksimal;
-
-    sliderA.value = sudutA;
-    inputAngka.value = Math.round(sudutA);
-
-    document.getElementById('valA').innerText = Math.round(sudutA);
-    document.getElementById('valB').innerText = Math.round(batasMaksimal - sudutA);
-
-    gambarGrafik(sudutA);
-}
-
-function gambarGrafik(sudutA) {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    const centerX = canvas.width / 2;
-    const centerY = batasMaksimal === 360 ? canvas.height / 2 : canvas.height - 20;
-    const radius = 65;
-
-    // Garis Penunjuk Sumbu Utama
-    ctx.beginPath();
-    ctx.moveTo(centerX - radius - 30, centerY);
-    ctx.lineTo(centerX + radius + 30, centerY);
-    ctx.strokeStyle = '#444';
-    ctx.lineWidth = 3;
-    ctx.stroke();
-
-    // Jika mode 360, gambar sumbu vertikal tambahan agar memperjelas lingkaran penuh
