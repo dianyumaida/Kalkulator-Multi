@@ -1,4 +1,117 @@
-parseFloat(document.getElementById('luas').value);
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Multi Fungsi</title>
+    <style>
+        body { Arial, sans-serif; 20px; background-color: #f4f4f9; color: #333; }
+        .container { max-width: 600px; auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        h1, h2 { text-align: center; color: #007bff; }
+        select, input, button { width: 100%; padding: 10px; 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { background-color: #007bff; color: white; border: none; cursor: pointer; font-size: 16px; }
+        button:hover { background-color: #0056b3; }
+        .section { display: none; 20px; padding: 15px; border-top: 2px solid #007bff; }
+        .result { font-weight: bold; 15px; padding: 10px; background: #e9f5ff; border-left: 5px solid #007bff; }
+    </style>
+</head>
+<body>
+        <div class="container">
+    <h1>Kalkulator Multi Fungsi</h1>
+    <label for="menu">Pilih Menu Kalkulator:</label>
+    <select id="menu" onchange="tampilkanMenu()">
+        <option value="">-- Pilih --</option>
+        <option value="kotak">Luas & Keliling Kotak (Persegi)</option>
+        <option value="segitiga">Luas Segitiga</option>
+        <option value="bola">Volume & Luas Permukaan Bola</option>
+        <option value="tekanan">Konversi Beban (kg) ke Tekanan (PSI)</option>
+    </select>
+    <!-- MENU KOTAK -->
+    <div id="sec-kotak" class="section">
+        <h2>Kalkulator Kotak</h2>
+        <input type="number" id="sisi" placeholder="Masukkan panjang sisi (cm)" min="0">
+        <button onclick="hitungKotak()">Hitung</button>
+        <div id="res-kotak" class="result" style="display:none;"></div>
+    </div>
+ 
+    <!-- MENU SEGITIGA -->
+    <div id="sec-segitiga" class="section">
+        <h2>Kalkulator Segitiga</h2>
+        <input type="number" id="alas" placeholder="Masukkan alas (cm)" min="0">
+        <input type="number" id="tinggi" placeholder="Masukkan tinggi (cm)" min="0">
+        <button onclick="hitungSegitiga()">Hitung</button>
+        <div id="res-segitiga" class="result" style="display:none;"></div>
+    </div>
+ 
+    <!-- MENU BOLA -->
+    <div id="sec-bola" class="section">
+        <h2>Kalkulator Bola</h2>
+        <input type="number" id="jari" placeholder="Masukkan jari-jari r (cm)" min="0">
+        <button onclick="hitungBola()">Hitung</button>
+        <div id="res-bola" class="result" style="display:none;"></div>
+    </div>
+                
+ 
+    <!-- MENU TEKANAN (KG KE PSI) -->
+    <div id="sec-tekanan" class="section">
+        <h2>Konversi Beban (kg) ke PSI</h2>
+        <p><small>*Catatan: Tekanan membutuhkan nilai luas area permukaan tekanan (cm²). Rumus: $(kg/cm^2) \times 14.2233$</small></p>
+        <input type="number" id="beban" placeholder="Masukkan Massa/Beban (kg)" min="0">
+        <input type="number" id="luas" placeholder="Masukkan Luas Area Tekan (cm²)" min="0">
+        <button onclick="hitungTekanan()">Hitung PSI</button>
+        <div id="res-tekanan" class="result" style="display:none;"></div>
+    </div>
+</div>
+ 
+<script>
+    function tampilkanMenu() {
+        const menu = document.getElementById('menu').value;
+        const sections = document.querySelectorAll('.section');
+        sections.forEach(sec => sec.style.display = 'none');
+        
+        if (menu) {
+            document.getElementById(`sec-${menu}`).style.display = 'block';
+        }
+    }
+ 
+    function hitungKotak() {
+        const s = parseFloat(document.getElementById('sisi').value);
+        if (isNaN(s) || s <= 0) return alert("Masukkan nilai yang valid");
+        
+        const luas = s * s;
+        const keliling = 4 * s;
+        
+        const res = document.getElementById('res-kotak');
+        res.innerHTML = `Luas: ${luas.toFixed(2)} cm² <br> Keliling: ${keliling.toFixed(2)} cm`;
+        res.style.display = 'block';
+    }
+ 
+    function hitungSegitiga() {
+        const a = parseFloat(document.getElementById('alas').value);
+        const t = parseFloat(document.getElementById('tinggi').value);
+        if (isNaN(a) || isNaN(t) || a <= 0 || t <= 0) return alert("Masukkan nilai yang valid");
+        
+        const luas = 0.5 * a * t;
+        
+        const res = document.getElementById('res-segitiga');
+        res.innerHTML = `Luas Segitiga: ${luas.toFixed(2)} cm²`;
+        res.style.display = 'block';
+            function hitungBola() {
+        const r = parseFloat(document.getElementById('jari').value);
+        if (isNaN(r) || r <= 0) return alert("Masukkan nilai yang valid");
+        
+        const volume = (4/3) * Math.PI * Math.pow(r, 3);
+        const luasPermukaan = 4 * Math.PI * Math.pow(r, 2);
+        
+        const res = document.getElementById('res-bola');
+        res.innerHTML = `Volume Bola: ${volume.toFixed(2)} cm³ <br> Luas Permukaan: ${luasPermukaan.toFixed(2)} cm²`;
+        res.style.display = 'block';
+    }
+ 
+    function hitungTekanan() {
+        const kg = parseFloat(document.getElementById('beban').value);
+        const area = parseFloat(document.getElementById('luas').value);
         if (isNaN(kg) || isNaN(area) || kg <= 0 || area <= 0) return alert("Masukkan nilai yang valid");
         
         // 1 kg/cm² sama dengan 14.2233 PSI
@@ -13,3 +126,4 @@ parseFloat(document.getElementById('luas').value);
  
 </body>
 </html>
+    
