@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalkulator Pencarian Sudut Bercabang</title>
+    <title>Kalkulator Sudut Pilihan Menu Klik</title>
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Courier New', Courier, monospace; /* Gaya tulisan mirip ketikan/sketsa */
+            font-family: 'Courier New', Courier, monospace; /* Gaya tulisan sketsa */
         }
         body {
             background-color: #f4f4f9;
@@ -24,35 +24,69 @@
             width: 100%;
             max-width: 400px;
             padding: 30px;
-            border: 2px dashed #333; /* Desain garis putus-putus estetika sketsa */
+            border: 2px dashed #333;
             border-radius: 15px;
+            position: relative;
         }
         
-        /* Desain Kotak Input Persis seperti Sketsa Gambar Anda */
+        /* Kotak Input Utama (Awalnya kosong) */
         .input-box-wrapper {
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 5px;
+            position: relative;
         }
         .sketch-input {
-            width: 70%;
+            width: 80%;
             padding: 12px;
-            font-size: 24px;
+            font-size: 22px;
             font-weight: bold;
             text-align: center;
-            border: 3px solid #000000; /* Kotak hitam tegas */
+            border: 3px solid #000000;
             border-radius: 8px;
             outline: none;
-            text-transform: uppercase;
-        }
-        .sketch-input:focus {
-            background-color: #fffde7;
+            cursor: pointer;
+            background-color: #ffffff;
         }
         
-        /* Simbol Panah Kebawah Kebawah */
+        /* Menu Pilihan yang Sembunyi & Keluar saat Kotak Diklik */
+        .dropdown-menu-list {
+            position: absolute;
+            top: 100%;
+            left: 10%;
+            width: 80%;
+            background: #ffffff;
+            border: 2px solid #000;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            list-style: none;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 10;
+            display: none; /* Awalnya tersembunyi */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+        .dropdown-item {
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            cursor: pointer;
+            border-bottom: 1px dashed #ccc;
+            color: #333;
+        }
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+        .dropdown-item:hover {
+            background-color: #fffde7;
+            color: #ff9500;
+        }
+        
+        /* Panah Kebawah */
         .arrow-down {
             font-size: 24px;
             font-weight: bold;
-            margin: 5px 0 15px 25px;
+            margin: 15px 0 15px 40px;
             text-align: left;
             color: #333;
         }
@@ -60,25 +94,18 @@
         /* Area Tampilan Hasil Bercabang */
         .result-branch-area {
             min-height: 150px;
-            padding-left: 10px;
+            padding-left: 20px;
         }
         .branch-group {
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             font-size: 20px;
             font-weight: bold;
             color: #000;
             line-height: 1.6;
         }
         .sub-branch {
-            padding-left: 40px; /* Membuat teks menjorok ke dalam seperti tangga */
+            padding-left: 40px; /* Membuat susunan tangga menjorok ke dalam */
             color: #555;
-        }
-        
-        /* Pesan jika data tidak ditemukan */
-        .not-found {
-            color: #999;
-            font-style: italic;
-            font-size: 16px;
         }
     </style>
 </head>
@@ -86,24 +113,28 @@
 
 <div class="calculator-container">
     
-    <!-- Kotak Input Utama (Persis Kotak Atas di Gambar) -->
+    <!-- Kotak Input Utama (Awal Tampilan Kotak Kosong) -->
     <div class="input-box-wrapper">
-        <input type="text" id="kotakIsi" placeholder="Isi Kode..." class="single-input sketch-input" oninput="prosesPencarianSudut()">
+        <input type="text" id="kotakIsi" placeholder="Klik di sini..." readonly class="sketch-input" onclick="toggleMenu(event)">
+        
+        <!-- Semua Menu yang Akan Keluar Saat Kotak Diklik -->
+        <ul id="menuList" class="dropdown-menu-list">
+            <li class="dropdown-item" onclick="pilihMenu('131')">KODE 131</li>
+            <li class="dropdown-item" onclick="pilihMenu('132')">KODE 132</li>
+            <li class="dropdown-item" onclick="pilihMenu('133')">KODE 133</li>
+        </ul>
     </div>
 
-    <!-- Simbol Panah Turun Sesuai Sketsa -->
+    <!-- Simbol Panah Kebawah -->
     <div class="arrow-down">⬇</div>
 
-    <!-- Tempat Output Hasil Struktur Tangga Kebawah -->
-    <div id="outputCabang" class="result-branch-area">
-        <!-- Hasil pencarian otomatis muncul di sini -->
-    </div>
+    <!-- Tempat Output Hasil Struktur Tangga -->
+    <div id="outputCabang" class="result-branch-area"></div>
 
 </div>
 
 <script>
-// DATABASE DATA: Tempat menyimpan data kode dan hasil sudut yang mau dikeluarkan
-// Anda bisa menambah, mengubah angka, atau mengganti teks di dalam sini dengan bebas
+// DATABASE DATA: Struktur data sudut bercabang untuk setiap pilihan menu
 const databaseSudut = {
     "131": [
         { utama: "= Sudut 30", sub: ["= Sudut 31", "  32"] },
@@ -113,48 +144,53 @@ const databaseSudut = {
         { utama: "= Sudut 40", sub: ["= Sudut 41", "  42"] },
         { utama: "= Sudut 80", sub: ["= Sudut 81", "  82"] }
     ],
-    "abc": [
-        { utama: "= Sudut 10", sub: ["= Sudut 11"] },
-        { utama: "= Sudut 20", sub: ["= Sudut 21"] }
+    "133": [
+        { utama: "= Sudut 45", sub: ["= Sudut 46", "  47"] },
+        { utama: "= Sudut 90", sub: ["= Sudut 91", "  92"] }
     ]
 };
 
-function prosesPencarianSudut() {
-    const nilaiInput = document.getElementById('kotakIsi').value.trim().toLowerCase();
-    const areaOutput = document.getElementById('outputCabang');
-    
-    // Jika kotak isian kosong
-    if (nilaiInput === "") {
-        areaOutput.innerHTML = '<div class="not-found">Ketik kode (misal: 131) untuk melihat hasil...</div>';
-        return;
+// Fungsi untuk membuka / menutup daftar menu saat kotak diklik
+function toggleMenu(event) {
+    event.stopPropagation();
+    const menu = document.getElementById('menuList');
+    if (menu.style.display === 'block') {
+        menu.style.display = 'none';
+    } else {
+        menu.style.display = 'block';
     }
+}
 
-    // Ambil data dari database berdasarkan apa yang diketik
-    const dataDitemukan = databaseSudut[nilaiInput];
+// Fungsi saat salah satu pilihan menu diklik
+function pilihMenu(kode) {
+    // Masukkan kode ke dalam kotak input utama
+    document.getElementById('kotakIsi').value = kode;
+    
+    // Sembunyikan kembali menunya
+    document.getElementById('menuList').style.display = 'none';
+    
+    // Tampilkan data bercabang ke bawah secara otomatis
+    const areaOutput = document.getElementById('outputCabang');
+    const dataDitemukan = databaseSudut[kode];
 
     if (dataDitemukan) {
         let komponenHTML = "";
-
-        // Looping untuk membuat struktur cabang bertangga kebawah
         dataDitemukan.forEach(item => {
             komponenHTML += `<div class="branch-group">${item.utama}</div>`;
-            
-            if (item.sub && item.sub.length > 0) {
+            if (item.sub) {
                 item.sub.forEach(subItem => {
                     komponenHTML += `<div class="branch-group sub-branch">${subItem}</div>`;
                 });
             }
         });
-
         areaOutput.innerHTML = komponenHTML;
-    } else {
-        // Jika kode yang diketik belum didaftarkan di database
-        areaOutput.innerHTML = '<div class="not-found">= Data tidak ditemukan</div>';
     }
 }
 
-// Jalankan fungsi sekali saat pertama kali dibuka
-prosesPencarianSudut();
+// Menutup menu otomatis jika pengguna mengklik area di luar kotak kalkulator
+document.addEventListener('click', function() {
+    document.getElementById('menuList').style.display = 'none';
+});
 </script>
 
 </body>
