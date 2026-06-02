@@ -1,16 +1,15 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalkulator Sudut Satu Input Sederhana</title>
+    <title>Kalkulator Sudut Multi-Mode Interaktif</title>
     <style>
         * {
             box-sizing: border-box;
-            0;
+            margin: 0;
             padding: 0;
-            'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         body {
             background-color: #e9ecef;
@@ -24,195 +23,178 @@
             background: #22252d;
             width: 380px;
             padding: 25px;
-            border-radius: 25px;
+            border-radius: 30px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            color: #fff;
         }
-        .header-banner {
-            border: 2px solid #373e4a;
-            padding: 10px;
-            border-radius: 12px;
+        h3 {
             text-align: center;
-            color: #4caf50;
-            font-weight: bold;
-            font-size: 15px;
-            text-transform: uppercase;
-            background: #292d36;
-            20px;
+            margin-bottom: 20px;
+            font-weight: 500;
+            color: #29d8b1;
         }
-        .sketsa-menu-vertical {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            20px;
+        .menu-container {
+            margin-bottom: 20px;
         }
-        
-        .menu-step-btn {
-            width: 100%;
-            background: #292d36;
-            color: #ffffff;
-            border: 1px solid #373e4a;
-            padding: 12px 15px;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: bold;
-            text-align: left;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-        }
-        .menu-step-btn.active {
-            background: #ff9500;
-            color: #22252d;
-            border-color: #ff9500;
-        }
-        
-        /* Hanya Satu Display Utama */
-        .screen-display {
-            background: #292d36;
-            border-radius: 20px;
-            padding: 20px;
-            20px;
-            text-align: center;
-        }
-        .screen-title {
-            color: #888;
-            font-size: 14px;
-            10px;
-            font-weight: bold;
-        }
-        
-        /* Kolom Isian Tunggal */
-        .single-input {
-            width: 80%;
-            background: #22252d;
-            border: 2px solid #373e4a;
-            border-radius: 12px;
-            color: #ffffff;
-            font-size: 36px;
-            text-align: center;
-            font-weight: bold;
-            outline: none;
-            padding: 8px;
-            10px auto;
+        label {
             display: block;
+            font-size: 12px;
+            color: #8b939c;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
-        .single-input:focus {
-            border-color: #ff9500;
+        .select-menu, .input-field {
+            width: 100%;
+            padding: 14px;
+            background: #2a2d36;
+            border: none;
+            border-radius: 15px;
+            color: #fff;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s;
         }
-        
-        /* Box Tempat Menampilkan Hasil */
-        .result-panel {
-            background: #1e2128;
+        .select-menu:focus, .input-field:focus {
+            background: #323642;
+            box-shadow: 0 0 0 2px #29d8b1;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        .btn-calc {
+            width: 100%;
             padding: 15px;
-            border-radius: 12px;
-            15px;
-            font-size: 18px;
-            color: #ffffff;
+            background: #29d8b1;
+            border: none;
+            border-radius: 15px;
+            color: #17181a;
+            font-size: 16px;
             font-weight: bold;
-            border-left: 5px solid #ff9500;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 20px;
         }
-        .color-highlight {
-            color: #4caf50;
-            font-size: 22px;
+        .btn-calc:hover {
+            background: #22be9b;
+            transform: translateY(-1px);
+        }
+        .btn-calc:active {
+            transform: translateY(1px);
+        }
+        .result-box {
+            background: #2a2d36;
+            padding: 20px;
+            border-radius: 20px;
+            border-left: 5px solid #29d8b1;
+        }
+        .result-title {
+            font-size: 12px;
+            color: #8b939c;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+        .result-value {
+            font-size: 20px;
+            font-weight: 600;
+            color: #fff;
+            word-break: break-all;
         }
     </style>
 </head>
 <body>
 
-<div class="calculator-box">
-    <!-- Kotak Batas Atas Sesuai Sketsa Gambar -->
-    <div class="header-banner">Pilih Aturan Sudut</div>
- 
-    <!-- Menu Vertikal Menurun Kebawah -->
-    <div class="sketsa-menu-vertical">
-        <button class="menu-step-btn active" id="btn-mode-180" onclick="gantiMode(180, 'Berpelurus')">
-            <span>A. Sudut Berpelurus</span> <span>180°</span>
-        </button>
-        <button class="menu-step-btn" id="btn-mode-90" onclick="gantiMode(90, 'Berkomplemen')">
-            <span>B. Sudut Berkomplemen</span> <span>90°</span>
-        </button>
-        <button class="menu-step-btn" id="btn-mode-360" onclick="gantiMode(360, 'Satu Putaran')">
-            <span>C. Sudut Satu Putaran</span> <span>360°</span>
-        </button>
-    </div>
- 
-    <!-- Area Input Tunggal dan Hasil -->
-    <div class="screen-display">
-        <div id="rumusTeks" class="screen-title">Sudut A + Sudut B = 180°</div>
+    <div class="calculator-box">
+        <h3>Kalkulator Sudut</h3>
         
-        <label style="color: #aaa; font-size: 13px; display:block;">Masukkan Sudut A (°):</label>
+        <!-- Pilihan Mode -->
+        <div class="menu-container">
+            <label for="calc-mode">Pilih Mode Konversi</label>
+            <select id="calc-mode" class="select-menu" onchange="updateLabels()">
+                <option value="deg-to-rad">Derajat (°) ke Radian (rad)</option>
+                <option value="rad-to-deg">Radian (rad) ke Derajat (°)</option>
+                <option value="deg-to-grad">Derajat (°) ke Gradian (grad)</option>
+            </select>
+        </div>
 
-        
-        <!-- HANYA SATU KOLOM ISIAN UTAMA -->
-        <input type="number" id="inputUtama" value="60" min="0" max="180" class="single-input" oninput="hitungSudut()">
- 
-        <div class="result-panel">
-            Sudut B = <span id="hasilSudutB" class="color-highlight">120</span>°
+        <!-- Input Nilai -->
+        <div class="input-group">
+            <label id="input-label" for="angle-input">Masukkan Nilai (Derajat)</label>
+            <input type="number" id="angle-input" class="input-field" placeholder="0" step="any">
+        </div>
+
+        <!-- Tombol Hitung -->
+        <button class="btn-calc" onclick="calculateAngle()">HITUNG</button>
+
+        <!-- Tampilan Hasil -->
+        <div class="result-box">
+            <div class="result-title">Hasil Analisis:</div>
+            <div id="result-display" class="result-value">0 rad</div>
         </div>
     </div>
-</div>
- 
-<script>
-let batasMaksimal = 180;
- 
-function gantiMode(targetBatas, namaMode) {
-    batasMaksimal = targetBatas;
-    
-    // Switch kelas active tombol vertikal
-    document.querySelectorAll('.menu-step-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    document.getElementById(`btn-mode-${targetBatas}`).classList.add('active');
- 
-    // Update teks panduan rumus di atas input
-    const rumusTeks = document.getElementById('rumusTeks');
-    rumusTeks.innerText = `Sudut A + Sudut B = ${batasMaksimal}° (${namaMode})`;
- 
-    // Update aturan limit angka di kolom input
-    const inputUtama = document.getElementById('inputUtama');
-    inputUtama.max = batasMaksimal;
-    
-    // Reset nilai default biar proporsional saat ganti mode
-    if(batasMaksimal === 90) inputUtama.value = 30;
-    else if(batasMaksimal === 180) inputUtama.value = 60;
-    else if(batasMaksimal === 360) inputUtama.value = 100;
- 
-    hitungSudut();
-}
 
+    <script>
+        // Fungsi untuk mengubah teks label secara dinamis sesuai mode yang dipilih
+        function updateLabels() {
+            const mode = document.getElementById('calc-mode').value;
+            const inputLabel = document.getElementById('input-label');
+            const resultDisplay = document.getElementById('result-display');
+            const inputField = document.getElementById('angle-input');
+            
+            // Reset input dan hasil saat ganti mode
+            inputField.value = '';
+            
+            if (mode === 'deg-to-rad') {
+                inputLabel.innerText = "Masukkan Nilai (Derajat)";
+                resultDisplay.innerText = "0 rad";
+            } else if (mode === 'rad-to-deg') {
+                inputLabel.innerText = "Masukkan Nilai (Radian)";
+                resultDisplay.innerText = "0°";
+            } else if (mode === 'deg-to-grad') {
+                inputLabel.innerText = "Masukkan Nilai (Derajat)";
+                resultDisplay.innerText = "0 grad";
+            }
+        }
 
-// Logika Inti: Satu input diisi langsung keluar hasil sudut pasangannya
-function hitungSudut() {
-    const inputUtama = document.getElementById('inputUtama');
-    let sudutA = parseFloat(inputUtama.value);
- 
-    // Proteksi validasi input kosong atau tidak valid
-    if (isNaN(sudutA) || inputUtama.value === "") {
-        document.getElementById('hasilSudutB').innerText = "-";
-        return;
-    }
- 
-    // Batasi input agar tidak melewati aturan sudut terpilih
-    if (sudutA < 0) {
-        sudutA = 0;
-        inputUtama.value = 0;
-    }
-    if (sudutA > batasMaksimal) {
-        sudutA = batasMaksimal;
-        inputUtama.value = batasMaksimal;
-    }
- 
-    // Rumus Matematika Utama
-    const sudutB = batasMaksimal - sudutA;
- 
-    // Tampilkan langsung di panel hasil
-    document.getElementById('hasilSudutB').innerText = Math.round(sudutB);
-}
- 
-// Inisialisasi hitungan pertama saat web dimuat
-hitungSudut();
-</script>
- 
+        // Fungsi utama logika perhitungan matematis
+        function calculateAngle() {
+            const mode = document.getElementById('calc-mode').value;
+            const inputValue = parseFloat(document.getElementById('angle-input').value);
+            const resultDisplay = document.getElementById('result-display');
+
+            // Validasi jika input kosong atau bukan angka
+            if (isNaN(inputValue)) {
+                resultDisplay.innerText = "Masukkan angka valid";
+                resultDisplay.style.color = "#ff6b6b";
+                return;
+            }
+            
+            resultDisplay.style.color = "#fff"; // Reset warna teks ke putih jika valid
+            let result = 0;
+
+            switch (mode) {
+                case 'deg-to-rad':
+                    // Rumus: Derajat * (π / 180)
+                    result = inputValue * (Math.PI / 180);
+                    resultDisplay.innerText = result.toFixed(5) + " rad";
+                    break;
+                    
+                case 'rad-to-deg':
+                    // Rumus: Radian * (180 / π)
+                    result = inputValue * (180 / Math.PI);
+                    resultDisplay.innerText = result.toFixed(4) + "°";
+                    break;
+                    
+                case 'deg-to-grad':
+                    // Rumus: Derajat * (400 / 360) atau Derajat * 1.1111...
+                    result = inputValue * (400 / 360);
+                    resultDisplay.innerText = result.toFixed(4) + " grad";
+                    break;
+                    
+                default:
+                    resultDisplay.innerText = "Mode tidak dikenal";
+            }
+        }
+    </script>
 </body>
 </html>
-    
