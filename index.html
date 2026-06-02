@@ -3,103 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menu Kotak Pilihan Simpel</title>
+    <title>Dropdown Simpel Tanpa JS</title>
     <style>
         body {
             font-family: Arial, sans-serif;
+            padding: 30px;
             background-color: #f5f5f5;
-            display: flex;
-            justify-content: center;
-            padding-top: 50px;
         }
 
-        /* SATU KOTAK UTUH (Sesuai Gambar) */
-        .kotak-pilih {
+        /* 1. KOTAK UTAMA (Bisa diklik untuk buka/tutup) */
+        details {
             width: 300px;
             background-color: #ffffff;
             border: 2px solid #333333;
-            border-radius: 12px;
+            border-radius: 8px;
             overflow: hidden;
+            cursor: pointer;
         }
 
-        /* Desain Baris Umum */
-        .baris {
+        /* 2. TAMPILAN AWAL SEBELUM DIKLIK */
+        summary {
+            padding: 15px;
+            font-weight: bold;
+            background-color: #eaeaea;
+            list-style: none; /* Menghilangkan panah bawaan browser */
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* 3. DESAIN BARIS PILIHAN DI DALAMNYA */
+        label {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px;
-            border-bottom: 1px solid #dddddd;
-            font-size: 16px;
+            padding: 12px 15px;
+            border-top: 1px solid #cccccc;
+            cursor: pointer;
         }
 
-        /* Menghilangkan garis di baris paling bawah */
-        .baris:last-child {
-            border-bottom: none;
+        label:hover {
+            background-color: #f9f9f9;
         }
 
-        /* Baris Judul Paling Atas */
-        .judul {
-            background-color: #f0f0f0;
-            font-weight: bold;
-        }
-
-        /* KUNCI: Menjorok ke dalam untuk sub-menu (a1, b1) */
+        /* 4. KUNCI: Membuat sub-menu (a1, b1) menjorok ke kanan */
         .sub-menu {
-            padding-left: 45px; /* Memberi jarak ke kanan */
+            padding-left: 45px;
             background-color: #fafafa;
-            color: #555555;
-        }
-
-        /* Lingkaran Bulat di Sebelah Kanan */
-        .bulatan-radio {
-            width: 14px;
-            height: 14px;
-            border: 2px solid #666666;
-            border-radius: 50%;
         }
     </style>
 </head>
 <body>
 
-    <!-- Semua komponen masuk dalam satu container ini -->
-    <div class="kotak-pilih">
-        
-        <!-- Judul Atas -->
-        <div class="baris judul">
-            <span>Pilih</span>
-            <div class="bulatan-radio" style="opacity: 0.2;"></div>
-        </div>
+    <!-- Tag 'details' otomatis mengatur buka-tutup saat diklik -->
+    <details>
+        <!-- Tampilan utama kotak sebelum diklik -->
+        <summary>
+            <span>-- Pilih --</span>
+            <span>▼</span>
+        </summary>
 
-        <!-- Menu Utama A -->
-        <div class="baris">
+        <!-- Daftar Pilihan Menu di Dalam Kotak (Menggunakan Input Radio Asli) -->
+        <label>
             <span>a0</span>
-            <div class="bulatan-radio"></div>
-        </div>
+            <input type="radio" name="pilihan_menu" value="a0">
+        </label>
 
-        <!-- Sub Menu dari A (Menjorok) -->
-        <div class="baris sub-menu">
+        <label class="sub-menu">
             <span>a1</span>
-            <div class="bulatan-radio"></div>
-        </div>
+            <input type="radio" name="pilihan_menu" value="a1">
+        </label>
 
-        <div class="baris sub-menu">
+        <label class="sub-menu">
             <span>b1</span>
-            <div class="bulatan-radio"></div>
-        </div>
+            <input type="radio" name="pilihan_menu" value="ab1">
+        </label>
 
-        <!-- Menu Utama B -->
-        <div class="baris">
+        <label>
             <span>b0</span>
-            <div class="bulatan-radio"></div>
-        </div>
+            <input type="radio" name="pilihan_menu" value="b0">
+        </label>
 
-        <!-- Sub Menu dari B (Menjorok) -->
-        <div class="baris sub-menu">
+        <label class="sub-menu">
             <span>b1</span>
-            <div class="bulatan-radio"></div>
-        </div>
-
-    </div>
+            <input type="radio" name="pilihan_menu" value="bb1">
+        </label>
+    </details>
 
 </body>
 </html>
