@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalkulator Rumus Eksklusif</title>
-    <!-- Library SheetJS untuk Ekspor Excel Otomatis -->
+    <title>Kalkulator Layar Jernih & Tombol Pilih</title>
+    <!-- Library SheetJS untuk Export Excel -->
     <script src="https://jsdelivr.net"></script>
     <style>
         * {
@@ -14,219 +14,269 @@
             font-family: Arial, sans-serif;
         }
         body {
-            background-color: #1e293b;
+            background-color: #f3f4f6;
             padding: 15px;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
         }
-        .kalkulator-box {
+        /* Pembungkus Kalkulator Sesuai Desain Gambar Sketsa */
+        .kalkulator-container {
             width: 100%;
-            max-width: 600px;
-            background: #0f172a;
+            max-width: 480px;
+            background: #ffffff;
+            border: 3px solid #000000;
+            border-radius: 12px;
             padding: 20px;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            border: 4px solid #334155;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
 
-        /* 1. LAYAR PERHITUNGAN (Eksklusif Menampilkan Rumus Gambar 1) */
-        .layar-display {
-            background: #020617;
-            border: 2px solid #1e293b;
-            border-radius: 10px;
+        /* 1. LAYER JERNIH (Tampilan Atas) */
+        .layer-jernih {
+            width: 100%;
+            min-height: 140px;
+            background: #fafafa;
+            border: 2px solid #000000;
+            border-radius: 8px;
             padding: 15px;
             margin-bottom: 20px;
-            min-height: 140px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
         }
-        .layar-rumus-visual {
+        .info-rumus-awal {
             font-family: 'Courier New', Courier, monospace;
-            font-size: 13px;
-            color: #64748b;
-            line-height: 1.4;
+            font-size: 11px;
+            color: #555555;
+            line-height: 1.3;
+            border-bottom: 1px dashed #cccccc;
+            padding-bottom: 6px;
+            margin-bottom: 6px;
             white-space: pre-wrap;
-            border-bottom: 1px dashed #1e293b;
-            padding-bottom: 8px;
-            margin-bottom: 8px;
         }
-        .layar-monitor-input {
-            font-size: 14px;
-            color: #e2e8f0;
-            margin-bottom: 5px;
-        }
-        .layar-angka-utama {
-            font-size: 36px;
+        .status-input-aktif {
+            font-size: 13px;
+            color: #0284c7;
             font-weight: bold;
-            color: #38bdf8;
+        }
+        .angka-display-utama {
+            font-size: 38px;
+            font-weight: bold;
+            color: #000000;
             text-align: right;
-            text-shadow: 0 0 10px rgba(56,189,248,0.3);
         }
 
-        /* 2. TOMBOL KEYBOARD LAYAR (Auto Besar & Responsif) */
-        .papan-keyboard {
+        /* 2. KEYBOARD DUA BARIS + DELET (Sesuai Sketsa Gambar) */
+        .papan-keyboard-sketsa {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
+            grid-template-columns: repeat(5, 1fr) 2fr; /* 5 kolom angka, 1 kolom lebar untuk DELET */
+            border: 2px solid #000000;
+            background: #000000;
+            gap: 2px; /* Membuat garis pembatas antar tombol hitam tebal */
+            margin-bottom: 15px;
+            overflow: hidden;
+            border-radius: 4px;
         }
-        .key {
-            padding: 18px;
+        .key-btn {
+            background: #ffffff;
+            border: none;
+            padding: 16px 0;
             font-size: 20px;
             font-weight: bold;
-            border: none;
-            border-radius: 8px;
+            color: #000000;
             cursor: pointer;
-            transition: all 0.1s ease;
+            outline: none;
             display: flex;
             justify-content: center;
             align-items: center;
         }
-        .key-angka { background: #334155; color: #f8fafc; }
-        .key-angka:active { background: #475569; }
-        .key-opsi { background: #1e293b; color: #38bdf8; font-size: 16px; }
-        .key-opsi:active { background: #334155; }
-        .key-panah { background: #0284c7; color: white; font-size: 14px; text-align: center; }
-        .key-panah:active { background: #0369a1; }
-        .key-hitung { background: #ea580c; color: white; grid-column: span 2; font-size: 22px; }
-        .key-hitung:active { background: #c2410c; }
+        .key-btn:active {
+            background: #e5e7eb;
+        }
+        /* Tombol DELET memanjang vertikal di sebelah kanan */
+        .key-delet {
+            grid-column: 6;
+            grid-row: 1 / span 2;
+            background: #ffffff;
+            color: #dc2626;
+            font-size: 16px;
+            letter-spacing: 1px;
+        }
+        .key-delet:active {
+            background: #fca5a5;
+        }
 
-        /* 3. KOTAK PILIH DATA (Tersembunyi, Muncul di Bawah Tombol Panah Saat Diklik) */
-        .panel-data-dropdown {
-            grid-column: span 4;
-            display: none; /* Sembunyi secara default */
-            background: #1e293b;
-            border-radius: 8px;
-            padding: 12px;
-            margin-top: -5px;
-            margin-bottom: 5px;
-            border: 2px solid #0284c7;
-            max-height: 250px;
-            overflow-y: auto;
-        }
-        
-        /* Struktur Tingkatan: Log/Sudut/Konstanta -> Data -> Nilai (Ada Radio) */
-        .tingkat-data {
-            margin-left: 15px;
-            margin-top: 5px;
-            border-left: 2px dashed #475569;
-            padding-left: 10px;
-        }
-        .tingkat-nilai {
-            margin-left: 15px;
-            margin-top: 4px;
+        /* 3. TOMBOL TUNGGAL "PILIH ▼" (Paling Bawah Keyboard) */
+        .tombol-pilih-dropdown {
+            width: 100%;
+            padding: 15px;
+            background: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 6px;
+            font-size: 18px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            color: #000000;
+            cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: #0f172a;
-            padding: 6px 10px;
+        }
+        .tombol-pilih-dropdown:hover {
+            background: #f9fafb;
+        }
+
+        /* 4. ISI KOTAK PILIHAN YANG SINKRON DAN TERSEMBUNYI */
+        .kotak-pilihan-isi {
+            display: none; /* Tersembunyi, terbuka jika PILIH diklik */
+            margin-top: 15px;
+            border: 2px dashed #000000;
+            border-radius: 6px;
+            padding: 12px;
+            background: #f9fafb;
+            max-height: 280px;
+            overflow-y: auto;
+        }
+        .judul-kategori {
+            font-weight: bold;
+            font-size: 14px;
+            color: #1f2937;
+            margin-top: 10px;
+            margin-bottom: 4px;
+            display: block;
+            border-bottom: 1px solid #000000;
+        }
+        .sub-data-wrapper {
+            margin-left: 12px;
+            margin-bottom: 8px;
+        }
+        .sub-data-title {
+            font-size: 13px;
+            color: #4b5563;
+            font-style: italic;
+        }
+        /* Baris khusus nilai yang hanya memiliki radio button */
+        .baris-nilai-radio {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            padding: 8px 12px;
+            margin-top: 3px;
             border-radius: 4px;
         }
-        .tingkat-nilai label { color: #cbd5e1; font-size: 13px; cursor: pointer; flex: 1; }
-        .tingkat-nilai input[type="radio"] { width: 16px; height: 16px; cursor: pointer; }
+        .baris-nilai-radio label {
+            font-size: 13px;
+            color: #000000;
+            cursor: pointer;
+            flex: 1;
+        }
+        .baris-nilai-radio input[type="radio"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
 
-        /* Style Khusus untuk Box Tabel Riwayat Excel di Dalam Dropdown */
-        .box-tabel-excel {
+        /* Tabel Rekaman Excel di dalam Kotak Pilihan */
+        .tabel-riwayat-excel {
             width: 100%;
             border-collapse: collapse;
-            background: #0f172a;
-            font-size: 12px;
+            margin-top: 8px;
+            font-size: 11px;
         }
-        .box-tabel-excel th, .box-tabel-excel td {
-            border: 1px solid #334155; padding: 6px; color: #cbd5e1; text-align: left;
+        .tabel-riwayat-excel th, .tabel-riwayat-excel td {
+            border: 1px solid #000000;
+            padding: 5px;
+            text-align: left;
         }
-        .btn-unduh-excel {
-            width: 100%; padding: 10px; background: #16a34a; color: white; border: none; border-radius: 4px; font-weight: bold; margin-top: 8px; cursor: pointer;
+        .btn-download-excel {
+            width: 100%;
+            padding: 8px;
+            background: #16a34a;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-top: 10px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
 
-<div class="kalkulator-box">
+<div class="kalkulator-container">
     
-    <!-- LAYAR UTAMA KALKULATOR -->
-    <div class="layar-display">
-        <!-- Visualisasi Rumus Gambar Pertama Posting Anda -->
-        <div class="layar-rumus-visual">Rumus: log₁₀[ ((a/b) * (c+π)) / (∑cⁿ + ((a/b)-(c/d))/g_₍a₎) ] + [ ((g/a)+1%) / B ] * (∬dA)ⁿ</div>
-        <div class="layar-monitor-input" id="monitorInput">Input Aktif: Variabel a = 10</div>
-        <div class="layar-angka-utama" id="layarMata">0.00</div>
+    <!-- 1. LAYER JERNIH DISPLAY -->
+    <div class="layer-jernih">
+        <!-- Visual Rumus Gambar 1 Tetap Sinkron Merayap -->
+        <div class="info-rumus-awal">Rumus: log₁₀[ ((a/b)*(c+π)) / (∑cⁿ + ((a/b)-(c/d))/g_₍a₎) ] + [ ((g/a)+1%)/B ] * (∬dA)ⁿ</div>
+        <div class="status-input-aktif" id="indikatorFokus">Edit Aktif: Variabel a = 10</div>
+        <div class="angka-display-utama" id="angkaLayar">0.00</div>
     </div>
 
-    <!-- PAPAN KEYBOARD LAYAR UTAMA -->
-    <div class="papan-keyboard">
+    <!-- 2. KEYBOARD BARIS SESUAI SKETSA GAMBAR ANDA -->
+    <div class="papan-keyboard-sketsa">
+        <!-- Baris 1 Angka -->
+        <button class="key-btn" onclick="inputTombolAngka('1')">1</button>
+        <button class="key-btn" onclick="inputTombolAngka('2')">2</button>
+        <button class="key-btn" onclick="inputTombolAngka('3')">3</button>
+        <button class="key-btn" onclick="inputTombolAngka('4')">4</button>
+        <button class="key-btn" onclick="inputTombolAngka('5')">5</button>
         
-        <!-- TOMBOL MENU NAVIGASI PANAH NAIK TURUN (Isi Semua Data & Riwayat Tersembunyi di Sini) -->
-        <button class="key key-panah" onclick="toggleDropdown('dropLog')">a0 (Log) <span id="panah_dropLog">▼</span></button>
-        <button class="key key-panah" onclick="toggleDropdown('dropKonstanta')">b0 (Konstanta) <span id="panah_dropKonstanta">▼</span></button>
-        <button class="key key-panah" onclick="toggleDropdown('dropSudut')">c0 (Sudut) <span id="panah_dropSudut">▼</span></button>
-        <button class="key key-panah" onclick="toggleDropdown('dropRiwayat')" style="background:#475569;">Riwayat <span id="panah_dropRiwayat">▼</span></button>
+        <!-- Tombol DELET di Sisi Kanan Vertikal Penuh -->
+        <button class="key-btn key-delet" onclick="aksiHapusTombol('DELET')">DELET</button>
+        
+        <!-- Baris 2 Angka -->
+        <button class="key-btn" onclick="inputTombolAngka('6')">6</button>
+        <button class="key-btn" onclick="inputTombolAngka('7')">7</button>
+        <button class="key-btn" onclick="inputTombolAngka('8')">8</button>
+        <button class="key-btn" onclick="inputTombolAngka('9')">9</button>
+        <button class="key-btn" onclick="inputTombolAngka('0')">0</button>
+    </div>
 
-        <!-- KOTAK DROPDOWN DATA LOG (MUNCUL JIKA PANAH DIKLIK TURUN) -->
-        <div id="dropLog" class="panel-data-dropdown">
-            <b style="color:#38bdf8; font-size:14px;">[+] Kategori Log</b>
-            <div class="tingkat-data">
-                <span style="color:#e2e8f0; font-size:13px;">▶ Data Log Primer</span>
-                <!-- Hanya Nilai di dalam Data yang memiliki Radio Button -->
-                <div class="tingkat-nilai">
-                    <label for="rad_l1">Nilai Log Master 1 (a=15, b=3)</label>
-                    <input type="radio" name="grup_radio" id="rad_l1" onclick="pilihRadioSistem('Log Master 1', 15, 3)">
-                </div>
-                <div class="tingkat-nilai">
-                    <label for="rad_l2">Nilai Log Master 2 (a=30, b=5)</label>
-                    <input type="radio" name="grup_radio" id="rad_l2" onclick="pilihRadioSistem('Log Master 2', 30, 5)">
-                </div>
+    <!-- 3. TOMBOL TUNGGAL PILIH (Paling Bawah) -->
+    <button class="tombol-pilih-dropdown" onclick="kendaliBukaTutupKotakPilih()">
+        <span>PILIH</span>
+        <span id="ikonPanahStatus">▼</span>
+    </button>
+
+    <!-- 4. ISI KOTAK PILIHAN (Sinkron Berstruktur Tingkat) -->
+    <div id="kotakPilihanData" class="kotak-pilihan-isi">
+        
+        <!-- Tingkat 1: LOG -->
+        <span class="judul-kategori">■ Kategori a0 (Log)</span>
+        <div class="sub-data-wrapper">
+            <span class="sub-data-title">▶ Data Log Aljabar</span>
+            <!-- Tingkat Akhir: Nilai yang memiliki Radio Button -->
+            <div class="baris-nilai-radio">
+                <label for="rad_log1">Nilai Log Primer (a: 15, b: 3)</label>
+                <input type="radio" name="grup_sketsa" id="rad_log1" onclick="jalankanRadioSinkron('Log Primer', 15, 3)">
+            </div>
+            <div class="baris-nilai-radio">
+                <label for="rad_log2">Nilai Log Sekunder (a: 30, b: 5)</label>
+                <input type="radio" name="grup_sketsa" id="rad_log2" onclick="jalankanRadioSinkron('Log Sekunder', 30, 5)">
             </div>
         </div>
 
-        <!-- KOTAK DROPDOWN DATA KONSTANTA -->
-        <div id="dropKonstanta" class="panel-data-dropdown">
-            <b style="color:#38bdf8; font-size:14px;">[+] Kategori Konstanta</b>
-            <div class="tingkat-data">
-                <span style="color:#e2e8f0; font-size:13px;">▶ Data Konstanta g(a)</span>
-                <div class="tingkat-nilai">
-                    <label for="rad_k1">Nilai Konstanta Statis (a=8, b=2)</label>
-                    <input type="radio" name="grup_radio" id="rad_k1" onclick="pilihRadioSistem('Konstanta Statis', 8, 2)">
-                </div>
+        <!-- Tingkat 2: KONSTANTA -->
+        <span class="judul-kategori">■ Kategori b0 (Konstanta)</span>
+        <div class="sub-data-wrapper">
+            <span class="sub-data-title">▶ Data Konstanta g(a)</span>
+            <div class="baris-nilai-radio">
+                <label for="rad_konst1">Nilai Konstanta Utama (a: 8, b: 2)</label>
+                <input type="radio" name="grup_sketsa" id="rad_konst1" onclick="jalankanRadioSinkron('Konstanta Utama', 8, 2)">
             </div>
         </div>
 
-        <!-- KOTAK DROPDOWN DATA SUDUT -->
-        <div id="dropSudut" class="panel-data-dropdown">
-            <b style="color:#38bdf8; font-size:14px;">[+] Kategori Sudut</b>
-            <div class="tingkat-data">
-                <span style="color:#e2e8f0; font-size:13px;">▶ Data Sudut Kemiringan</span>
-                <div class="tingkat-nilai">
-                    <label for="rad_s1">Nilai Sudut Lancip (a=12, b=4)</label>
-                    <input type="radio" name="grup_radio" id="rad_s1" onclick="pilihRadioSistem('Sudut Lancip', 12, 4)">
-                </div>
+        <!-- Tingkat 3: SUDUT -->
+        <span class="judul-kategori">■ Kategori c0 (Sudut)</span>
+        <div class="sub-data-wrapper">
+            <span class="sub-data-title">▶ Data Sudut Sisi</span>
+            <div class="baris-nilai-radio">
+                <label for="rad_sudut1">Nilai Sudut Derajat (a: 12, b: 4)</label>
+                <input type="radio" name="grup_sketsa" id="rad_sudut1" onclick="jalankanRadioSinkron('Sudut Derajat', 12, 4)">
             </div>
         </div>
-
-        <!-- KOTAK DROPDOWN DATA RIWAYAT EXCEL -->
-        <div id="dropRiwayat" class="panel-data-dropdown">
-            <b style="color:#ffc107; font-size:14px;">📜 Log Rekam Excel</b>
-            <div style="margin-top:8px; overflow-x:auto;">
-                <table class="box-tabel-excel">
-                    <thead><tr><th>Waktu</th><th>Aksi Radio</th><th>Hasil</th></tr></thead>
-                    <tbody id="isiTabelExcel">
-                        <tr><td colspan="3" style="text-align:center; color:#64748b;">Belum ada data</td></tr>
-                    </tbody>
-                </table>
-            </div>
-            <button class="btn-unduh-excel" onclick="prosesUnduhExcel()">📥 DOWNLOAD (.XLSX)</button>
-        </div>
-
-        <!-- TOMBOL STANDARD KEYBOARD NUMERIK (BARIS 1) -->
-        <button class="key key-angka" onclick="ketikKeyboard('7')">7</button>
-        <button class="key key-angka" onclick="ketikKeyboard('8')">8</button>
-        <button class="key key-angka" onclick="ketikKeyboard('9')">9</button>
-        <button class="key key-opsi" onclick="ketikKeyboard('C')" style="color:#ef4444;">C</button>
-
-        <!-- TOMBOL STANDARD KEYBOARD NUMERIK (BARIS 2) -->
-        <button class="key key-angka" onclick="ketikKeyboard('4')">4</button>
-        <button class="key key-angka" onclick="ketikKeyboard('5')">5</button>
-        <button class="key key-angka" onclick="ketikKeyboard('6')">6</button>
-        <button class="key key-opsi" onclick="ketikKeyboard('∞')">∞</button>
 
