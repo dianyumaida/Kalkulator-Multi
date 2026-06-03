@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalkulator Energi & Memo Pilih Data (Export Excel)</title>
-    <!-- Library SheetJS untuk Export Excel secara langsung -->
+    <title>Kalkulator Berstruktur Panel Pilih</title>
+    <!-- Library SheetJS untuk Export Excel -->
     <script src="https://jsdelivr.net"></script>
     <style>
         * {
@@ -15,7 +15,7 @@
         }
         body {
             background-color: #f4f4f9;
-            padding: 20px;
+            padding: 15px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -23,178 +23,219 @@
         }
         .container {
             width: 100%;
-            max-width: 1000px;
+            max-width: 900px;
             background: white;
-            padding: 25px;
+            padding: 20px;
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
-        h2, h3 {
+        h2 {
             text-align: center;
             color: #333;
-            margin-bottom: 5px;
+            margin-bottom: 20px;
         }
-        .sub-title {
-            text-align: center;
-            color: #777;
-            margin-bottom: 25px;
-            font-size: 14px;
+        
+        /* KOMPONEN KOTAK PILIH UTAMA */
+        .kotak-pilih {
+            border: 2px solid #333;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            background: #fff;
         }
-        .flex-layout {
+        .header-pilih {
+            background: #333;
+            color: #fff;
+            padding: 15px;
+            font-weight: bold;
             display: flex;
-            flex-direction: column;
-            gap: 25px;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
         }
-        @media(min-width: 768px) {
-            .flex-layout { flex-direction: row; }
-            .left-panel { flex: 2; }
-            .right-panel { flex: 1; }
+        .konten-pilih {
+            padding: 10px;
+            background: #fafafa;
         }
-        /* Grid Input Kalkulator */
-        .input-grid {
+        
+        /* STRUKTUR AKORDION / PANAH NAIK TURUN */
+        .grup-kategori {
+            margin-bottom: 8px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            background: #fff;
+        }
+        .tombol-kategori {
+            width: 100%;
+            padding: 12px;
+            background: #edf2f7;
+            border: none;
+            text-align: left;
+            font-weight: bold;
+            font-size: 15px;
+            color: #2d3748;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            outline: none;
+        }
+        .tombol-kategori:hover { background: #e2e8f0; }
+        .sub-menu {
+            display: none; /* Sembunyi secara default, terbuka saat diklik */
+            padding: 10px;
+            background: #fff;
+            border-top: 1px solid #cbd5e1;
+        }
+        
+        /* BARIS RADIO BUTTON */
+        .baris-data {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: #f8fafc;
+            margin-bottom: 5px;
+            border-radius: 4px;
+            border-left: 4px solid #cbd5e1;
+        }
+        .baris-data.terpilih { border-left-color: #ffc107; background: #fffdeb; }
+        .baris-data label { cursor: pointer; flex: 1; font-size: 14px; color: #334155; }
+        .baris-data input[type="radio"] { width: 18px; height: 18px; cursor: pointer; }
+
+        /* INPUT DAN TOMBOL AUTO BESAR */
+        .grid-kalkulator {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 12px;
             margin-bottom: 20px;
         }
-        .input-group {
+        .grup-input {
             display: flex;
             flex-direction: column;
-            background: #f8f9fa;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid #e2e8f0;
-        }
-        .input-group label {
-            font-weight: bold;
-            margin-bottom: 6px;
-            color: #4a5568;
-            font-size: 13px;
-        }
-        .input-wrapper { display: flex; gap: 4px; }
-        .input-wrapper input {
-            flex: 1; padding: 8px; border: 2px solid #cbd5e1; border-radius: 6px; font-size: 15px; outline: none;
-        }
-        .btn-inf {
-            padding: 0 10px; background-color: #e2e8f0; border: 2px solid #cbd5e1; border-radius: 6px; font-size: 18px; cursor: pointer;
-        }
-        .integral-group { background: #fff3cd !important; border-color: #ffeba2 !important; }
-        /* Panel Memo / Tabel Pilihan Radio Button Sesuai Gambar */
-        .memo-box {
-            background: #fff;
-            border: 2px solid #333;
-            border-radius: 8px;
-            padding: 15px;
-        }
-        .memo-title {
-            font-weight: bold;
-            border-bottom: 2px solid #333;
-            padding-bottom: 5px;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-        }
-        .tree-node { margin-bottom: 8px; }
-        .tree-child { margin-left: 25px; margin-top: 4px; }
-        .radio-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 6px 10px;
             background: #f1f5f9;
-            border-radius: 4px;
-            margin-bottom: 2px;
+            padding: 10px;
+            border-radius: 6px;
         }
-        .radio-row label { cursor: pointer; font-weight: bold; flex: 1; }
-        /* Tombol Aksi */
-        .btn-calc {
-            width: 100%; padding: 15px; background-color: #ffc107; color: #212529; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; margin-bottom: 15px;
-        }
-        .btn-excel {
-            width: 100%; padding: 12px; background-color: #217346; color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 10px;
-        }
-        /* Tabel Riwayat / Hasil Turun ke Bawah */
-        .history-section { margin-top: 25px; border-top: 2px dashed #cbd5e1; padding-top: 20px; }
-        .table-responsive { width: 100%; overflow-x: auto; margin-top: 10px; }
-        table { width: 100%; border-collapse: collapse; background: #fff; }
-        th, td { border: 1px solid #cbd5e1; padding: 10px; text-align: left; font-size: 14px; }
-        th { background-color: #f8f9fa; }
+        .grup-input label { font-size: 12px; font-weight: bold; margin-bottom: 4px; color: #475569; }
+        .wrapper-input { display: flex; gap: 4px; }
+        .wrapper-input input { flex: 1; padding: 10px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 15px; }
+        .btn-inf { padding: 0 12px; background: #cbd5e1; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        
+        /* TOMBOL AKSI */
+        .btn-hitung { width: 100%; padding: 15px; background: #ffc107; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; margin-bottom: 10px; }
+        .btn-excel { width: 100%; padding: 12px; background: #217346; color: white; border: none; border-radius: 6px; font-size: 14px; font-weight: bold; cursor: pointer; }
+        
+        /* TABEL RIWAYAT DI DALAM KOTAK */
+        .box-riwayat { max-height: 200px; overflow-y: auto; border: 1px solid #cbd5e1; border-radius: 4px; background: #fff; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 8px; border: 1px solid #e2e8f0; text-align: left; font-size: 13px; }
+        th { background: #f1f5f9; position: sticky; top: 0; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Kalkulator & Memo Pilihan Data</h2>
-    <div class="sub-title">Fitur: Pilihan Nilai Radio Button ➔ Masuk Riwayat ➔ Unduh Dokumen Excel</div>
+    <h2>Kalkulator Sistem Panel Navigasi</h2>
 
-    <div class="flex-layout">
-        <!-- PANEL KIRI: Form Input Variabel & Rumus -->
-        <div class="left-panel">
-            <div class="input-grid">
-                <div class="input-group"><label>Variabel a</label><div class="input-wrapper"><input type="text" id="v_a" value="10"><button class="btn-inf" onclick="setInfinity('v_a')">∞</button></div></div>
-                <div class="input-group"><label>Variabel b</label><div class="input-wrapper"><input type="text" id="v_b" value="2"><button class="btn-inf" onclick="setInfinity('v_b')">∞</button></div></div>
-                <div class="input-group"><label>Variabel c</label><div class="input-wrapper"><input type="text" id="v_c" value="5"><button class="btn-inf" onclick="setInfinity('v_c')">∞</button></div></div>
-                <div class="input-group"><label>Variabel d</label><div class="input-wrapper"><input type="text" id="v_d" value="4"><button class="btn-inf" onclick="setInfinity('v_d')">∞</button></div></div>
-                <div class="input-group"><label>Jumlah deret (&Sigma; c^n)</label><div class="input-wrapper"><input type="text" id="v_sum" value="25"><button class="btn-inf" onclick="setInfinity('v_sum')">∞</button></div></div>
-                <div class="input-group"><label>Konstanta g(a)</label><div class="input-wrapper"><input type="text" id="v_ga" value="1.5"><button class="btn-inf" onclick="setInfinity('v_ga')">∞</button></div></div>
-                <div class="input-group"><label>Variabel g</label><div class="input-wrapper"><input type="text" id="v_g" value="8"><button class="btn-inf" onclick="setInfinity('v_g')">∞</button></div></div>
-                <div class="input-group"><label>Variabel B</label><div class="input-wrapper"><input type="text" id="v_B" value="3"><button class="btn-inf" onclick="setInfinity('v_B')">∞</button></div></div>
-                
-                <div class="input-group integral-group"><label>Nilai Integral (∬ dA)</label><div class="input-wrapper"><input type="text" id="v_int" value="4"><button class="btn-inf" onclick="setInfinity('v_int')">∞</button></div></div>
-                <div class="input-group integral-group"><label>Pangkat Integral (n)</label><div class="input-wrapper"><input type="text" id="v_pow_n" value="2"><button class="btn-inf" onclick="setInfinity('v_pow_n')">∞</button></div></div>
-            </div>
-            <button class="btn-calc" onclick="hitungSertaSimpan('Kalkulasi Manual')">= HITUNG ENERGI TOTAL</button>
+    <!-- KOTAK PILIH UTAMA -->
+    <div class="kotak-pilih">
+        <div class="header-pilih" onclick="toggleElemen('kontenUtama')">
+            <span>PILIH PARAMETER DATA & RIWAYAT</span>
+            <span id="panahUtama">▼</span>
         </div>
-
-        <!-- PANEL KANAN: Susunan Memo Radio Button Sesuai Gambar Sketsa -->
-        <div class="right-panel">
-            <div class="memo-box">
-                <div class="memo-title"><span>Pilih Tabel / Memo</span> <span>▼</span></div>
-                
-                <!-- Kelompok A -->
-                <div class="tree-node">
-                    <div class="radio-row">
-                        <label for="r_a0">a0 (Sudut Log)</label>
-                        <input type="radio" name="memo_select" id="r_a0" value="a0 (Sudut Log)" onclick="pilihDariMemo('a0', 12, 4)">
+        
+        <div id="kontenUtama" class="konten-pilih">
+            
+            <!-- KATEGORI A0: LOG & DATA RUMUS -->
+            <div class="grup-kategori">
+                <button class="tombol-kategori" onclick="toggleElemen('subA0')">
+                    <span>a0 (Log / Data Rumus)</span>
+                    <span>▼</span>
+                </button>
+                <div id="subA0" class="sub-menu">
+                    <div class="baris-data">
+                        <label for="r_a1">a1 (Data Log Utama - Nilai: 15)</label>
+                        <input type="radio" name="opsi_data" id="r_a1" onclick="pilihData('a1', 15, 3, 'Log')">
                     </div>
-                    <div class="tree-child">
-                        <div class="radio-row"><label for="r_a1">a1</label><input type="radio" name="memo_select" id="r_a1" value="a1" onclick="pilihDariMemo('a1', 15, 5)"></div>
-                        <div class="radio-row"><label for="r_b1">b1</label><input type="radio" name="memo_select" id="r_b1" value="b1" onclick="pilihDariMemo('b1', 8, 3)"></div>
-                    </div>
-                </div>
-
-                <!-- Kelompok B -->
-                <div class="tree-node">
-                    <div class="radio-row">
-                        <label for="r_b0">b0 (Tabel Sudut)</label>
-                        <input type="radio" name="memo_select" id="r_b0" value="b0 (Tabel Sudut)" onclick="pilihDariMemo('b0', 20, 6)">
-                    </div>
-                    <div class="tree-child">
-                        <div class="radio-row"><label for="r_b1_sub">b1</label><input type="radio" name="memo_select" id="r_b1_sub" value="b1_sub" onclick="pilihDariMemo('b1_sub', 14, 2)"></div>
-                    </div>
-                </div>
-
-                <!-- Kelompok C -->
-                <div class="tree-node">
-                    <div class="radio-row"><label for="r_c0">c0</label><input type="radio" name="memo_select" id="r_c0" value="c0" onclick="pilihDariMemo('c0', 18, 7)"></div>
-                    <div class="tree-child">
-                        <div class="radio-row"><label for="r_c1">c1</label><input type="radio" name="memo_select" id="r_c1" value="c1" onclick="pilihDariMemo('c1', 22, 9)"></div>
+                    <div class="baris-data">
+                        <label for="r_a2">a2 (Data Log Sekunder - Nilai: 25)</label>
+                        <input type="radio" name="opsi_data" id="r_a2" onclick="pilihData('a2', 25, 5, 'Log')">
                     </div>
                 </div>
             </div>
-            <button class="btn-excel" onclick="unduhExcel()">📥 UNDUH DATA KE EXCEL</button>
+
+            <!-- KATEGORI B0: KONSTANTA -->
+            <div class="grup-kategori">
+                <button class="tombol-kategori" onclick="toggleElemen('subB0')">
+                    <span>b0 (Konstanta)</span>
+                    <span>▼</span>
+                </button>
+                <div id="subB0" class="sub-menu">
+                    <div class="baris-data">
+                        <label for="r_b1">b1 (Konstanta Statis - Nilai: 8)</label>
+                        <input type="radio" name="opsi_data" id="r_b1" onclick="pilihData('b1', 8, 2, 'Konstanta')">
+                    </div>
+                </div>
+            </div>
+
+            <!-- KATEGORI C0: SUDUT -->
+            <div class="grup-kategori">
+                <button class="tombol-kategori" onclick="toggleElemen('subC0')">
+                    <span>c0 (Sudut)</span>
+                    <span>▼</span>
+                </button>
+                <div id="subC0" class="sub-menu">
+                    <div class="baris-data">
+                        <label for="r_c1">c1 (Sudut Lancip - Nilai: 12)</label>
+                        <input type="radio" name="opsi_data" id="r_c1" onclick="pilihData('c1', 12, 4, 'Sudut')">
+                    </div>
+                </div>
+            </div>
+
+            <!-- KATEGORI RIWAYAT (Ada di dalam kotak pilih) -->
+            <div class="grup-kategori">
+                <button class="tombol-kategori" onclick="toggleElemen('subRiwayat')" style="background: #e2e8f0;">
+                    <span>📜 Riwayat Perhitungan Masuk Excel</span>
+                    <span>▼</span>
+                </button>
+                <div id="subRiwayat" class="sub-menu">
+                    <div class="box-riwayat">
+                        <table>
+                            <thead>
+                                <tr><th>Waktu</th><th>Nama</th><th>Hasil</th></tr>
+                            </thead>
+                            <tbody id="bodyTabelExcel">
+                                <tr><td colspan="3" style="text-align:center; color:#999;">Belum ada log data terpilih</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <button class="btn-excel" onclick="unduhBerkasExcel()">📥 UNDUH KE EXCEL (.XLSX)</button>
+                </div>
+            </div>
+
         </div>
     </div>
 
-    <!-- TABEL RIWAYAT: Setiap Hasil Baru Ditambahkan Turun Ke Bawah -->
-    <div class="history-section">
-        <h3>Riwayat Perhitungan (Berurutan ke Bawah)</h3>
-        <div class="table-responsive">
-            <table id="excelTable">
-                <thead>
-                    <tr>
-                        <th>Waktu</th>
-                        <th>Keterangan / Memo Terpilih</th>
-                        <th>Variabel a</th>
-                        <th>Variabel b</th>
-                        <th>Variabel c</th>
+    <!-- MONITOR PARAMETER INPUT (Lebar otomatis/Responsive) -->
+    <div class="grid-kalkulator">
+        <div class="grup-input"><label>Variabel a</label><div class="wrapper-input"><input type="text" id="v_a" value="10"><button class="btn-inf" onclick="setInf('v_a')">∞</button></div></div>
+        <div class="grup-input"><label>Variabel b</label><div class="wrapper-input"><input type="text" id="v_b" value="2"><button class="btn-inf" onclick="setInf('v_b')">∞</button></div></div>
+        <div class="grup-input"><label>Variabel c</label><div class="wrapper-input"><input type="text" id="v_c" value="5"><button class="btn-inf" onclick="setInf('v_c')">∞</button></div></div>
+        <div class="grup-input"><label>Variabel B</label><div class="wrapper-input"><input type="text" id="v_B" value="3"><button class="btn-inf" onclick="setInf('v_B')">∞</button></div></div>
+    </div>
+
+    <button class="btn-hitung" onclick="prosesKalkulasiManual()">= HITUNG ULANG FORMULA</button>
+</div>
+
+<script>
+    let memoriExcel = [];
+
+    // Fungsi buka tutup menu panah naik turun (Accordion)
+    function toggleElemen(idTarget) {
+        const elm = document.getElementById(idTarget);
+        const tombol = elm.previousElementSibling;
+        const ikonPanah = tombol ? tombol.querySelector('span:last-child') : document.getElementById('panahUtama');
+
+        if (elm.style.display === "block") {
+            elm.style.display = "none";
