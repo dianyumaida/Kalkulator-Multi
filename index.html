@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalkulator Aktif Desain Minimalis</title>
+    <title>Kalkulator Jernih Aktif</title>
     <!-- Library SheetJS untuk Ekspor Excel -->
     <script src="https://jsdelivr.net"></script>
     <style>
@@ -21,7 +21,6 @@
             align-items: center;
             min-height: 100vh;
         }
-        /* Pembungkus Luar Kalkulator Sesuai Gambar */
         .kalkulator-body {
             width: 100%;
             max-width: 440px;
@@ -32,7 +31,7 @@
             box-shadow: 0 15px 35px rgba(0,0,0,0.1);
         }
 
-        /* 1. LAYER ATAS: BERSIH & PERHITUNGAN DIMULAI DARI ATAS */
+        /* 1. DISPLAY UTAMA: BERSIH & PERHITUNGAN DIMULAI DARI ATAS */
         .layer-jernih {
             width: 100%;
             border: 2px solid #000000;
@@ -42,8 +41,8 @@
             background: #ffffff;
             display: flex;
             flex-direction: column;
-            justify-content: flex-start; /* Perhitungan dimulai dari atas */
-            min-height: 160px;
+            justify-content: flex-start;
+            min-height: 170px;
         }
         .teks-rumus-atas {
             font-family: monospace;
@@ -68,22 +67,24 @@
             font-weight: bold;
             color: #000000;
             text-align: right;
-            margin-top: auto; /* Angka hasil tetap di kanan bawah display */
+            margin-top: auto;
         }
 
-        /* 2. PAPAN KEYBOARD FISIK (PERSIS SEPERTI GAMBAR) */
+        /* 2. PAPAN KEYBOARD FISIK (DUA BARIS DENGAN SEKAT HITAM TEBAL) */
         .grid-keyboard {
             display: grid;
-            grid-template-columns: repeat(5, 1fr) 1.5fr; /* 5 kolom angka, 1 kolom lebar DELET */
+            grid-template-columns: repeat(5, 1fr) 1.5fr;
             border: 2px solid #000000;
             border-radius: 10px;
             overflow: hidden;
             margin-bottom: 20px;
+            background: #000000;
+            gap: 1px;
         }
         .tombol-key {
             background: #ffffff;
-            border: 1px solid #000000;
-            padding: 18px 0;
+            border: none;
+            padding: 20px 0;
             font-size: 22px;
             font-weight: bold;
             color: #000000;
@@ -96,14 +97,14 @@
         .tombol-key:active {
             background: #f3f4f6;
         }
-        /* Tombol DELET di kanan vertikal */
         .tombol-delet {
             grid-column: 6;
             grid-row: 1 / span 2;
             color: #dc2626;
             font-size: 15px;
             letter-spacing: 0.5px;
-            border-left: 2px solid #000000;
+            background: #ffffff;
+            height: 100%;
         }
         .tombol-delet:active {
             background: #fee2e2;
@@ -129,15 +130,15 @@
             background: #f9fafb;
         }
 
-        /* 4. KOTAK MENU DROPDOWN DATA (AKTIF SINKRON) */
+        /* 4. DROPDOWN MENU KOTAK DATA */
         .kotak-menu-isi {
-            display: none; /* Sembunyi, aktif saat PILIH diklik */
+            display: none;
             margin-top: 15px;
             border: 2px dashed #000000;
             border-radius: 10px;
             padding: 15px;
             background: #f9fafb;
-            max-height: 250px;
+            max-height: 280px;
             overflow-y: auto;
         }
         .kategori-title {
@@ -169,7 +170,6 @@
             height: 16px;
             cursor: pointer;
         }
-        /* Tabel Log Data */
         .tabel-excel {
             width: 100%;
             border-collapse: collapse;
@@ -192,33 +192,40 @@
             margin-top: 10px;
             cursor: pointer;
         }
+        .btn-ganti {
+            width: 100%;
+            padding: 11px;
+            background: #e2e8f0;
+            border: 1px solid #000000;
+            font-weight: bold;
+            margin-top: 10px;
+            cursor: pointer;
+            border-radius: 6px;
+        }
     </style>
 </head>
 <body>
 
 <div class="kalkulator-body">
     
-    <!-- 1. LAYER JERNIH DISPLAY (SINKRON GAMBAR) -->
+    <!-- 1. LAYER DISPLAY JERNIH -->
     <div class="layer-jernih">
         <div class="teks-rumus-atas">Rumus: log₁₀[ ((a/b)*(c+π)) / (∑cⁿ + ((a/b)-(c/d))/g_₍a₎) ] + [ ((g/a)+1%)/B ] * (∬dA)ⁿ</div>
         <div class="garis-pembatas"></div>
         <div class="indikator-edit-aktif" id="teksEditAktif">Edit Aktif: Variabel a = 10</div>
-        <div class="angka-display-utama" id="angkaLayar Utama">0.00</div>
+        <div class="angka-display-utama" id="angkaLayarUtama">0.00</div>
     </div>
 
-    <!-- 2. KEYBOARD DUA BARIS + DELET (SINKRON GAMBAR) -->
+    <!-- 2. KEYBOARD MATRIX SINKRON SCREENSHOT -->
     <div class="grid-keyboard">
-        <!-- Baris Atas -->
         <button class="tombol-key" onclick="tekanAngkaKeyboard('1')">1</button>
         <button class="tombol-key" onclick="tekanAngkaKeyboard('2')">2</button>
         <button class="tombol-key" onclick="tekanAngkaKeyboard('3')">3</button>
         <button class="tombol-key" onclick="tekanAngkaKeyboard('4')">4</button>
         <button class="tombol-key" onclick="tekanAngkaKeyboard('5')">5</button>
         
-        <!-- Tombol DELET Kanan Vertikal -->
         <button class="tombol-key tombol-delet" onclick="fungsiHapusDelet()">DELET</button>
         
-        <!-- Baris Bawah -->
         <button class="tombol-key" onclick="tekanAngkaKeyboard('6')">6</button>
         <button class="tombol-key" onclick="tekanAngkaKeyboard('7')">7</button>
         <button class="tombol-key" onclick="tekanAngkaKeyboard('8')">8</button>
@@ -226,13 +233,13 @@
         <button class="tombol-key" onclick="tekanAngkaKeyboard('0')">0</button>
     </div>
 
-    <!-- 3. TOMBOL UTAMA PILIH (SINKRON GAMBAR) -->
+    <!-- 3. TOMBOL UTAMA DROPDOWN PILIH -->
     <button class="tombol-pilih-dropdown" onclick="kontrolBukaTutupMenu()">
         <span>PILIH</span>
         <span id="statusPanahMenu">▼</span>
     </button>
 
-    <!-- 4. ISI KOTAK MENU DROPDOWN (YANG BERISI RADIO BUTTON & LOG EXCEL) -->
+    <!-- 4. KOTAK DATA PARAMETER & EXCEL -->
     <div id="kotakIsiMenu" class="kotak-menu-isi">
         <span class="kategori-title">■ Kategori a0 (Log)</span>
         <div class="baris-nilai-radio">
@@ -260,14 +267,12 @@
             </table>
         </div>
         <button class="btn-excel" onclick="downloadFileExcel()">📥 DOWNLOAD EXCEL (.XLSX)</button>
-        
-        <button onclick="pindahEditVariabel()" style="width:100%; padding:10px; background:#e2e8f0; border:1px solid #000; font-weight:bold; margin-top:10px; cursor:pointer; border-radius:6px;">➔ GANTI INPUT VARIABEL (A/B/C/D)</button>
+        <button class="btn-ganti" onclick="pindahEditVariabel()">➔ GANTI INPUT VARIABEL (A/B/C/D)</button>
     </div>
 
 </div>
 
 <script>
-    // Penampung Nilai Parameter Rumus Gambar Pertama
     let parameterRumus = { v_a: 10, v_b: 2, v_c: 5, v_d: 4, v_B: 3, v_int: 4, v_pow_n: 2 };
     let listKomponen = ['v_a', 'v_b', 'v_c', 'v_d', 'v_B', 'v_int', 'v_pow_n'];
     let indeksFokus = 0;
@@ -279,3 +284,6 @@
     }
 
     function updateTeksLayarAtas() {
+        let labelNama = listKomponen[indeksFokus].replace('v_', 'Variabel ');
+        if(listKomponen[indeksFokus] === 'v_int') labelNama = 'Integral (∬dA)';
+        if(listKomponen[indeksFokus] === 'v_pow_n') labelNama = 'Pangkat n';
