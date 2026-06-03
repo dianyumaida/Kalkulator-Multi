@@ -1,291 +1,200 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalkulator Sudut Multi-Mode Interaktif</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            0;
-            padding: 0;
-            'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        body {
-            background-color: #e9ecef;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-        .calculator-box {
-            background: #22252d;
-            width: 380px;
-            padding: 20px;
-            border-radius: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-        
-        /* Desain Menu Pilihan Dropdown */
-        .menu-container {
-            15px;
-        }
-        .select-menu {
-            width: 100%;
-            padding: 12px;
-            background: #292d36;
-            color: #4caf50;
-            border: 2px solid #373e4a;
-            border-radius: 14px;
-            font-size: 16px;
-            font-weight: bold;
-            outline: none;
-            cursor: pointer;
-        }
-        
-        .screen-display {
-            background: #292d36;
-            border-radius: 20px;
-            padding: 15px;
-            15px;
-            text-align: right;
-        }
-        .screen-title {
-            color: #888;
-            font-size: 14px;
-            text-align: left;
-            5px;
-            font-weight: bold;
-        }
-        .main-input {
-            width: 100%;
-            background: transparent;
-            border: none;
-            color: #ffffff;
-            font-size: 32px;
-            text-align: right;
-            font-weight: bold;
-            outline: none;
-        }
-        
-        .slider-container {
-            15px 0;
-        }
-        input[type="range"] {
-            width: 100%;
-            height: 6px;
-            background: #444;
-            border-radius: 5px;
-            outline: none;
-        }
- 
-        canvas {
-            background: #292d36;
-            border-radius: 20px;
-            15px;
-            width: 100%;
-            display: block;
-        }
- 
-        .keypad-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-        }
-        .btn {
-            border: none;
-            outline: none;
-            padding: 16px;
-            font-size: 18px;
-            font-weight: bold;
-            border-radius: 16px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        
-        .btn-number { background-color: #292d36; color: #ffffff; }
-        .btn-number:active { background-color: #373e4a; }
-        
-        .btn-func { background-color: #273c3a; color: #4caf50; }
-        .btn-func:active { background-color: #1e524d; }
- 
-        .btn-operator { background-color: #ff9500; color: white; }
-        .btn-operator:active { background-color: #e08400; }
- 
-        .btn-clear { background-color: #f44336; color: white; }
-        .btn-clear:active { background-color: #d32f2f; }
- 
-        .info-panel {
-            grid-column: span 4;
-            background: #292d36;
-            padding: 12px;
-            border-radius: 12px;
-            display: flex;
-            justify-content: space-between;
-            color: #aaa;
-            font-size: 14px;
-        }
-        .info-panel span strong { font-size: 16px; }
-        .color-a { color: #ff4757; }
-        .color-b { color: #2ed573; }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Energi & Memo Pilih Data (Export Excel)</title>
+    <!-- Library SheetJS untuk Export Excel secara langsung -->
+    <script src="https://jsdelivr.net"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background-color: #f4f4f9;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        h2, h3 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .sub-title {
+            text-align: center;
+            color: #777;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+        .flex-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        @media(min-width: 768px) {
+            .flex-layout { flex-direction: row; }
+            .left-panel { flex: 2; }
+            .right-panel { flex: 1; }
+        }
+        /* Grid Input Kalkulator */
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+        .input-group label {
+            font-weight: bold;
+            margin-bottom: 6px;
+            color: #4a5568;
+            font-size: 13px;
+        }
+        .input-wrapper { display: flex; gap: 4px; }
+        .input-wrapper input {
+            flex: 1; padding: 8px; border: 2px solid #cbd5e1; border-radius: 6px; font-size: 15px; outline: none;
+        }
+        .btn-inf {
+            padding: 0 10px; background-color: #e2e8f0; border: 2px solid #cbd5e1; border-radius: 6px; font-size: 18px; cursor: pointer;
+        }
+        .integral-group { background: #fff3cd !important; border-color: #ffeba2 !important; }
+        /* Panel Memo / Tabel Pilihan Radio Button Sesuai Gambar */
+        .memo-box {
+            background: #fff;
+            border: 2px solid #333;
+            border-radius: 8px;
+            padding: 15px;
+        }
+        .memo-title {
+            font-weight: bold;
+            border-bottom: 2px solid #333;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .tree-node { margin-bottom: 8px; }
+        .tree-child { margin-left: 25px; margin-top: 4px; }
+        .radio-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 10px;
+            background: #f1f5f9;
+            border-radius: 4px;
+            margin-bottom: 2px;
+        }
+        .radio-row label { cursor: pointer; font-weight: bold; flex: 1; }
+        /* Tombol Aksi */
+        .btn-calc {
+            width: 100%; padding: 15px; background-color: #ffc107; color: #212529; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; margin-bottom: 15px;
+        }
+        .btn-excel {
+            width: 100%; padding: 12px; background-color: #217346; color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 10px;
+        }
+        /* Tabel Riwayat / Hasil Turun ke Bawah */
+        .history-section { margin-top: 25px; border-top: 2px dashed #cbd5e1; padding-top: 20px; }
+        .table-responsive { width: 100%; overflow-x: auto; margin-top: 10px; }
+        table { width: 100%; border-collapse: collapse; background: #fff; }
+        th, td { border: 1px solid #cbd5e1; padding: 10px; text-align: left; font-size: 14px; }
+        th { background-color: #f8f9fa; }
+    </style>
 </head>
 <body>
- 
-<div class="calculator-box">
-    <!-- Menu Pilihan Jenis Sudut -->
-    <div class="menu-container">
-        <select id="menuSudut" class="select-menu" onchange="gantiModeSudut()">
-            <option value="180">Sudut Berpelurus (180°)</option>
-            <option value="90">Sudut Berkomplemen (90°)</option>
-            <option value="360">Sudut Satu Putaran (360°)</option>
-        </select>
-    </div>
- 
-    <div class="screen-display">
-        <div id="rumusTeks" class="screen-title">Sudut A + Sudut B = 180°</div>
-        <input type="text" id="angkaA" value="60" readonly class="main-input">
-    </div>
- 
-    <canvas id="grafikSudut" width="340" height="160"></canvas>
- 
-    <div class="slider-container">
-        <input type="range" id="sliderA" min="0" max="180" value="60" oninput="hentikanAnimasi(); updateSudut(this.value)">
-    </div>
- 
-    <div class="keypad-grid">
-        <!-- Baris 1 -->
-        <button class="btn btn-clear" onclick="tekanKeypad('C')">C</button>
-        <button class="btn btn-func" onclick="tekanKeypad('⌫')">⌫</button>
-        <button id="btnShortcut1" class="btn btn-func" onclick="updateSudut(90)">90°</button>
-        <button id="btnPlay" class="btn btn-operator" onclick="toggleAnimasi()">▶</button>
-        
-        <!-- Baris 2 -->
-        <button class="btn btn-number" onclick="tekanKeypad('7')">7</button>
-        <button class="btn btn-number" onclick="tekanKeypad('8')">8</button>
-        <button class="btn btn-number" onclick="tekanKeypad('9')">9</button>
-        <button id="btnShortcut2" class="btn btn-func" onclick="updateSudut(180)">180°</button>
-        
-        <!-- Baris 3 -->
-        <button class="btn btn-number" onclick="tekanKeypad('4')">4</button>
-        <button class="btn btn-number" onclick="tekanKeypad('5')">5</button>
-        <button class="btn btn-number" onclick="tekanKeypad('6')">6</button>
-        <button id="btnShortcut3" class="btn btn-func" onclick="updateSudut(45)">45°</button>
-        
-        <!-- Baris 4 -->
-        <button class="btn btn-number" onclick="tekanKeypad('1')">1</button>
-        <button class="btn btn-number" onclick="tekanKeypad('2')">2</button>
-        <button class="btn btn-number" onclick="tekanKeypad('3')">3</button>
-        <button class="btn btn-number" onclick="tekanKeypad('0')">0</button>
- 
-        <div class="info-panel">
-            <span class="color-a">Sudut A: <strong id="valA">60</strong>°</span>
-            <span class="color-b">Sudut B: <strong id="valB">120</strong>°</span>
-        </div>
-    </div>
-</div>
- 
-<script>
-const canvas = document.getElementById('grafikSudut');
-const ctx = canvas.getContext('2d');
-const btnPlay = document.getElementById('btnPlay');
-const inputAngka = document.getElementById('angkaA');
-const menuSudut = document.getElementById('menuSudut');
-const sliderA = document.getElementById('sliderA');
- 
-let IDAnimasi = null;
-let sedangBerputar = false;
-let arahMaju = true;
-let batasMaksimal = 180; // Default awal berpelurus
- 
-// Fungsi Sinkronisasi Saat Menu Dropdown Berubah
-function gantiModeSudut() {
-    hentikanAnimasi();
-    batasMaksimal = parseInt(menuSudut.value);
-    
-    // Perbarui attribute batas maksimal slider
-    sliderA.max = batasMaksimal;
-    
-    // Sesuaikan teks rumus & tombol pintas (shortcut) secara otomatis
-    const rumusTeks = document.getElementById('rumusTeks');
-    const btn1 = document.getElementById('btnShortcut1');
-    const btn2 = document.getElementById('btnShortcut2');
-    const btn3 = document.getElementById('btnShortcut3');
- 
-    if (batasMaksimal === 180) {
-        rumusTeks.innerText = "Sudut A + Sudut B = 180°";
-        btn1.innerText = "90°";  btn1.setAttribute('onclick', 'updateSudut(90)');
-        btn2.innerText = "180°"; btn2.setAttribute('onclick', 'updateSudut(180)');
-        btn3.innerText = "45°";  btn3.setAttribute('onclick', 'updateSudut(45)');
-        updateSudut(60); // Reset ke nilai default mode ini
-    } else if (batasMaksimal === 90) {
-        rumusTeks.innerText = "Sudut A + Sudut B = 90°";
-        btn1.innerText = "30°";  btn1.setAttribute('onclick', 'updateSudut(30)');
-        btn2.innerText = "90°";  btn2.setAttribute('onclick', 'updateSudut(90)');
-        btn3.innerText = "45°";  btn3.setAttribute('onclick', 'updateSudut(45)');
-        updateSudut(30);
-    } else if (batasMaksimal === 360) {
-        rumusTeks.innerText = "Sudut A + Sudut B = 360°";
-        btn1.innerText = "90°";  btn1.setAttribute('onclick', 'updateSudut(90)');
-        btn2.innerText = "180°"; btn2.setAttribute('onclick', 'updateSudut(180)');
-        btn3.innerText = "270°"; btn3.setAttribute('onclick', 'updateSudut(270)');
-        updateSudut(120);
-    }
-}
- 
-function tekanKeypad(karakter) {
-    hentikanAnimasi();
-    let teksSekarang = inputAngka.value;
- 
-    if (karakter === 'C') {
-        teksSekarang = '0';
-    } else if (karakter === '⌫') {
-        teksSekarang = teksSekarang.slice(0, -1);
-        if (teksSekarang === '') teksSekarang = '0';
-    } else {
-        if (teksSekarang === '0') {
-            teksSekarang = karakter;
-        } else {
-            teksSekarang += karakter;
-        }
-    }
- 
-    if (parseFloat(teksSekarang) > batasMaksimal) {
-        teksSekarang = batasMaksimal.toString();
-    }
- 
-    inputAngka.value = teksSekarang;
-    updateSudut(teksSekarang);
-}
- 
-function updateSudut(nilai) {
-    let sudutA = parseFloat(nilai);
-    if (isNaN(sudutA)) sudutA = 0;
-    if (sudutA < 0) sudutA = 0;
-    if (sudutA > batasMaksimal) sudutA = batasMaksimal;
- 
-    sliderA.value = sudutA;
-    inputAngka.value = Math.round(sudutA);
- 
-    document.getElementById('valA').innerText = Math.round(sudutA);
-    document.getElementById('valB').innerText = Math.round(batasMaksimal - sudutA);
- 
-    gambarGrafik(sudutA);
-}
- 
-function gambarGrafik(sudutA) {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    const centerX = canvas.width / 2;
-    const centerY = batasMaksimal === 360 ? canvas.height / 2 : canvas.height - 20;
-    const radius = 65;
- 
-    // Garis Penunjuk Sumbu Utama
-    ctx.beginPath();
-    ctx.moveTo(centerX - radius - 30, centerY);
-    ctx.lineTo(centerX + radius + 30, centerY);
-    ctx.strokeStyle = '#444';
-    ctx.lineWidth = 3;
-    ctx.stroke();
- 
-    // Jika mode 360, gambar sumbu vertikal tambahan agar memperjelas lingkaran penuh
+
+<div class="container">
+    <h2>Kalkulator & Memo Pilihan Data</h2>
+    <div class="sub-title">Fitur: Pilihan Nilai Radio Button ➔ Masuk Riwayat ➔ Unduh Dokumen Excel</div>
+
+    <div class="flex-layout">
+        <!-- PANEL KIRI: Form Input Variabel & Rumus -->
+        <div class="left-panel">
+            <div class="input-grid">
+                <div class="input-group"><label>Variabel a</label><div class="input-wrapper"><input type="text" id="v_a" value="10"><button class="btn-inf" onclick="setInfinity('v_a')">∞</button></div></div>
+                <div class="input-group"><label>Variabel b</label><div class="input-wrapper"><input type="text" id="v_b" value="2"><button class="btn-inf" onclick="setInfinity('v_b')">∞</button></div></div>
+                <div class="input-group"><label>Variabel c</label><div class="input-wrapper"><input type="text" id="v_c" value="5"><button class="btn-inf" onclick="setInfinity('v_c')">∞</button></div></div>
+                <div class="input-group"><label>Variabel d</label><div class="input-wrapper"><input type="text" id="v_d" value="4"><button class="btn-inf" onclick="setInfinity('v_d')">∞</button></div></div>
+                <div class="input-group"><label>Jumlah deret (&Sigma; c^n)</label><div class="input-wrapper"><input type="text" id="v_sum" value="25"><button class="btn-inf" onclick="setInfinity('v_sum')">∞</button></div></div>
+                <div class="input-group"><label>Konstanta g(a)</label><div class="input-wrapper"><input type="text" id="v_ga" value="1.5"><button class="btn-inf" onclick="setInfinity('v_ga')">∞</button></div></div>
+                <div class="input-group"><label>Variabel g</label><div class="input-wrapper"><input type="text" id="v_g" value="8"><button class="btn-inf" onclick="setInfinity('v_g')">∞</button></div></div>
+                <div class="input-group"><label>Variabel B</label><div class="input-wrapper"><input type="text" id="v_B" value="3"><button class="btn-inf" onclick="setInfinity('v_B')">∞</button></div></div>
+                
+                <div class="input-group integral-group"><label>Nilai Integral (∬ dA)</label><div class="input-wrapper"><input type="text" id="v_int" value="4"><button class="btn-inf" onclick="setInfinity('v_int')">∞</button></div></div>
+                <div class="input-group integral-group"><label>Pangkat Integral (n)</label><div class="input-wrapper"><input type="text" id="v_pow_n" value="2"><button class="btn-inf" onclick="setInfinity('v_pow_n')">∞</button></div></div>
+            </div>
+            <button class="btn-calc" onclick="hitungSertaSimpan('Kalkulasi Manual')">= HITUNG ENERGI TOTAL</button>
+        </div>
+
+        <!-- PANEL KANAN: Susunan Memo Radio Button Sesuai Gambar Sketsa -->
+        <div class="right-panel">
+            <div class="memo-box">
+                <div class="memo-title"><span>Pilih Tabel / Memo</span> <span>▼</span></div>
+                
+                <!-- Kelompok A -->
+                <div class="tree-node">
+                    <div class="radio-row">
+                        <label for="r_a0">a0 (Sudut Log)</label>
+                        <input type="radio" name="memo_select" id="r_a0" value="a0 (Sudut Log)" onclick="pilihDariMemo('a0', 12, 4)">
+                    </div>
+                    <div class="tree-child">
+                        <div class="radio-row"><label for="r_a1">a1</label><input type="radio" name="memo_select" id="r_a1" value="a1" onclick="pilihDariMemo('a1', 15, 5)"></div>
+                        <div class="radio-row"><label for="r_b1">b1</label><input type="radio" name="memo_select" id="r_b1" value="b1" onclick="pilihDariMemo('b1', 8, 3)"></div>
+                    </div>
+                </div>
+
+                <!-- Kelompok B -->
+                <div class="tree-node">
+                    <div class="radio-row">
+                        <label for="r_b0">b0 (Tabel Sudut)</label>
+                        <input type="radio" name="memo_select" id="r_b0" value="b0 (Tabel Sudut)" onclick="pilihDariMemo('b0', 20, 6)">
+                    </div>
+                    <div class="tree-child">
+                        <div class="radio-row"><label for="r_b1_sub">b1</label><input type="radio" name="memo_select" id="r_b1_sub" value="b1_sub" onclick="pilihDariMemo('b1_sub', 14, 2)"></div>
+                    </div>
+                </div>
+
+                <!-- Kelompok C -->
+                <div class="tree-node">
+                    <div class="radio-row"><label for="r_c0">c0</label><input type="radio" name="memo_select" id="r_c0" value="c0" onclick="pilihDariMemo('c0', 18, 7)"></div>
+                    <div class="tree-child">
+                        <div class="radio-row"><label for="r_c1">c1</label><input type="radio" name="memo_select" id="r_c1" value="c1" onclick="pilihDariMemo('c1', 22, 9)"></div>
+                    </div>
+                </div>
+            </div>
+            <button class="btn-excel" onclick="unduhExcel()">📥 UNDUH DATA KE EXCEL</button>
+        </div>
+    </div>
+
+    <!-- TABEL RIWAYAT: Setiap Hasil Baru Ditambahkan Turun Ke Bawah -->
+    <div class="history-section">
+        <h3>Riwayat Perhitungan (Berurutan ke Bawah)</h3>
+        <div class="table-responsive">
+            <table id="excelTable">
+                <thead>
+                    <tr>
+                        <th>Waktu</th>
+                        <th>Keterangan / Memo Terpilih</th>
+                        <th>Variabel a</th>
+                        <th>Variabel b</th>
+                        <th>Variabel c</th>
