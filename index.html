@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalkulator Layar Jernih & Tombol Pilih</title>
+    <title>Kalkulator Multi-Fungsi (Biasa & Rumus Kompleks)</title>
     <!-- Library SheetJS untuk Export Excel -->
     <script src="https://jsdelivr.net"></script>
     <style>
@@ -21,7 +21,6 @@
             align-items: center;
             min-height: 100vh;
         }
-        /* Pembungkus Kalkulator Sesuai Desain Gambar Sketsa */
         .kalkulator-container {
             width: 100%;
             max-width: 480px;
@@ -32,7 +31,7 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
 
-        /* 1. LAYER JERNIH (Tampilan Atas) */
+        /* 1. LAYER JERNIH DISPLAY */
         .layer-jernih {
             width: 100%;
             min-height: 140px;
@@ -45,35 +44,37 @@
             flex-direction: column;
             justify-content: space-between;
         }
-        .info-rumus-awal {
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 11px;
-            color: #555555;
-            line-height: 1.3;
+        .info-mode-layar {
+            font-size: 12px;
+            color: #0284c7;
+            font-weight: bold;
             border-bottom: 1px dashed #cccccc;
             padding-bottom: 6px;
             margin-bottom: 6px;
-            white-space: pre-wrap;
         }
-        .status-input-aktif {
-            font-size: 13px;
-            color: #0284c7;
-            font-weight: bold;
+        .proses-ketik-layar {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 16px;
+            color: #555555;
+            text-align: right;
+            min-height: 20px;
+            word-wrap: break-word;
         }
         .angka-display-utama {
             font-size: 38px;
             font-weight: bold;
             color: #000000;
             text-align: right;
+            word-wrap: break-word;
         }
 
-        /* 2. KEYBOARD DUA BARIS + DELET (Sesuai Sketsa Gambar) */
+        /* 2. PAPAN KEYBOARD DUA BARIS + DELET + OPERATOR (Auto Besar Sesuai Sketsa) */
         .papan-keyboard-sketsa {
             display: grid;
-            grid-template-columns: repeat(5, 1fr) 2fr; /* 5 kolom angka, 1 kolom lebar untuk DELET */
+            grid-template-columns: repeat(5, 1fr) 2fr; /* 5 kolom angka/simbol, 1 kolom lebar untuk DELET/= */
             border: 2px solid #000000;
             background: #000000;
-            gap: 2px; /* Membuat garis pembatas antar tombol hitam tebal */
+            gap: 2px;
             margin-bottom: 15px;
             overflow: hidden;
             border-radius: 4px;
@@ -91,23 +92,14 @@
             justify-content: center;
             align-items: center;
         }
-        .key-btn:active {
-            background: #e5e7eb;
-        }
-        /* Tombol DELET memanjang vertikal di sebelah kanan */
-        .key-delet {
-            grid-column: 6;
-            grid-row: 1 / span 2;
-            background: #ffffff;
-            color: #dc2626;
-            font-size: 16px;
-            letter-spacing: 1px;
-        }
-        .key-delet:active {
-            background: #fca5a5;
-        }
+        .key-btn:active { background: #e5e7eb; }
+        
+        /* Tombol Aksi di Sisi Kanan Vertikal */
+        .key-delet { grid-column: 6; grid-row: 1; background: #ffffff; color: #dc2626; font-size: 15px; }
+        .key-hitung { grid-column: 6; grid-row: 2 / span 2; background: #ea580c; color: #ffffff; font-size: 24px; }
+        .key-operator { background: #f3f4f6; color: #0284c7; }
 
-        /* 3. TOMBOL TUNGGAL "PILIH ▼" (Paling Bawah Keyboard) */
+        /* 3. TOMBOL TUNGGAL "PILIH ▼" */
         .tombol-pilih-dropdown {
             width: 100%;
             padding: 15px;
@@ -123,40 +115,23 @@
             justify-content: space-between;
             align-items: center;
         }
-        .tombol-pilih-dropdown:hover {
-            background: #f9fafb;
-        }
+        .tombol-pilih-dropdown:hover { background: #f9fafb; }
 
-        /* 4. ISI KOTAK PILIHAN YANG SINKRON DAN TERSEMBUNYI */
+        /* 4. ISI KOTAK PILIHAN DATA DROPDOWN */
         .kotak-pilihan-isi {
-            display: none; /* Tersembunyi, terbuka jika PILIH diklik */
+            display: none;
             margin-top: 15px;
             border: 2px dashed #000000;
             border-radius: 6px;
             padding: 12px;
             background: #f9fafb;
-            max-height: 280px;
+            max-height: 300px;
             overflow-y: auto;
         }
-        .judul-kategori {
-            font-weight: bold;
-            font-size: 14px;
-            color: #1f2937;
-            margin-top: 10px;
-            margin-bottom: 4px;
-            display: block;
-            border-bottom: 1px solid #000000;
-        }
-        .sub-data-wrapper {
-            margin-left: 12px;
-            margin-bottom: 8px;
-        }
-        .sub-data-title {
-            font-size: 13px;
-            color: #4b5563;
-            font-style: italic;
-        }
-        /* Baris khusus nilai yang hanya memiliki radio button */
+        .judul-kategori { font-weight: bold; font-size: 14px; color: #1f2937; margin-top: 10px; margin-bottom: 4px; display: block; border-bottom: 1px solid #000000; }
+        .sub-data-wrapper { margin-left: 12px; margin-bottom: 8px; }
+        .sub-data-title { font-size: 13px; color: #4b5563; font-style: italic; }
+        
         .baris-nilai-radio {
             display: flex;
             justify-content: space-between;
@@ -167,41 +142,13 @@
             margin-top: 3px;
             border-radius: 4px;
         }
-        .baris-nilai-radio label {
-            font-size: 13px;
-            color: #000000;
-            cursor: pointer;
-            flex: 1;
-        }
-        .baris-nilai-radio input[type="radio"] {
-            width: 16px;
-            height: 16px;
-            cursor: pointer;
-        }
+        .baris-nilai-radio label { font-size: 13px; color: #000000; cursor: pointer; flex: 1; }
+        .baris-nilai-radio input[type="radio"] { width: 16px; height: 16px; cursor: pointer; }
 
-        /* Tabel Rekaman Excel di dalam Kotak Pilihan */
-        .tabel-riwayat-excel {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 8px;
-            font-size: 11px;
-        }
-        .tabel-riwayat-excel th, .tabel-riwayat-excel td {
-            border: 1px solid #000000;
-            padding: 5px;
-            text-align: left;
-        }
-        .btn-download-excel {
-            width: 100%;
-            padding: 8px;
-            background: #16a34a;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-weight: bold;
-            margin-top: 10px;
-            cursor: pointer;
-        }
+        /* Tabel Rekaman Excel */
+        .tabel-riwayat-excel { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 11px; }
+        .tabel-riwayat-excel th, .tabel-riwayat-excel td { border: 1px solid #000000; padding: 5px; text-align: left; }
+        .btn-download-excel { width: 100%; padding: 10px; background: #16a34a; color: white; border: none; border-radius: 4px; font-weight: bold; margin-top: 10px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -210,73 +157,85 @@
     
     <!-- 1. LAYER JERNIH DISPLAY -->
     <div class="layer-jernih">
-        <!-- Visual Rumus Gambar 1 Tetap Sinkron Merayap -->
-        <div class="info-rumus-awal">Rumus: log₁₀[ ((a/b)*(c+π)) / (∑cⁿ + ((a/b)-(c/d))/g_₍a₎) ] + [ ((g/a)+1%)/B ] * (∬dA)ⁿ</div>
-        <div class="status-input-aktif" id="indikatorFokus">Edit Aktif: Variabel a = 10</div>
-        <div class="angka-display-utama" id="angkaLayar">0.00</div>
+        <div class="info-mode-layar" id="infoMode">Mode: Perhitungan Biasa</div>
+        <div class="proses-ketik-layar" id="layarProses"></div>
+        <div class="angka-display-utama" id="angkaLayar">0</div>
     </div>
 
-    <!-- 2. KEYBOARD BARIS SESUAI SKETSA GAMBAR ANDA -->
+    <!-- 2. PAPAN KEYBOARD STRUKTUR SKETSA DENGAN TAMBAHAN OPERATOR MATEMATIKA -->
     <div class="papan-keyboard-sketsa">
-        <!-- Baris 1 Angka -->
-        <button class="key-btn" onclick="inputTombolAngka('1')">1</button>
-        <button class="key-btn" onclick="inputTombolAngka('2')">2</button>
-        <button class="key-btn" onclick="inputTombolAngka('3')">3</button>
-        <button class="key-btn" onclick="inputTombolAngka('4')">4</button>
-        <button class="key-btn" onclick="inputTombolAngka('5')">5</button>
+        <!-- Baris 1: Angka 1-5 -->
+        <button class="key-btn" onclick="tekanTombol('1')">1</button>
+        <button class="key-btn" onclick="tekanTombol('2')">2</button>
+        <button class="key-btn" onclick="tekanTombol('3')">3</button>
+        <button class="key-btn" onclick="tekanTombol('4')">4</button>
+        <button class="key-btn" onclick="tekanTombol('5')">5</button>
         
-        <!-- Tombol DELET di Sisi Kanan Vertikal Penuh -->
-        <button class="key-btn key-delet" onclick="aksiHapusTombol('DELET')">DELET</button>
+        <!-- Tombol DELET di Atas Kanan -->
+        <button class="key-btn key-delet" onclick="tekanTombol('DELET')">DELET</button>
         
-        <!-- Baris 2 Angka -->
-        <button class="key-btn" onclick="inputTombolAngka('6')">6</button>
-        <button class="key-btn" onclick="inputTombolAngka('7')">7</button>
-        <button class="key-btn" onclick="inputTombolAngka('8')">8</button>
-        <button class="key-btn" onclick="inputTombolAngka('9')">9</button>
-        <button class="key-btn" onclick="inputTombolAngka('0')">0</button>
+        <!-- Baris 2: Angka 6-0 -->
+        <button class="key-btn" onclick="tekanTombol('6')">6</button>
+        <button class="key-btn" onclick="tekanTombol('7')">7</button>
+        <button class="key-btn" onclick="tekanTombol('8')">8</button>
+        <button class="key-btn" onclick="tekanTombol('9')">9</button>
+        <button class="key-btn" onclick="tekanTombol('0')">0</button>
+        
+        <!-- Tombol SAMA DENGAN (=) Vertikal Panjang untuk Eksekusi -->
+        <button class="key-btn key-hitung" onclick="tekanTombol('=')">=</button>
+
+        <!-- Baris 3: Operator untuk Perhitungan Biasa -->
+        <button class="key-btn key-operator" onclick="tekanTombol('+')">+</button>
+        <button class="key-btn key-operator" onclick="tekanTombol('-')">-</button>
+        <button class="key-btn key-operator" onclick="tekanTombol('*')">×</button>
+        <button class="key-btn key-operator" onclick="tekanTombol('/')">÷</button>
+        <button class="key-btn key-operator" onclick="tekanTombol('.')">.</button>
     </div>
 
     <!-- 3. TOMBOL TUNGGAL PILIH (Paling Bawah) -->
-    <button class="tombol-pilih-dropdown" onclick="kendaliBukaTutupKotakPilih()">
+    <button class="tombol-pilih-dropdown" onclick="bukaTutupKotakPilih()">
         <span>PILIH</span>
         <span id="ikonPanahStatus">▼</span>
     </button>
 
-    <!-- 4. ISI KOTAK PILIHAN (Sinkron Berstruktur Tingkat) -->
+    <!-- 4. ISI KOTAK PILIHAN DATA DROPDOWN (SINKRON VARIABEL & REKAM EXCEL) -->
     <div id="kotakPilihanData" class="kotak-pilihan-isi">
         
-        <!-- Tingkat 1: LOG -->
+        <!-- Kategori 1: LOG -->
         <span class="judul-kategori">■ Kategori a0 (Log)</span>
         <div class="sub-data-wrapper">
             <span class="sub-data-title">▶ Data Log Aljabar</span>
-            <!-- Tingkat Akhir: Nilai yang memiliki Radio Button -->
             <div class="baris-nilai-radio">
                 <label for="rad_log1">Nilai Log Primer (a: 15, b: 3)</label>
-                <input type="radio" name="grup_sketsa" id="rad_log1" onclick="jalankanRadioSinkron('Log Primer', 15, 3)">
+                <input type="radio" name="grup_sketsa" id="rad_log1" onclick="aktifkanModeRumusGbr1('Log Primer', 15, 3)">
             </div>
             <div class="baris-nilai-radio">
                 <label for="rad_log2">Nilai Log Sekunder (a: 30, b: 5)</label>
-                <input type="radio" name="grup_sketsa" id="rad_log2" onclick="jalankanRadioSinkron('Log Sekunder', 30, 5)">
+                <input type="radio" name="grup_sketsa" id="rad_log2" onclick="aktifkanModeRumusGbr1('Log Sekunder', 30, 5)">
             </div>
         </div>
 
-        <!-- Tingkat 2: KONSTANTA -->
+        <!-- Kategori 2: KONSTANTA -->
         <span class="judul-kategori">■ Kategori b0 (Konstanta)</span>
         <div class="sub-data-wrapper">
             <span class="sub-data-title">▶ Data Konstanta g(a)</span>
             <div class="baris-nilai-radio">
                 <label for="rad_konst1">Nilai Konstanta Utama (a: 8, b: 2)</label>
-                <input type="radio" name="grup_sketsa" id="rad_konst1" onclick="jalankanRadioSinkron('Konstanta Utama', 8, 2)">
+                <input type="radio" name="grup_sketsa" id="rad_konst1" onclick="aktifkanModeRumusGbr1('Konstanta Utama', 8, 2)">
             </div>
         </div>
 
-        <!-- Tingkat 3: SUDUT -->
+        <!-- Kategori 3: SUDUT -->
         <span class="judul-kategori">■ Kategori c0 (Sudut)</span>
         <div class="sub-data-wrapper">
             <span class="sub-data-title">▶ Data Sudut Sisi</span>
             <div class="baris-nilai-radio">
                 <label for="rad_sudut1">Nilai Sudut Derajat (a: 12, b: 4)</label>
-                <input type="radio" name="grup_sketsa" id="rad_sudut1" onclick="jalankanRadioSinkron('Sudut Derajat', 12, 4)">
+                <input type="radio" name="grup_sketsa" id="rad_sudut1" onclick="aktifkanModeRumusGbr1('Sudut Derajat', 12, 4)">
             </div>
         </div>
 
+        <!-- Kategori 4: RIWAYAT DATA EXCEL -->
+        <span class="judul-kategori" style="color:#16a34a;">■ Dokumen Riwayat Excel (Hanya dari Mode Rumus)</span>
+        <div style="overflow-x:auto;">
+            <table class="tabel-riwayat-excel">
