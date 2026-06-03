@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalkulator Sudut Satu Input Sederhana</title>
+    <title>Kalkulator Sudut Layout Sketsa</title>
     <style>
         * {
             box-sizing: border-box;
@@ -19,13 +19,17 @@
             min-height: 100vh;
             padding: 20px;
         }
+        
+        /* Kotak Utama Kalkulator */
         .calculator-box {
             background: #22252d;
-            width: 380px;
+            width: 390px;
             padding: 25px;
-            border-radius: 25px;
+            border-radius: 30px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
+ 
+        /* Kotak Header Panjang (Sesuai elemen persegi panjang atas di foto) */
         .header-banner {
             border: 2px solid #373e4a;
             padding: 10px;
@@ -33,16 +37,65 @@
             text-align: center;
             color: #4caf50;
             font-weight: bold;
-            font-size: 15px;
+            font-size: 16px;
             text-transform: uppercase;
+            letter-spacing: 1px;
             background: #292d36;
             20px;
         }
+        
+        /* Layar Tampilan Angka Digital */
+        .screen-display {
+            background: #292d36;
+            border-radius: 20px;
+            padding: 15px;
+            15px;
+            text-align: right;
+        }
+        .screen-title {
+            color: #888;
+            font-size: 13px;
+            text-align: left;
+            5px;
+            font-weight: bold;
+        }
+        .main-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            font-size: 32px;
+            text-align: right;
+            font-weight: bold;
+            outline: none;
+        }
+        
+        .slider-container {
+            15px 0;
+        }
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            background: #444;
+            border-radius: 5px;
+            outline: none;
+        }
+ 
+        canvas {
+            background: #292d36;
+            border-radius: 20px;
+            15px;
+            width: 100%;
+            display: block;
+        }
+ 
+        /* STRUKTUR DAFTAR VERTIKAL TURUN (Sesuai Huruf Kebawah di Sketsa Foto) */
         .sketsa-menu-vertical {
             display: flex;
-            flex-direction: column;
+            flex-direction: column; /* Menyusun item berjejer ke bawah */
             gap: 8px;
             20px;
+            padding: 5px;
         }
         .menu-step-btn {
             width: 100%;
@@ -55,158 +108,171 @@
             font-weight: bold;
             text-align: left;
             cursor: pointer;
+            transition: all 0.2s ease;
             display: flex;
             justify-content: space-between;
         }
+        .menu-step-btn:hover {
+            border-color: #ff9500;
+        }
+        /* Penanda ketika tombol menu tersebut aktif */
         .menu-step-btn.active {
             background: #ff9500;
             color: #22252d;
             border-color: #ff9500;
         }
-        
-        /* Hanya Satu Display Utama */
-        .screen-display {
-            background: #292d36;
-            border-radius: 20px;
-            padding: 20px;
-            20px;
-            text-align: center;
+        .menu-step-btn .deg-badge {
+            opacity: 0.8;
         }
-        .screen-title {
-            color: #888;
-            font-size: 14px;
-            10px;
-            font-weight: bold;
+ 
+        /* Grid Tombol Utama di Bagian Bawah */
+        .keypad-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
         }
-        
-        /* Kolom Isian Tunggal */
-        .single-input {
-            width: 80%;
-            background: #22252d;
-            border: 2px solid #373e4a;
-            border-radius: 12px;
-            color: #ffffff;
-            font-size: 36px;
-            text-align: center;
-            font-weight: bold;
+        .btn {
+            border: none;
             outline: none;
-            padding: 8px;
-            10px auto;
-            display: block;
-        }
-        .single-input:focus {
-            border-color: #ff9500;
+            padding: 16px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
         }
         
-        /* Box Tempat Menampilkan Hasil */
-        .result-panel {
-            background: #1e2128;
-            padding: 15px;
+        .btn-number { background-color: #292d36; color: #ffffff; }
+        .btn-number:active { background-color: #373e4a; }
+        
+        .btn-func { background-color: #273c3a; color: #4caf50; }
+        .btn-func:active { background-color: #1e524d; }
+ 
+        .btn-operator { background-color: #ff9500; color: white; }
+        .btn-operator:active { background-color: #e08400; }
+ 
+        .btn-clear { background-color: #f44336; color: white; }
+        .btn-clear:active { background-color: #d32f2f; }
+ 
+        .info-panel {
+            grid-column: span 4;
+            background: #292d36;
+            padding: 12px;
             border-radius: 12px;
-            15px;
-            font-size: 18px;
-            color: #ffffff;
-            font-weight: bold;
-            border-left: 5px solid #ff9500;
+            display: flex;
+            justify-content: space-between;
+            color: #aaa;
+            font-size: 14px;
         }
-        .color-highlight {
-            color: #4caf50;
-            font-size: 22px;
-        }
+        .info-panel span strong { font-size: 16px; }
+        .color-a { color: #ff4757; }
+        .color-b { color: #2ed573; }
     </style>
 </head>
 <body>
  
 <div class="calculator-box">
     <!-- Kotak Batas Atas Sesuai Sketsa Gambar -->
-    <div class="header-banner">Pilih Aturan Sudut</div>
+    <div class="header-banner">Modul Navigasi Geometri</div>
  
-    <!-- Menu Vertikal Menurun Kebawah -->
+    <!-- Menu Vertikal Menurun Kebawah Berurutan -->
     <div class="sketsa-menu-vertical">
-        <button class="menu-step-btn active" id="btn-mode-180" onclick="gantiMode(180, 'Berpelurus')">
-            <span>A. Sudut Berpelurus</span> <span>180°</span>
+        <button class="menu-step-btn active" id="btn-mode-180" onclick="gantiModeSudut(180)">
+            <span>A. Sudut Berpelurus</span> <span class="deg-badge">180°</span>
         </button>
-        <button class="menu-step-btn" id="btn-mode-90" onclick="gantiMode(90, 'Berkomplemen')">
-            <span>B. Sudut Berkomplemen</span> <span>90°</span>
+        <button class="menu-step-btn" id="btn-mode-90" onclick="gantiModeSudut(90)">
+            <span>B. Sudut Berkomplemen</span> <span class="deg-badge">90°</span>
         </button>
-        <button class="menu-step-btn" id="btn-mode-360" onclick="gantiMode(360, 'Satu Putaran')">
-            <span>C. Sudut Satu Putaran</span> <span>360°</span>
+        <button class="menu-step-btn" id="btn-mode-360" onclick="gantiModeSudut(360)">
+            <span>C. Sudut Satu Putaran</span> <span class="deg-badge">360°</span>
         </button>
     </div>
  
-    <!-- Area Input Tunggal dan Hasil -->
+    <!-- Layar Utama Kalkulator -->
     <div class="screen-display">
         <div id="rumusTeks" class="screen-title">Sudut A + Sudut B = 180°</div>
-        
-        <label style="color: #aaa; font-size: 13px; display:block;">Masukkan Sudut A (°):</label>
-        <!-- HANYA SATU KOLOM ISIAN UTAMA -->
-        <input type="number" id="inputUtama" value="60" min="0" max="180" class="single-input" oninput="hitungSudut()">
+        <input type="text" id="angkaA" value="60" readonly class="main-input">
+    </div>
  
-        <div class="result-panel">
-            Sudut B = <span id="hasilSudutB" class="color-highlight">120</span>°
+    <!-- Area Grafik Busur Lingkaran -->
+    <canvas id="grafikSudut" width="340" height="160"></canvas>
+ 
+    <!-- Slider Penggeser Jari-Jari -->
+    <div class="slider-container">
+        <input type="range" id="sliderA" min="0" max="180" value="60" oninput="hentikanAnimasi(); updateSudut(this.value)">
+    </div>
+ 
+    <!-- Keypad Angka & Sinkronisasi Fungsi -->
+    <div class="keypad-grid">
+        <button class="btn btn-clear" onclick="tekanKeypad('C')">C</button>
+        <button class="btn btn-func" onclick="tekanKeypad('⌫')">⌫</button>
+        <button id="btnShortcut1" class="btn btn-func" onclick="updateSudut(90)">90°</button>
+        <button id="btnPlay" class="btn btn-operator" onclick="toggleAnimasi()">▶</button>
+        
+        <button class="btn btn-number" onclick="tekanKeypad('7')">7</button>
+        <button class="btn btn-number" onclick="tekanKeypad('8')">8</button>
+        <button class="btn btn-number" onclick="tekanKeypad('9')">9</button>
+        <button id="btnShortcut2" class="btn btn-func" onclick="updateSudut(180)">180°</button>
+        
+        <button class="btn btn-number" onclick="tekanKeypad('4')">4</button>
+        <button class="btn btn-number" onclick="tekanKeypad('5')">5</button>
+        <button class="btn btn-number" onclick="tekanKeypad('6')">6</button>
+        <button id="btnShortcut3" class="btn btn-func" onclick="updateSudut(45)">45°</button>
+        
+        <button class="btn btn-number" onclick="tekanKeypad('1')">1</button>
+        <button class="btn btn-number" onclick="tekanKeypad('2')">2</button>
+        <button class="btn btn-number" onclick="tekanKeypad('3')">3</button>
+        <button class="btn btn-number" onclick="tekanKeypad('0')">0</button>
+ 
+        <div class="info-panel">
+            <span class="color-a">Sudut A: <strong id="valA">60</strong>°</span>
+            <span class="color-b">Sudut B: <strong id="valB">120</strong>°</span>
         </div>
     </div>
 </div>
  
 <script>
-let batasMaksimal = 180;
+const canvas = document.getElementById('grafikSudut');
+const ctx = canvas.getContext('2d');
+const btnPlay = document.getElementById('btnPlay');
+const inputAngka = document.getElementById('angkaA');
+const sliderA = document.getElementById('sliderA');
  
-function gantiMode(targetBatas, namaMode) {
+let IDAnimasi = null;
+let sedangBerputar = false;
+let arahMaju = true;
+let batasMaksimal = 180; 
+ 
+function gantiModeSudut(targetBatas) {
+    hentikanAnimasi();
     batasMaksimal = targetBatas;
     
-    // Switch kelas active tombol vertikal
+    // Perbarui penanda visual tombol aktif (pindah warna jingga)
     document.querySelectorAll('.menu-step-btn').forEach(btn => {
         btn.classList.remove('active');
     });
     document.getElementById(`btn-mode-${targetBatas}`).classList.add('active');
  
-    // Update teks panduan rumus di atas input
-    const rumusTeks = document.getElementById('rumusTeks');
-    rumusTeks.innerText = `Sudut A + Sudut B = ${batasMaksimal}° (${namaMode})`;
- 
-    // Update aturan limit angka di kolom input
-    const inputUtama = document.getElementById('inputUtama');
-    inputUtama.max = batasMaksimal;
+    sliderA.max = batasMaksimal;
     
-    // Reset nilai default biar proporsional saat ganti mode
-    if(batasMaksimal === 90) inputUtama.value = 30;
-    else if(batasMaksimal === 180) inputUtama.value = 60;
-    else if(batasMaksimal === 360) inputUtama.value = 100;
+    const rumusTeks = document.getElementById('rumusTeks');
+    const btn1 = document.getElementById('btnShortcut1');
+    const btn2 = document.getElementById('btnShortcut2');
+    const btn3 = document.getElementById('btnShortcut3');
  
-    hitungSudut();
-}
- 
-// Logika Inti: Satu input diisi langsung keluar hasil sudut pasangannya
-function hitungSudut() {
-    const inputUtama = document.getElementById('inputUtama');
-    let sudutA = parseFloat(inputUtama.value);
- 
-    // Proteksi validasi input kosong atau tidak valid
-    if (isNaN(sudutA) || inputUtama.value === "") {
-        document.getElementById('hasilSudutB').innerText = "-";
-        return;
-    }
- 
-    // Batasi input agar tidak melewati aturan sudut terpilih
-    if (sudutA < 0) {
-        sudutA = 0;
-        inputUtama.value = 0;
-    }
-    if (sudutA > batasMaksimal) {
-        sudutA = batasMaksimal;
-        inputUtama.value = batasMaksimal;
-    }
- 
-    // Rumus Matematika Utama
-    const sudutB = batasMaksimal - sudutA;
- 
-    // Tampilkan langsung di panel hasil
-    document.getElementById('hasilSudutB').innerText = Math.round(sudutB);
-}
- 
-// Inisialisasi hitungan pertama saat web dimuat
-hitungSudut();
-</script>
- 
-</body>
-</html>
+    if (batasMaksimal === 180) {
+        rumusTeks.innerText = "Sudut A + Sudut B = 180°";
+        btn1.innerText = "90°";  btn1.setAttribute('onclick', 'updateSudut(90)');
+        btn2.innerText = "180°"; btn2.setAttribute('onclick', 'updateSudut(180)');
+        btn3.innerText = "45°";  btn3.setAttribute('onclick', 'updateSudut(45)');
+        updateSudut(60); 
+    } else if (batasMaksimal === 90) {
+        rumusTeks.innerText = "Sudut A + Sudut B = 90°";
+        btn1.innerText = "30°";  btn1.setAttribute('onclick', 'updateSudut(30)');
+        btn2.innerText = "90°";  btn2.setAttribute('onclick', 'updateSudut(90)');
+        btn3.innerText = "45°";  btn3.setAttribute('onclick', 'updateSudut(45)');
+        updateSudut(30);
+    } else if (batasMaksimal === 360) {
+        rumusTeks.innerText = "Sudut A + Sudut B = 360°";
+        btn1.innerText = "90°";  btn1.setAttribute('onclick', 'updateSudut(90)');
+        btn2.innerText = "180°"; btn2.setAttribute('onclick', 'updateSudut(180)');
