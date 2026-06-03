@@ -1,250 +1,317 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalkulator Rumus & Papan Ketik Sinkron</title>
-    <!-- Library SheetJS untuk Export Excel -->
-    <script src="https://jsdelivr.net"></script>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-        }
-        body {
-            background-color: #f0f2f5;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-        }
-        .container {
-            width: 100%;
-            max-width: 1100px;
-            background: white;
-            padding: 25px;
-            border-radius: 14px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-        }
-        h2 {
-            text-align: center;
-            color: #1e293b;
-            margin-bottom: 20px;
-        }
-        
-        /* TAMPILAN LAYAR UTAMA KALKULATOR (SINKRON RUMUS GAMBAR 1) */
-        .layar-kalkulator {
-            background: #0f172a;
-            color: #38bdf8;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            font-family: 'Courier New', Courier, monospace;
-            box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);
-        }
-        .layar-rumus {
-            font-size: 15px;
-            color: #94a3b8;
-            margin-bottom: 10px;
-            border-bottom: 1px solid #334155;
-            padding-bottom: 5px;
-            overflow-x: auto;
-            white-space: nowrap;
-        }
-        .layar-utama {
-            font-size: 28px;
-            font-weight: bold;
-            text-align: right;
-            letter-spacing: 1px;
-            word-wrap: break-word;
-        }
-
-        /* SUSUNAN LAYOUT UTAMA */
-        .layout-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
-        }
-        @media(min-width: 768px) {
-            .layout-grid { grid-template-columns: 1fr 1fr; }
-        }
-
-        /* KOTAK PILIH PARAMETER (PANAH NAIK TURUN SINKRON) */
-        .kotak-pilih {
-            border: 2px solid #334155;
-            border-radius: 8px;
-            background: #fff;
-            overflow: hidden;
-        }
-        .kategori-grup {
-            border-bottom: 1px solid #e2e8f0;
-        }
-        .kategori-grup:last-child { border-bottom: none; }
-        .tombol-panah {
-            width: 100%;
-            padding: 14px;
-            background: #f8fafc;
-            border: none;
-            font-weight: bold;
-            font-size: 15px;
-            color: #1e293b;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-        }
-        .tombol-panah:hover { background: #f1f5f9; }
-        .isi-konten {
-            display: none; /* Mulai dalam kondisi tertutup (panah naik/turun mengontrol ini) */
-            padding: 10px;
-            background: #fff;
-        }
-        
-        /* BARIS DATA NILAI YANG MEMILIKI RADIO BUTTON */
-        .baris-nilai {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 14px;
-            background: #f8fafc;
-            margin-bottom: 6px;
-            border-radius: 6px;
-            border-left: 4px solid #cbd5e1;
-        }
-        .baris-nilai.aktif {
-            border-left-color: #ffc107;
-            background: #fffdeb;
-        }
-        .baris-nilai label { cursor: pointer; flex: 1; font-size: 14px; color: #334155; font-weight: 600; }
-        .baris-nilai input[type="radio"] { width: 18px; height: 18px; cursor: pointer; }
-
-        /* MONITOR DAN FORM INPUT VARIABEL */
-        .grid-monitor {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        .grup-monitor {
-            background: #f1f5f9;
-            padding: 8px;
-            border-radius: 6px;
-            border: 1px solid #e2e8f0;
-        }
-        .grup-monitor label { font-size: 12px; font-weight: bold; color: #64748b; }
-        .grup-monitor input {
-            width: 100%; padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 14px; background: #fff;
-        }
-        .grup-monitor input:focus { border-color: #0ea5e9; outline: none; }
-
-        /* PAPAN KETIK KEYBOARD LAYAR (OTOMATIS BESAR & RESPONSIF) */
-        .papan-keyboard {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            background: #cbd5e1;
-            padding: 15px;
-            border-radius: 10px;
-        }
-        .key-btn {
-            padding: 16px;
-            font-size: 18px;
-            font-weight: bold;
-            background: #fff;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            transition: all 0.1s;
-        }
-        .key-btn:active { transform: scale(0.96); background: #f1f5f9; }
-        .key-operator { background: #e2e8f0; color: #0284c7; }
-        .key-action { background: #ffc107; color: #1e293b; grid-column: span 2; }
-        .key-excel { background: #217346; color: white; grid-column: span 4; font-size: 14px; padding: 12px; }
-
-        /* TABEL LOG RIWAYAT EXCEL */
-        .box-tabel { max-height: 150px; overflow-y: auto; border: 1px solid #cbd5e1; border-radius: 4px; }
-        table { width: 100%; border-collapse: collapse; background: white; }
-        th, td { padding: 8px; border: 1px solid #cbd5e1; text-align: left; font-size: 12px; }
-        th { background: #f1f5f9; position: sticky; top: 0; }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Sudut Multi-Style</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            0;
+            padding: 0;
+            'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #e9ecef;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        /* Desain Kotak Utama ala Kalkulator Multi */
+        .calculator-box {
+            background: #22252d;
+            width: 380px;
+            padding: 20px;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        /* Layar Display Utama */
+        .screen-display {
+            background: #292d36;
+            border-radius: 20px;
+            padding: 15px;
+            20px;
+            text-align: right;
+        }
+        .screen-title {
+            color: #4caf50;
+            font-size: 14px;
+            text-align: left;
+            5px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .main-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            font-size: 32px;
+            text-align: right;
+            font-weight: bold;
+            outline: none;
+            padding-bottom: 5px;
+        }
+        
+        /* Slider section */
+        .slider-container {
+            15px 0;
+            padding: 0 5px;
+        }
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            background: #444;
+            border-radius: 5px;
+            outline: none;
+        }
+ 
+        /* Grafik Visual Canvas */
+        canvas {
+            background: #292d36;
+            border-radius: 20px;
+            20px;
+            width: 100%;
+            display: block;
+        }
+ 
+        /* Desain Grid Tombol Keypad */
+        .keypad-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+        .btn {
+            border: none;
+            outline: none;
+            padding: 18px;
+            font-size: 20px;
+            font-weight: bold;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        /* Pembagian Warna Tombol Khusus */
+        .btn-number {
+            background-color: #292d36;
+            color: #ffffff;
+        }
+        .btn-number:active { background-color: #373e4a; }
+        
+        .btn-func {
+            background-color: #273c3a;
+            color: #4caf50;
+        }
+        .btn-func:active { background-color: #1e524d; }
+ 
+        .btn-operator {
+            background-color: #ff9500;
+            color: white;
+        }
+        .btn-operator:active { background-color: #e08400; }
+ 
+        .btn-clear {
+            background-color: #f44336;
+            color: white;
+        }
+        .btn-clear:active { background-color: #d32f2f; }
+ 
+        /* Hasil Info di bagian bawah */
+        .info-panel {
+            grid-column: span 4;
+            background: #292d36;
+            padding: 12px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            color: #aaa;
+            font-size: 14px;
+            5px;
+        }
+        .info-panel span strong { font-size: 16px; }
+        .color-a { color: #ff4757; }
+        .color-b { color: #2ed573; }
+    </style>
 </head>
 <body>
-
-<div class="container">
-    <h2>Kalkulator Sinkron Layar & Kotak Pilihan</h2>
-
-    <!-- LAYAR KALKULATOR UTAMA -->
-    <div class="layar-kalkulator">
-        <div class="layar-rumus" id="layarRumus">Rumus: log [ ((a/b)*(c+π)) / (∑c^n + ...) ] + [ ((g/a)+1%)/B ] * (∬dA)^n</div>
-        <div class="layar-utama" id="layarHasil">0.00</div>
-    </div>
-
-    <!-- AREA INPUT AKTIF MONITOR -->
-    <div class="grid-monitor">
-        <div class="grup-monitor"><label>Komponen Aktif</label><input type="text" id="targetInput" value="v_a" readonly style="background:#e2e8f0; font-weight:bold;"></div>
-        <div class="grup-monitor"><label>Variabel a</label><input type="text" id="v_a" value="10" onclick="setTargetInput('v_a')"></div>
-        <div class="grup-monitor"><label>Variabel b</label><input type="text" id="v_b" value="2" onclick="setTargetInput('v_b')"></div>
-        <div class="grup-monitor"><label>Variabel c</label><input type="text" id="v_c" value="5" onclick="setTargetInput('v_c')"></div>
-        <div class="grup-monitor"><label>Variabel B</label><input type="text" id="v_B" value="3" onclick="setTargetInput('v_B')"></div>
-        <div class="grup-monitor"><label>Integral Lipat 2</label><input type="text" id="v_int" value="4" onclick="setTargetInput('v_int')"></div>
-        <div class="grup-monitor"><label>Pangkat n</label><input type="text" id="v_pow_n" value="2" onclick="setTargetInput('v_pow_n')"></div>
-    </div>
-
-    <div class="layout-grid">
-        
-        <!-- PANEL KIRI: KOTAK PILIH BERMUTU PANAH NAIK/TURUN -->
-        <div class="kotak-pilih">
-            
-            <!-- KATEGORI A0: LOG -->
-            <div class="kategori-grup">
-                <button class="tombol-panah" onclick="toggleKonten('subA0', this)">
-                    <span>a0 (Tanda Panah Log)</span>
-                    <span>▼ Kelihatan</span>
-                </button>
-                <div id="subA0" class="isi-konten">
-                    <!-- Hanya nilai data spesifik yang diberi radio button -->
-                    <div class="baris-nilai">
-                        <label for="rad_a1">a1 (Data Log Utama - Nilai: 15)</label>
-                        <input type="radio" name="radio_param" id="rad_a1" onclick="klikRadioData('a1', 15, 3)">
-                    </div>
-                    <div class="baris-nilai">
-                        <label for="rad_a2">a2 (Data Log Cadangan - Nilai: 30)</label>
-                        <input type="radio" name="radio_param" id="rad_a2" onclick="klikRadioData('a2', 30, 5)">
-                    </div>
-                </div>
-            </div>
-
-            <!-- KATEGORI B0: KONSTANTA -->
-            <div class="kategori-grup">
-                <button class="tombol-panah" onclick="toggleKonten('subB0', this)">
-                    <span>b0 (Konstanta Tabel)</span>
-                    <span>▼ Kelihatan</span>
-                </button>
-                <div id="subB0" class="isi-konten">
-                    <div class="baris-nilai">
-                        <label for="rad_b1">b1 (Konstanta Tetap - Nilai: 8)</label>
-                        <input type="radio" name="radio_param" id="rad_b1" onclick="klikRadioData('b1', 8, 2)">
-                    </div>
-                </div>
-            </div>
-
-            <!-- KATEGORI C0: SUDUT -->
-            <div class="kategori-grup">
-                <button class="tombol-panah" onclick="toggleKonten('subC0', this)">
-                    <span>c0 (Sudut Gambar)</span>
-                    <span>▼ Kelihatan</span>
-                </button>
-                <div id="subC0" class="isi-konten">
-                    <div class="baris-nilai">
-                        <label for="rad_c1">c1 (Sudut Kemiringan - Nilai: 12)</label>
-                        <input type="radio" name="radio_param" id="rad_c1" onclick="klikRadioData('c1', 12, 4)">
-                    </div>
-                </div>
-            </div>
-
-            <!-- MENU RIWAYAT UNTUK EXCEL -->
-            <div class="kategori-grup">
+ 
+<div class="calculator-box">
+    <div class="screen-display">
+        <div class="screen-title">Sudut A + Sudut B = 180°</div>
+        <input type="text" id="angkaA" value="60" readonly class="main-input">
+    </div>
+ 
+    <!-- Grafik Visual Sudut -->
+    <canvas id="grafikSudut" width="340" height="150"></canvas>
+ 
+    <div class="slider-container">
+        <input type="range" id="sliderA" min="0" max="180" value="60" oninput="hentikanAnimasi(); updateSudut(this.value)">
+    </div>
+ 
+    <!-- Tata Letak Tombol Grid Persis Gaya Kalkulator Multi -->
+    <div class="keypad-grid">
+        <!-- Baris 1 -->
+        <button class="btn btn-clear" onclick="tekanKeypad('C')">C</button>
+        <button class="btn btn-func" onclick="tekanKeypad('⌫')">⌫</button>
+        <button class="btn btn-func" onclick="updateSudut(90)">90°</button>
+        <button id="btnPlay" class="btn btn-operator" onclick="toggleAnimasi()">▶</button>
+        
+        <!-- Baris 2 -->
+        <button class="btn btn-number" onclick="tekanKeypad('7')">7</button>
+        <button class="btn btn-number" onclick="tekanKeypad('8')">8</button>
+        <button class="btn btn-number" onclick="tekanKeypad('9')">9</button>
+        <button class="btn btn-func" onclick="updateSudut(180)">180°</button>
+        
+        <!-- Baris 3 -->
+        <button class="btn btn-number" onclick="tekanKeypad('4')">4</button>
+        <button class="btn btn-number" onclick="tekanKeypad('5')">5</button>
+        <button class="btn btn-number" onclick="tekanKeypad('6')">6</button>
+        <button class="btn btn-func" onclick="updateSudut(45)">45°</button>
+        
+        <!-- Baris 4 -->
+        <button class="btn btn-number" onclick="tekanKeypad('1')">1</button>
+        <button class="btn btn-number" onclick="tekanKeypad('2')">2</button>
+        <button class="btn btn-number" onclick="tekanKeypad('3')">3</button>
+        <button class="btn btn-number" onclick="tekanKeypad('0')">0</button>
+ 
+        <!-- Baris Info Hasil Terintegrasi -->
+        <div class="info-panel">
+            <span class="color-a">Sudut A: <strong id="valA">60</strong>°</span>
+            <span class="color-b">Sudut B: <strong id="valB">120</strong>°</span>
+        </div>
+    </div>
+</div>
+ 
+<script>
+const canvas = document.getElementById('grafikSudut');
+const ctx = canvas.getContext('2d');
+const btnPlay = document.getElementById('btnPlay');
+const inputAngka = document.getElementById('angkaA');
+ 
+let IDAnimasi = null;
+let sedangBerputar = false;
+let arahMaju = true;
+ 
+function tekanKeypad(karakter) {
+    hentikanAnimasi();
+    let teksSekarang = inputAngka.value;
+ 
+    if (karakter === 'C') {
+        teksSekarang = '0';
+    } else if (karakter === '⌫') {
+        teksSekarang = teksSekarang.slice(0, -1);
+        if (teksSekarang === '') teksSekarang = '0';
+    } else {
+        if (teksSekarang === '0') {
+            teksSekarang = karakter;
+        } else {
+            teksSekarang += karakter;
+        }
+    }
+ 
+    if (parseFloat(teksSekarang) > 180) {
+        teksSekarang = '180';
+    }
+ 
+    inputAngka.value = teksSekarang;
+    updateSudut(teksSekarang);
+}
+ 
+function updateSudut(nilai) {
+    let sudutA = parseFloat(nilai);
+    if (isNaN(sudutA)) sudutA = 0;
+    if (sudutA < 0) sudutA = 0;
+    if (sudutA > 180) sudutA = 180;
+ 
+    document.getElementById('sliderA').value = sudutA;
+    inputAngka.value = Math.round(sudutA);
+ 
+    document.getElementById('valA').innerText = Math.round(sudutA);
+    document.getElementById('valB').innerText = Math.round(180 - sudutA);
+ 
+    gambarGrafik(sudutA);
+}
+ 
+function gambarGrafik(sudutA) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height - 20;
+    const radius = 100;
+ 
+    // Garis Dasar
+    ctx.beginPath();
+    ctx.moveTo(centerX - radius - 20, centerY);
+    ctx.lineTo(centerX + radius + 20, centerY);
+    ctx.strokeStyle = '#444';
+    ctx.lineWidth = 4;
+    ctx.stroke();
+ 
+    const radian = (sudutA * Math.PI) / 180;
+    const targetX = centerX + radius * Math.cos(-radian);
+    const targetY = centerY + radius * Math.sin(-radian);
+ 
+    // Garis Pembagi
+    ctx.beginPath();
+    ctx.moveTo(centerX, centerY);
+    ctx.lineTo(targetX, targetY);
+    ctx.strokeStyle = '#ff9500';
+    ctx.lineWidth = 4;
+    ctx.stroke();
+ 
+    // Busur Sudut A
+    if (sudutA > 0) {
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, 30, 0, -radian, true);
+        ctx.strokeStyle = '#ff4757';
+        ctx.lineWidth = 3;
+        ctx.stroke();
+    }
+ 
+    // Busur Sudut B
+    if (sudutA < 180) {
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, 38, -radian, -Math.PI, true);
+        ctx.strokeStyle = '#2ed573';
+        ctx.lineWidth = 3;
+        ctx.stroke();
+    }
+}
+ 
+function animasiLoop() {
+    let currentVal = parseFloat(document.getElementById('sliderA').value);
+    if (arahMaju) {
+        currentVal += 1;
+        if (currentVal >= 180) { currentVal = 180; arahMaju = false; }
+    } else {
+        currentVal -= 1;
+        if (currentVal <= 0) { currentVal = 0; arahMaju = true; }
+    }
+    updateSudut(currentVal);
+    IDAnimasi = requestAnimationFrame(animasiLoop);
+}
+ 
+function toggleAnimasi() {
+    if (sedangBerputar) {
+        hentikanAnimasi();
+    } else {
+        sedangBerputar = true;
+        btnPlay.innerText = "⏸";
+        animasiLoop();
+    }
+}
+ 
+function hentikanAnimasi() {
+    sedangBerputar = false;
+    btnPlay.innerText = "▶";
+    cancelAnimationFrame(IDAnimasi);
+}
+ 
+// Inisialisasi awal
+updateSudut(60);
+</script>
+</body>
+</html>
