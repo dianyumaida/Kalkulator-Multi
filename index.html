@@ -3,315 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalkulator Sudut Multi-Style</title>
+    <title>Dropdown Dinamis</title>
     <style>
-        * {
-            box-sizing: border-box;
-            0;
-            padding: 0;
-            'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
         body {
-            background-color: #e9ecef;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-        /* Desain Kotak Utama ala Kalkulator Multi */
-        .calculator-box {
-            background: #22252d;
-            width: 380px;
-            padding: 20px;
-            border-radius: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-        
-        /* Layar Display Utama */
-        .screen-display {
-            background: #292d36;
-            border-radius: 20px;
-            padding: 15px;
-            20px;
-            text-align: right;
-        }
-        .screen-title {
-            color: #4caf50;
-            font-size: 14px;
-            text-align: left;
-            5px;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-        .main-input {
-            width: 100%;
-            background: transparent;
-            border: none;
-            color: #ffffff;
-            font-size: 32px;
-            text-align: right;
-            font-weight: bold;
-            outline: none;
-            padding-bottom: 5px;
-        }
-        
-        /* Slider section */
-        .slider-container {
-            15px 0;
-            padding: 0 5px;
-        }
-        input[type="range"] {
-            width: 100%;
-            height: 6px;
-            background: #444;
-            border-radius: 5px;
-            outline: none;
+            Arial, sans-serif;
+            padding: 30px;
+            background-color: #f5f5f5;
         }
  
-        /* Grafik Visual Canvas */
-        canvas {
-            background: #292d36;
-            border-radius: 20px;
-            20px;
-            width: 100%;
-            display: block;
-        }
- 
-        /* Desain Grid Tombol Keypad */
-        .keypad-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-        }
-        .btn {
-            border: none;
-            outline: none;
-            padding: 18px;
-            font-size: 20px;
-            font-weight: bold;
-            border-radius: 16px;
+        /* Kotak Utama */
+        details {
+            width: 300px;
+            background-color: #ffffff;
+            border: 2px solid #333333;
+            border-radius: 8px;
+            overflow: hidden;
             cursor: pointer;
-            transition: all 0.2s ease;
         }
-        
-        /* Pembagian Warna Tombol Khusus */
-        .btn-number {
-            background-color: #292d36;
-            color: #ffffff;
-        }
-        .btn-number:active { background-color: #373e4a; }
-        
-        .btn-func {
-            background-color: #273c3a;
-            color: #4caf50;
-        }
-        .btn-func:active { background-color: #1e524d; }
  
-        .btn-operator {
-            background-color: #ff9500;
-            color: white;
-        }
-        .btn-operator:active { background-color: #e08400; }
- 
-        .btn-clear {
-            background-color: #f44336;
-            color: white;
-        }
-        .btn-clear:active { background-color: #d32f2f; }
- 
-        /* Hasil Info di bagian bawah */
-        .info-panel {
-            grid-column: span 4;
-            background: #292d36;
-            padding: 12px;
-            border-radius: 12px;
+        /* Tampilan Header */
+        summary {
+            padding: 15px;
+            font-weight: bold;
+            background-color: #eaeaea;
+            list-style: none;
             display: flex;
             justify-content: space-between;
-            color: #aaa;
-            font-size: 14px;
-            5px;
         }
-        .info-panel span strong { font-size: 16px; }
-        .color-a { color: #ff4757; }
-        .color-b { color: #2ed573; }
+ 
+        /* Desain Baris Menu */
+        .baris-menu {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            border-top: 1px solid #cccccc;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+ 
+        .baris-menu:hover {
+            background-color: #f9f9f9;
+        }
+ 
+        /* Sub-Menu Menjorok ke Kanan */
+        .sub-menu {
+            padding-left: 45px;
+            background-color: #fafafa;
+        }
+ 
+        /* 1. SEMBUNYIKAN SEMUA TOMBOL RADIO BAWAAN */
+        .baris-menu input[type="radio"] {
+            display: none;
+        }
+ 
+        /* 2. KUNCI CSS: Buat bulatan radio tiruan yang hanya muncul saat aktif */
+        .baris-menu::after {
+            content: '';
+            width: 12px;
+            height: 12px;
+            border: 2px solid #666666;
+            border-radius: 50%;
+            display: inline-block;
+            visibility: hidden; /* Sembunyikan lingkaran secara default */
+        }
+ 
+        /* 3. Tampilkan lingkaran & beri warna hitam/biru saat kelas '.terpilih' aktif */
+        .baris-menu.terpilih::after {
+            visibility: visible;
+            background-color: #333333; /* Warna isi bulatan saat diklik */
+            border-color: #333333;
+        }
     </style>
 </head>
 <body>
  
-<div class="calculator-box">
-    <div class="screen-display">
-        <div class="screen-title">Sudut A + Sudut B = 180°</div>
-        <input type="text" id="angkaA" value="60" readonly class="main-input">
-    </div>
+    <details>
+        <summary>
+            <span>-- Pilih --</span>
+            <span>▼</span>
+        </summary>
  
-    <!-- Grafik Visual Sudut -->
-    <canvas id="grafikSudut" width="340" height="150"></canvas>
- 
-    <div class="slider-container">
-        <input type="range" id="sliderA" min="0" max="180" value="60" oninput="hentikanAnimasi(); updateSudut(this.value)">
-    </div>
- 
-    <!-- Tata Letak Tombol Grid Persis Gaya Kalkulator Multi -->
-    <div class="keypad-grid">
-        <!-- Baris 1 -->
-        <button class="btn btn-clear" onclick="tekanKeypad('C')">C</button>
-        <button class="btn btn-func" onclick="tekanKeypad('⌫')">⌫</button>
-        <button class="btn btn-func" onclick="updateSudut(90)">90°</button>
-        <button id="btnPlay" class="btn btn-operator" onclick="toggleAnimasi()">▶</button>
-        
-        <!-- Baris 2 -->
-        <button class="btn btn-number" onclick="tekanKeypad('7')">7</button>
-        <button class="btn btn-number" onclick="tekanKeypad('8')">8</button>
-        <button class="btn btn-number" onclick="tekanKeypad('9')">9</button>
-        <button class="btn btn-func" onclick="updateSudut(180)">180°</button>
-        
-        <!-- Baris 3 -->
-        <button class="btn btn-number" onclick="tekanKeypad('4')">4</button>
-        <button class="btn btn-number" onclick="tekanKeypad('5')">5</button>
-        <button class="btn btn-number" onclick="tekanKeypad('6')">6</button>
-        <button class="btn btn-func" onclick="updateSudut(45)">45°</button>
-        
-        <!-- Baris 4 -->
-        <button class="btn btn-number" onclick="tekanKeypad('1')">1</button>
-        <button class="btn btn-number" onclick="tekanKeypad('2')">2</button>
-        <button class="btn btn-number" onclick="tekanKeypad('3')">3</button>
-        <button class="btn btn-number" onclick="tekanKeypad('0')">0</button>
- 
-        <!-- Baris Info Hasil Terintegrasi -->
-        <div class="info-panel">
-            <span class="color-a">Sudut A: <strong id="valA">60</strong>°</span>
-            <span class="color-b">Sudut B: <strong id="valB">120</strong>°</span>
+        <!-- Setiap baris memiliki fungsi onclick untuk memicu JavaScript -->
+        <div class="baris-menu" onclick="pilihMenu(this)">
+            <span>a0</span>
+            <input type="radio" name="pilihan" value="a0">
         </div>
-    </div>
-</div>
  
-<script>
-const canvas = document.getElementById('grafikSudut');
-const ctx = canvas.getContext('2d');
-const btnPlay = document.getElementById('btnPlay');
-const inputAngka = document.getElementById('angkaA');
+        <div class="baris-menu sub-menu" onclick="pilihMenu(this)">
+            <span>a1</span>
+            <input type="radio" name="pilihan" value="a1">
+        </div>
  
-let IDAnimasi = null;
-let sedangBerputar = false;
-let arahMaju = true;
+        <div class="baris-menu sub-menu" onclick="pilihMenu(this)">
+            <span>b1</span>
+            <input type="radio" name="pilihan" value="ab1">
+        </div>
  
-function tekanKeypad(karakter) {
-    hentikanAnimasi();
-    let teksSekarang = inputAngka.value;
+        <div class="baris-menu" onclick="pilihMenu(this)">
+            <span>b0</span>
+            <input type="radio" name="pilihan" value="b0">
+        </div>
  
-    if (karakter === 'C') {
-        teksSekarang = '0';
-    } else if (karakter === '⌫') {
-        teksSekarang = teksSekarang.slice(0, -1);
-        if (teksSekarang === '') teksSekarang = '0';
-    } else {
-        if (teksSekarang === '0') {
-            teksSekarang = karakter;
-        } else {
-            teksSekarang += karakter;
+        <div class="baris-menu sub-menu" onclick="pilihMenu(this)">
+            <span>b1</span>
+            <input type="radio" name="pilihan" value="bb1">
+        </div>
+    </details>
+ 
+    <!-- JAVASCRIPT UNTUK MEMINDAHKAN RADIO -->
+    <script>
+        function pilihMenu(elemenAktif) {
+            // 1. Hapus kelas 'terpilih' dari semua baris menu agar radio sebelumnya hilang
+            document.querySelectorAll('.baris-menu').forEach(baris => {
+                baris.classList.remove('terpilih');
+            });
+ 
+            // 2. Tambahkan kelas 'terpilih' hanya pada baris yang baru saja diklik
+            elemenAktif.classList.add('terpilih');
+ 
+            // 3. Cari tag <input type="radio"> di dalam baris tersebut lalu centang (check) nilainya
+            const radioAsli = elemenAktif.querySelector('input[type="radio"]');
+            if (radioAsli) {
+                radioAsli.checked = true;
+            }
         }
-    }
+    </script>
  
-    if (parseFloat(teksSekarang) > 180) {
-        teksSekarang = '180';
-    }
- 
-    inputAngka.value = teksSekarang;
-    updateSudut(teksSekarang);
-}
- 
-function updateSudut(nilai) {
-    let sudutA = parseFloat(nilai);
-    if (isNaN(sudutA)) sudutA = 0;
-    if (sudutA < 0) sudutA = 0;
-    if (sudutA > 180) sudutA = 180;
- 
-    document.getElementById('sliderA').value = sudutA;
-    inputAngka.value = Math.round(sudutA);
- 
-    document.getElementById('valA').innerText = Math.round(sudutA);
-    document.getElementById('valB').innerText = Math.round(180 - sudutA);
- 
-    gambarGrafik(sudutA);
-}
- 
-function gambarGrafik(sudutA) {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    const centerX = canvas.width / 2;
-    const centerY = canvas.height - 20;
-    const radius = 100;
- 
-    // Garis Dasar
-    ctx.beginPath();
-    ctx.moveTo(centerX - radius - 20, centerY);
-    ctx.lineTo(centerX + radius + 20, centerY);
-    ctx.strokeStyle = '#444';
-    ctx.lineWidth = 4;
-    ctx.stroke();
- 
-    const radian = (sudutA * Math.PI) / 180;
-    const targetX = centerX + radius * Math.cos(-radian);
-    const targetY = centerY + radius * Math.sin(-radian);
- 
-    // Garis Pembagi
-    ctx.beginPath();
-    ctx.moveTo(centerX, centerY);
-    ctx.lineTo(targetX, targetY);
-    ctx.strokeStyle = '#ff9500';
-    ctx.lineWidth = 4;
-    ctx.stroke();
- 
-    // Busur Sudut A
-    if (sudutA > 0) {
-        ctx.beginPath();
-        ctx.arc(centerX, centerY, 30, 0, -radian, true);
-        ctx.strokeStyle = '#ff4757';
-        ctx.lineWidth = 3;
-        ctx.stroke();
-    }
- 
-    // Busur Sudut B
-    if (sudutA < 180) {
-        ctx.beginPath();
-        ctx.arc(centerX, centerY, 38, -radian, -Math.PI, true);
-        ctx.strokeStyle = '#2ed573';
-        ctx.lineWidth = 3;
-        ctx.stroke();
-    }
-}
- 
-function animasiLoop() {
-    let currentVal = parseFloat(document.getElementById('sliderA').value);
-    if (arahMaju) {
-        currentVal += 1;
-        if (currentVal >= 180) { currentVal = 180; arahMaju = false; }
-    } else {
-        currentVal -= 1;
-        if (currentVal <= 0) { currentVal = 0; arahMaju = true; }
-    }
-    updateSudut(currentVal);
-    IDAnimasi = requestAnimationFrame(animasiLoop);
-}
- 
-function toggleAnimasi() {
-    if (sedangBerputar) {
-        hentikanAnimasi();
-    } else {
-        sedangBerputar = true;
-        btnPlay.innerText = "⏸";
-        animasiLoop();
-    }
-}
- 
-function hentikanAnimasi() {
-    sedangBerputar = false;
-    btnPlay.innerText = "▶";
-    cancelAnimationFrame(IDAnimasi);
-}
- 
-// Inisialisasi awal
-updateSudut(60);
-</script>
 </body>
 </html>
