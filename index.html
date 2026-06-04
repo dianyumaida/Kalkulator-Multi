@@ -100,10 +100,25 @@
             <input type="radio" name="pilihan" value="konstanta">
         </div>
  
-        <div class="baris-menu" onclick="pilihMenu(this)">
-            <span>sudut</span>
-            <input type="radio" name="pilihan" value="sudut">
-        </div>
+        <div class="menu-wrapper">
+    <div class="baris-sudut" onclick="pilihMenuUtama(this)">
+        <span>sudut</span>
+        <input type="radio" name="pilihan" value="sudut" id="radioSudut">
+    </div>
+   
+    <ul class="anak-sudut" id="subMenuSudut">
+        <li onclick="pilihAnakSudut('sin', event)">
+            <input type="radio" name="sub_pilihan" value="sin"> <span>sin</span>
+        </li>
+        <li onclick="pilihAnakSudut('cos', event)">
+            <input type="radio" name="sub_pilihan" value="cos"> <span>cos</span>
+        </li>
+        <li onclick="pilihAnakSudut('tan', event)">
+            <input type="radio" name="sub_pilihan" value="tan"> <span>tan</span>
+        </li>
+    </ul>
+</div>
+
  
         <div class="baris-menu sub-menu" onclick="pilihMenu(this)">
             <span>riwayat</span>
