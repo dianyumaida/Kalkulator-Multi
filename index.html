@@ -167,16 +167,25 @@
             <span>▼</span>
         </summary>  
     <!-- Anak menu di bawahnya (Sub-menu) -->
-    <ul class="anak-sudut" id="subMenuSudut">
-        <li onclick="pilihAnakSudut('pitagoras', event)">
+    <ul class="anak-segitiga" id="subMenuSegitiga">
+        <li onclick="pilihAnakSegitiga('Luas', event)">
+            <input type="radio" name="sub_pilihan" value="Luas"> <span>Luas</span>
+        </li>
+        <li onclick="pilihAnakSegitiga('keliling', event)">
+            <input type="radio" name="sub_pilihan" value="keliling"> <span>Keliling</span>
+        </li>
+        <li onclick="pilihAnakSegitiga('sisi', event)">
+            <input type="radio" name="sub_pilihan" value="sisi"> <span>Sisi</span>
+        </li>
+        <ul class="anak-sudut" id="subMenuSudut">
+        <li onclick="pilihAnakSegitiga('sin', event)">
             <input type="radio" name="sub_pilihan" value="sin"> <span>sin</span>
         </li>
-        <li onclick="pilihAnakSudut('sisi', event)">
+            <li onclick="pilihAnakSegitiga('cos', event)">
             <input type="radio" name="sub_pilihan" value="cos"> <span>cos</span>
         </li>
-        <li onclick="pilihAnakSudut('sudut', event)">
-            <input type="radio" name="sub_pilihan" value="tan"> <span>tan</span>
-        </li>
+        <li onclick="pilihAnakSegitiga('tan', event)">
+            <input type="radio" name="sub_pilihan" value="tan"> <span>tan</span>        
     </ul>
 </div>
         </summary>
