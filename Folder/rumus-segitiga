@@ -3,185 +3,268 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalkulator Segitiga Multi Rumus</title>
+    <title>Dropdown Dinamis - Rumus Segitiga</title>
     <style>
-        /* CSS Sederhana untuk mempercantik tampilan */
+        /* --- 1. KODE CSS ASLI RANCANGAN ANDA (GAMBAR 1, 5, 6) --- */
         body {
             font-family: Arial, sans-serif;
-            padding: 20px;
-            background-color: #f4f4f9;
+            padding: 30px;
+            background-color: #f5f5f5;
         }
-        .kalkulator-box {
-            max-width: 400px;
-            background: white;
-            padding: 20px;
+
+        /* Kotak Utama Dropdown */
+        details {
+            width: 300px;
+            background-color: #ffffff;
+            border: 2px solid #333333;
             border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+            cursor: pointer;
         }
-        .pilihan-rumus {
-            margin-bottom: 15px;
+
+        /* Tampilan Header Dropdown */
+        summary {
+            padding: 15px;
+            font-weight: bold;
+            background-color: #eaeaea;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
         }
-        .input-group {
+
+        /* Desain Baris Menu */
+        .baris-menu {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            border-top: 1px solid #cccccc;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .baris-menu:hover {
+            background-color: #f9f9f9;
+        }
+
+        /* Sub-Menu Menjorok ke Kanan */
+        .sub-menu {
+            padding-left: 45px;
+            background-color: #fafafa;
+        }
+
+        /* SEMBUNYIKAN SEMUA TOMBOL RADIO BAWAAN BROWSER */
+        .baris-menu input[type="radio"] {
+            display: none;
+        }
+
+        /* KUNCI CSS: Buat bulatan radio tiruan */
+        .baris-menu::after {
+            content: '';
+            width: 12px;
+            height: 12px;
+            border: 2px solid #666666;
+            border-radius: 50%;
+            display: inline-block;
+            visibility: hidden; /* Sembunyikan bulatan di awal */
+        }
+
+        /* Tampilkan lingkaran & beri warna hitam saat class terpilih aktif */
+        .baris-menu.terpilih::after {
+            visibility: visible;
+            background-color: #333333;
+            border-color: #333333;
+        }
+
+        /* --- 2. STYLE TAMBAHAN KHUSUS UNTUK FORM INPUT ANGKA --- */
+        .box-hitung {
+            width: 276px;
+            background-color: #ffffff;
+            border: 2px solid #333333;
+            border-radius: 8px;
+            margin-top: 15px;
+            padding: 10px;
+        }
+        .input-grup {
             margin-bottom: 10px;
         }
-        label {
-            display: block;
+        .input-grup label {
             font-weight: bold;
-            margin-bottom: 5px;
+            font-size: 14px;
         }
-        input[type="number"] {
+        .input-grup input {
+            width: 100%;
+            padding: 6px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-top: 4px;
+        }
+        .btn-hitung {
             width: 100%;
             padding: 8px;
-            box-sizing: border-box;
-        }
-        button {
-            width: 100%;
-            padding: 10px;
-            background-color: #007bff;
-            color: white;
+            background-color: #333333;
+            color: #ffffff;
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 16px;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        #hasil {
-            margin-top: 15px;
-            font-size: 18px;
             font-weight: bold;
-            color: #333;
+        }
+        .btn-hitung:hover {
+            background-color: #555555;
         }
     </style>
 </head>
 <body>
 
-<div class="kalkulator-box">
-    <h2>Kalkulator Segitiga</h2>
-    
-    <!-- Bagian Pemanggil Rumus Menggunakan Radio Button -->
-    <div class="pilihan-rumus">
-        <label>Pilih Rumus:</label>
-        <input type="radio" name="rumus" value="luas_dasar" id="r_luas_dasar" checked onchange="aturInput()">
-        <label style="display:inline;" for="r_luas_dasar">Luas (Alas & Tinggi)</label><br>
+    <!-- --- 3. STRUKTUR HTML DROPDOWN YANG SUDAH DIPERBAIKI TAG-NYA --- -->
+    <details>
+        <!-- Judul Dropdown Utama -->
+        <summary>
+            <span>-- rumus segitiga --</span>
+            <span>▼</span>
+        </summary>
+        
+        <!-- Wadah isi menu list -->
+        <div style="padding: 5px 0;">
+            <!-- Anak menu untuk Segitiga Utama -->
+            <ul class="anak-segitiga" id="subMenuSegitiga" style="list-style: none; margin: 0; padding: 0;">
+                <li onclick="pilihanAnakSegitiga('Luas', this)" class="baris-menu terpilih">
+                    <span>Luas</span>
+                    <input type="radio" name="sub_pilihan" value="Luas" checked>
+                </li>
+                <li onclick="pilihanAnakSegitiga('keliling', this)" class="baris-menu">
+                    <span>Keliling</span>
+                    <input type="radio" name="sub_pilihan" value="keliling">
+                </li>
+                <li onclick="pilihanAnakSegitiga('sisi', this)" class="baris-menu">
+                    <span>Sisi</span>
+                    <input type="radio" name="sub_pilihan" value="sisi">
+                </li>
+                <li onclick="pilihanAnakSegitiga('sudut', this)" class="baris-menu">
+                    <span>Sudut</span>
+                    <input type="radio" name="sub_pilihan" value="sudut">
+                </li>
+            </ul>
 
-        <input type="radio" name="rumus" value="luas_heron" id="r_luas_heron" onchange="aturInput()">
-        <label style="display:inline;" for="r_luas_heron">Luas (3 Sisi / Heron)</label><br>
+            <!-- Anak menu khusus untuk Sudut (Trigonometri) -->
+            <ul class="anak-sudut" id="subMenuSudut" style="list-style: none; margin: 0; padding: 0;">
+                <li onclick="pilihanAnakSegitiga('sin', this)" class="baris-menu sub-menu">
+                    <span>Sin</span>
+                    <input type="radio" name="sub_pilihan" value="sin">
+                </li>
+                <li onclick="pilihanAnakSegitiga('cos', this)" class="baris-menu sub-menu">
+                    <span>Cos</span>
+                    <input type="radio" name="sub_pilihan" value="cos">
+                </li>
+                <li onclick="pilihanAnakSegitiga('tan', this)" class="baris-menu sub-menu">
+                    <span>Tan</span>
+                    <input type="radio" name="sub_pilihan" value="tan">
+                </li>
+            </ul>
+        </div>
+    </details>
 
-        <input type="radio" name="rumus" value="luas_sama_sisi" id="r_luas_sama_sisi" onchange="aturInput()">
-        <label style="display:inline;" for="r_luas_sama_sisi">Luas (Segitiga Sama Sisi)</label><br>
-
-        <input type="radio" name="rumus" value="keliling" id="r_keliling" onchange="aturInput()">
-        <label style="display:inline;" for="r_keliling">Keliling (3 Sisi)</label><br>
-
-        <input type="radio" name="rumus" value="pythagoras" id="r_pythagoras" onchange="aturInput()">
-        <label style="display:inline;" for="r_pythagoras">Pythagoras (Cari Sisi Miring C)</label>
+    <!-- --- 4. KOTAK FORM INPUT ANGKA KALKULATOR --- -->
+    <div class="box-hitung">
+        <div class="input-grup" id="grup_a">
+            <label id="txt_a">Alas (a):</label>
+            <input type="number" id="val_a" placeholder="Masukkan nilai">
+        </div>
+        <div class="input-grup" id="grup_b">
+            <label id="txt_b">Tinggi (t):</label>
+            <input type="number" id="val_b" placeholder="Masukkan nilai">
+        </div>
+        <div class="input-grup" id="grup_c" style="display: none;">
+            <label id="txt_c">Sisi C (c):</label>
+            <input type="number" id="val_c" placeholder="Masukkan nilai">
+        </div>
+        
+        <button class="btn-hitung" onclick="hitungKalkulatorSegitiga()">Hitung</button>
+        <p id="output_hasil" style="font-weight: bold; margin-top: 12px; text-align: center;">Hasil: -</p>
     </div>
 
-    <!-- Kolom Input Angka (Akan Sembunyi/Muncul Otomatis) -->
-    <div class="input-group" id="box_alas">
-        <label id="label_alas">Alas (a) / Sisi A:</label>
-        <input type="number" id="input_a" placeholder="Masukkan nilai">
-    </div>
-    
-    <div class="input-group" id="box_tinggi">
-        <label id="label_tinggi">Tinggi (t) / Sisi B:</label>
-        <input type="number" id="input_b" placeholder="Masukkan nilai">
-    </div>
-
-    <div class="input-group" id="box_sisi3" style="display:none;">
-        <label>Sisi C (c):</label>
-        <input type="number" id="input_c" placeholder="Masukkan nilai">
-    </div>
-
-    <button onclick="hitungSegitiga()">Hitung Hasil</button>
-
-    <!-- Tempat Menampilkan Hasil Hitungan -->
-    <div id="hasil">Hasil: -</div>
-</div>
-
+<!-- --- 5. JAVASCRIPT UNTUK MENGAKTIFKAN SAKELAR BULATAN DAN RUMUS --- -->
 <script>
-// Fungsi JavaScript untuk memunculkan/menyembunyikan kolom input sesuai Radio Button yang dipilih
-function aturInput() {
-    let rumusTerpilih = document.querySelector('input[name="rumus"]:checked').value;
-    
-    // Ambil elemen box input
-    let boxAlas = document.getElementById("box_alas");
-    let boxTinggi = document.getElementById("box_tinggi");
-    let boxSisi3 = document.getElementById("box_sisi3");
-    
-    // Ambil elemen label teks
-    let labelAlas = document.getElementById("label_alas");
-    let labelTinggi = document.getElementById("label_tinggi");
+let rumusAktif = 'Luas'; // Menyimpan rumus yang sedang aktif (Bawaan awal: Luas)
 
-    // Reset setelan awal semua kolom muncul
-    boxAlas.style.display = "block";
-    boxTinggi.style.display = "block";
-    boxSisi3.style.display = "none";
-    labelAlas.innerText = "Alas (a) / Sisi A:";
-    labelTinggi.innerText = "Tinggi (t) / Sisi B:";
+function pilihanAnakSegitiga(jenisRumus, elemenAktif) {
+    rumusAktif = jenisRumus;
 
-    // Atur logika tampilan berdasarkan pilihan radio
-    if (rumusTerpilih === "luas_dasar") {
-        labelAlas.innerText = "Alas (a):";
-        labelTinggi.innerText = "Tinggi (t):";
-    } else if (rumusTerpilih === "luas_heron" || rumusTerpilih === "keliling") {
-        labelAlas.innerText = "Panjang Sisi A:";
-        labelTinggi.innerText = "Panjang Sisi B:";
-        boxSisi3.style.display = "block"; // Munculkan input sisi ketiga (C)
-    } else if (rumusTerpilih === "luas_sama_sisi") {
-        labelAlas.innerText = "Panjang Sisi (s):";
-        boxTinggi.style.display = "none"; // Sembunyikan input tinggi karena hanya butuh satu sisi
-    } else if (rumusTerpilih === "pythagoras") {
-        labelAlas.innerText = "Sisi Alas Siku-siku (a):";
-        labelTinggi.innerText = "Sisi Tinggi Siku-siku (b):";
+    // 1. Hapus kelas 'terpilih' dari semua elemen <li> agar lingkaran hitam padam
+    let semuaLi = document.querySelectorAll('li.baris-menu');
+    semuaLi.forEach(li => {
+        li.classList.remove('terpilih');
+    });
+
+    // 2. Tambahkan kelas 'terpilih' hanya pada elemen <li> yang Anda klik di HP
+    if (elemenAktif) {
+        elemenAktif.classList.add('terpilih');
+    }
+
+    // 3. Cari tag <input type="radio"> di dalam <li> tersebut dan aktifkan centangnya
+    const radioAsli = elemenAktif.querySelector('input[type="radio"]');
+    if (radioAsli) {
+        radioAsli.checked = true;
+    }
+
+    // 4. ATUR OTOMATIS TAMPILAN FORM ANGKA SESUAI RUMUS YANG DIKLIK
+    let grupB = document.getElementById("grup_b");
+    let grupC = document.getElementById("grup_c");
+    let txtA = document.getElementById("txt_a");
+    let txtB = document.getElementById("txt_b");
+    let txtC = document.getElementById("txt_c");
+
+    // Setelan dasar awal (kolom A dan B muncul, C sembunyi)
+    grupB.style.display = "block";
+    grupC.style.display = "none";
+
+    if (jenisRumus === 'Luas') {
+        txtA.innerText = "Alas (a):";
+        txtB.innerText = "Tinggi (t):";
+    } else if (jenisRumus === 'keliling') {
+        txtA.innerText = "Panjang Sisi A:";
+        txtB.innerText = "Panjang Sisi B:";
+        grupC.style.display = "block"; // Munculkan input sisi C
+        txtC.innerText = "Panjang Sisi C:";
+    } else if (jenisRumus === 'sisi') {
+        txtA.innerText = "Sisi Alas Siku (a):";
+        txtB.innerText = "Sisi Tinggi Siku (b):";
+    } else if (jenisRumus === 'sudut' || jenisRumus === 'sin' || jenisRumus === 'cos' || jenisRumus === 'tan') {
+        txtA.innerText = "Nilai Angka / Derajat:";
+        grupB.style.display = "none"; // Rumus sudut/trigonometri hanya butuh 1 kolom input
     }
 }
 
-// Fungsi utama untuk menghitung rumus matematika segitiga
-function hitungSegitiga() {
-    let rumusTerpilih = document.querySelector('input[name="rumus"]:checked').value;
-    
-    // Ambil nilai angka dari form input dan ubah menjadi tipe pecahan (Float)
-    let valA = parseFloat(document.getElementById("input_a").value) || 0;
-    let valB = parseFloat(document.getElementById("input_b").value) || 0;
-    let valC = parseFloat(document.getElementById("input_c").value) || 0;
-    
-    let hasilAkhir = 0;
-    let teksHasil = "";
+// FUNGSI UTAMA UNTUK MENGEKSEKUSI HITUNGAN
+function hitungKalkulatorSegitiga() {
+    let a = parseFloat(document.getElementById("val_a").value) || 0;
+    let b = parseFloat(document.getElementById("val_b").value) || 0;
+    let c = parseFloat(document.getElementById("val_c").value) || 0;
+    let hasil = 0;
 
-    // Logika perhitungan rumus matematika
-    if (rumusTerpilih === "luas_dasar") {
-        hasilAkhir = 0.5 * valA * valB;
-        teksHasil = "Luas Segitiga: " + hasilAkhir;
-        
-    } else if (rumusTerpilih === "luas_heron") {
-        if (valA + valB > valC && valA + valC > valB && valB + valC > valA) {
-            let s = (valA + valB + valC) / 2;
-            hasilAkhir = Math.sqrt(s * (s - valA) * (s - valB) * (s - valC));
-            teksHasil = "Luas (Heron): " + hasilAkhir.toFixed(2);
-        } else {
-            teksHasil = "Bukan segitiga valid! (Jumlah 2 sisi harus > sisi lainnya)";
-        }
-        
-    } else if (rumusTerpilih === "luas_sama_sisi") {
-        hasilAkhir = (Math.pow(valA, 2) / 4) * Math.sqrt(3);
-        teksHasil = "Luas (Sama Sisi): " + hasilAkhir.toFixed(2);
-        
-    } else if (rumusTerpilih === "keliling") {
-        hasilAkhir = valA + valB + valC;
-        teksHasil = "Keliling Segitiga: " + hasilAkhir;
-        
-    } else if (rumusTerpilih === "pythagoras") {
-        hasilAkhir = Math.sqrt(Math.pow(valA, 2) + Math.pow(valB, 2));
-        teksHasil = "Sisi Miring C (Hipotenusa): " + hasilAkhir.toFixed(2);
+    if (rumusAktif === 'Luas') {
+        hasil = 0.5 * a * b;
+        document.getElementById("output_hasil").innerText = "Hasil Luas: " + hasil;
+    } else if (rumusAktif === 'keliling') {
+        hasil = a + b + c;
+        document.getElementById("output_hasil").innerText = "Hasil Keliling: " + hasil;
+    } else if (rumusAktif === 'sisi') {
+        hasil = Math.sqrt((a * a) + (b * b)); // Rumus Pythagoras cari Sisi Miring C
+        document.getElementById("output_hasil").innerText = "Sisi Miring C = " + hasil.toFixed(2);
+    } else if (rumusAktif === 'sin') {
+        hasil = Math.sin(a * Math.PI / 180);
+        document.getElementById("output_hasil").innerText = "Hasil Sin(" + a + "°) = " + hasil.toFixed(4);
+    } else if (rumusAktif === 'cos') {
+        hasil = Math.cos(a * Math.PI / 180);
+        document.getElementById("output_hasil").innerText = "Hasil Cos(" + a + "°) = " + hasil.toFixed(4);
+    } else if (rumusAktif === 'tan') {
+        hasil = Math.tan(a * Math.PI / 180);
+        document.getElementById("output_hasil").innerText = "Hasil Tan(" + a + "°) = " + hasil.toFixed(4);
+    } else {
+        document.getElementById("output_hasil").innerText = "Hasil: -";
     }
-
-    // Tampilkan hasil ke layar HTML
-    document.getElementById("hasil").innerText = "Hasil: " + teksHasil;
 }
 </script>
-
 </body>
 </html>
