@@ -85,12 +85,11 @@
         </summary>
  
         <!-- Setiap baris memiliki fungsi onclick untuk memicu JavaScript -->
-        <div class="menu-wrapper">
-    <div class="baris-sudut" onclick="pilihMenuUtama(this)">
-        <span>sudut</span>
-        <input type="radio" name="pilihan" value="sudut" id="radioSudut">
-    </div>
-   
+        <div class="menu-wrapper">
+     <summary>
+            <span>-- sudut --</span>
+            <span>▼</span>
+        </summary>
     <ul class="anak-sudut" id="subMenuSudut">
         <li onclick="pilihAnakSudut('sin', event)">
             <input type="radio" name="sub_pilihan" value="sin"> <span>sin</span>
@@ -109,6 +108,11 @@
             <span>rekam riwayat</span>
             <input type="radio" name="pilihan" value="rekam riwayat">
         </div>
+        
+    <ul class="anak-sudut" id="subMenuSudut">
+        <li onclick="pilihAnakSudut('sin', event)">
+            <input type="radio" name="sub_pilihan" value="tobol delet riwayat"> <span>tombol delet riwayat</span>
+        </li>
     </details>
  
     <!-- JAVASCRIPT UNTUK MEMINDAHKAN RADIO -->
