@@ -161,27 +161,20 @@
 </head>
 <body>
  
-    <details>
-               
+    <details>             
         <summary>
-            <span>-- rumus segiempat --</span>
+            <span>-- rumus segitiga --</span>
             <span>▼</span>
         </summary>  
-     <div class="menu-wrapper">
-    <div class="baris-sudut" onclick="pilihMenuUtama(this)">
-        <span>sudut</span>
-        <input type="radio" name="pilihan" value="sudut" id="radioSudut">
-    </div>
-    
     <!-- Anak menu di bawahnya (Sub-menu) -->
     <ul class="anak-sudut" id="subMenuSudut">
-        <li onclick="pilihAnakSudut('sin', event)">
+        <li onclick="pilihAnakSudut('pitagoras', event)">
             <input type="radio" name="sub_pilihan" value="sin"> <span>sin</span>
         </li>
-        <li onclick="pilihAnakSudut('cos', event)">
+        <li onclick="pilihAnakSudut('sisi', event)">
             <input type="radio" name="sub_pilihan" value="cos"> <span>cos</span>
         </li>
-        <li onclick="pilihAnakSudut('tan', event)">
+        <li onclick="pilihAnakSudut('sudut', event)">
             <input type="radio" name="sub_pilihan" value="tan"> <span>tan</span>
         </li>
     </ul>
