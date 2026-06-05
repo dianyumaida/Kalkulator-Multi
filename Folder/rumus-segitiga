@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Segitiga Multi Rumus</title>
+    <style>
+        /* CSS Sederhana untuk mempercantik tampilan */
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f4f4f9;
+        }
+        .kalkulator-box {
+            max-width: 400px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .pilihan-rumus {
+            margin-bottom: 15px;
+        }
+        .input-group {
+            margin-bottom: 10px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #hasil {
+            margin-top: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+<div class="kalkulator-box">
+    <h2>Kalkulator Segitiga</h2>
+    
+    <!-- Bagian Pemanggil Rumus Menggunakan Radio Button -->
+    <div class="pilihan-rumus">
+        <label>Pilih Rumus:</label>
+        <input type="radio" name="rumus" value="luas_dasar" id="r_luas_dasar" checked onchange="aturInput()">
+        <label style="display:inline;" for="r_luas_dasar">Luas (Alas & Tinggi)</label><br>
+
+        <input type="radio" name="rumus" value="luas_heron" id="r_luas_heron" onchange="aturInput()">
+        <label style="display:inline;" for="r_luas_heron">Luas (3 Sisi / Heron)</label><br>
+
+        <input type="radio" name="rumus" value="luas_sama_sisi" id="r_luas_sama_sisi" onchange="aturInput()">
+        <label style="display:inline;" for="r_luas_sama_sisi">Luas (Segitiga Sama Sisi)</label><br>
+
+        <input type="radio" name="rumus" value="keliling" id="r_keliling" onchange="aturInput()">
+        <label style="display:inline;" for="r_keliling">Keliling (3 Sisi)</label><br>
+
+        <input type="radio" name="rumus" value="pythagoras" id="r_pythagoras" onchange="aturInput()">
+        <label style="display:inline;" for="r_pythagoras">Pythagoras (Cari Sisi Miring C)</label>
+    </div>
+
+    <!-- Kolom Input Angka (Akan Sembunyi/Muncul Otomatis) -->
+    <div class="input-group" id="box_alas">
+        <label id="label_alas">Alas (a) / Sisi A:</label>
+        <input type="number" id="input_a" placeholder="Masukkan nilai">
+    </div>
+    
+    <div class="input-group" id="box_tinggi">
+        <label id="label_tinggi">Tinggi (t) / Sisi B:</label>
+        <input type="number" id="input_b" placeholder="Masukkan nilai">
+    </div>
+
+    <div class="input-group" id="box_sisi3" style="display:none;">
+        <label>Sisi C (c):</label>
+        <input type="number" id="input_c" placeholder="Masukkan nilai">
+    </div>
+
+    <button onclick="hitungSegitiga()">Hitung Hasil</button>
+
+    <!-- Tempat Menampilkan Hasil Hitungan -->
+    <div id="hasil">Hasil: -</div>
+</div>
+
+<script>
+// Fungsi JavaScript untuk memunculkan/menyembunyikan kolom input sesuai Radio Button yang dipilih
+function aturInput() {
+    let rumusTerpilih = document.querySelector('input[name="rumus"]:checked').value;
+    
+    // Ambil elemen box input
+    let boxAlas = document.getElementById("box_alas");
+    let boxTinggi = document.getElementById("box_tinggi");
+    let boxSisi3 = document.getElementById("box_sisi3");
+    
+    // Ambil elemen label teks
+    let labelAlas = document.getElementById("label_alas");
+    let labelTinggi = document.getElementById("label_tinggi");
+
+    // Reset setelan awal semua kolom muncul
+    boxAlas.style.display = "block";
+    boxTinggi.style.display = "block";
+    boxSisi3.style.display = "none";
+    labelAlas.innerText = "Alas (a) / Sisi A:";
+    labelTinggi.innerText = "Tinggi (t) / Sisi B:";
+
+    // Atur logika tampilan berdasarkan pilihan radio
+    if (rumusTerpilih === "luas_dasar") {
+        labelAlas.innerText = "Alas (a):";
+        labelTinggi.innerText = "Tinggi (t):";
+    } else if (rumusTerpilih === "luas_heron" || rumusTerpilih === "keliling") {
+        labelAlas.innerText = "Panjang Sisi A:";
+        labelTinggi.innerText = "Panjang Sisi B:";
+        boxSisi3.style.display = "block"; // Munculkan input sisi ketiga (C)
+    } else if (rumusTerpilih === "luas_sama_sisi") {
+        labelAlas.innerText = "Panjang Sisi (s):";
+        boxTinggi.style.display = "none"; // Sembunyikan input tinggi karena hanya butuh satu sisi
+    } else if (rumusTerpilih === "pythagoras") {
+        labelAlas.innerText = "Sisi Alas Siku-siku (a):";
+        labelTinggi.innerText = "Sisi Tinggi Siku-siku (b):";
+    }
+}
+
+// Fungsi utama untuk menghitung rumus matematika segitiga
+function hitungSegitiga() {
+    let rumusTerpilih = document.querySelector('input[name="rumus"]:checked').value;
+    
+    // Ambil nilai angka dari form input dan ubah menjadi tipe pecahan (Float)
+    let valA = parseFloat(document.getElementById("input_a").value) || 0;
+    let valB = parseFloat(document.getElementById("input_b").value) || 0;
+    let valC = parseFloat(document.getElementById("input_c").value) || 0;
+    
+    let hasilAkhir = 0;
+    let teksHasil = "";
+
+    // Logika perhitungan rumus matematika
+    if (rumusTerpilih === "luas_dasar") {
+        hasilAkhir = 0.5 * valA * valB;
+        teksHasil = "Luas Segitiga: " + hasilAkhir;
+        
+    } else if (rumusTerpilih === "luas_heron") {
+        if (valA + valB > valC && valA + valC > valB && valB + valC > valA) {
+            let s = (valA + valB + valC) / 2;
+            hasilAkhir = Math.sqrt(s * (s - valA) * (s - valB) * (s - valC));
+            teksHasil = "Luas (Heron): " + hasilAkhir.toFixed(2);
+        } else {
+            teksHasil = "Bukan segitiga valid! (Jumlah 2 sisi harus > sisi lainnya)";
+        }
+        
+    } else if (rumusTerpilih === "luas_sama_sisi") {
+        hasilAkhir = (Math.pow(valA, 2) / 4) * Math.sqrt(3);
+        teksHasil = "Luas (Sama Sisi): " + hasilAkhir.toFixed(2);
+        
+    } else if (rumusTerpilih === "keliling") {
+        hasilAkhir = valA + valB + valC;
+        teksHasil = "Keliling Segitiga: " + hasilAkhir;
+        
+    } else if (rumusTerpilih === "pythagoras") {
+        hasilAkhir = Math.sqrt(Math.pow(valA, 2) + Math.pow(valB, 2));
+        teksHasil = "Sisi Miring C (Hipotenusa): " + hasilAkhir.toFixed(2);
+    }
+
+    // Tampilkan hasil ke layar HTML
+    document.getElementById("hasil").innerText = "Hasil: " + teksHasil;
+}
+</script>
+
+</body>
+</html>
