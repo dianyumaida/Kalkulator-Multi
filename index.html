@@ -3,119 +3,302 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalkulator Utama</title>
-    <!-- Masukkan style Brutalisme Kalkulator Anda di sini -->
+    <title>Kalkulator Multi - Sesuai Gambar</title>
     <style>
-        /* ... Style kalkulator dan grid angka Anda ... */
-        
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #1a1d24; /* Background gelap agar kalkulator menonjol */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        /* CONTAINER UTAMA KALKULATOR (STYLE NEO-BRUTALISME) */
+        .kalkulator-box {
+            width: 340px;
+            background-color: #ffffff;
+            border: 2.5px solid #000000;
+            border-radius: 12px;
+            padding: 14px;
+            box-shadow: 5px 5px 0px #000000;
+        }
+
+        /* DISPLAY SKRIN ATAS */
+        .display-screen {
+            width: 100%;
+            height: 130px;
+            border: 2.5px solid #000000;
+            border-radius: 6px;
+            background-color: #ffffff;
+            margin-bottom: 14px;
+            padding: 12px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .display-screen .indicator-merah {
+            color: #bd2a2a;
+            font-weight: bold;
+            font-size: 24px;
+            margin: 0;
+        }
+
+        .display-screen .main-number {
+            align-self: flex-end;
+            font-size: 32px;
+            font-weight: bold;
+            color: #000000;
+            margin: 0;
+        }
+
+        /* BARIS TOMBOL OPERASI (+ - * : =) */
+        .row-operasi {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .btn-ops {
+            background-color: #ffdecb; /* Warna pastel orange muda */
+            border: 2.5px solid #000000;
+            border-radius: 6px;
+            padding: 10px 0;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 1.5px 1.5px 0px #000000;
+            transition: transform 0.05s;
+        }
+
+        .btn-ops:active {
+            transform: translate(1.5px, 1.5px);
+            box-shadow: 0px 0px 0px #000;
+        }
+
+        /* BAGIAN AREA BAWAH (PANEL HIJAU KIRI & GRID ANGKA) */
+        .area-bawah {
+            display: grid;
+            grid-template-columns: 1fr 1.8fr;
+            gap: 12px;
+        }
+
+        /* PANEL KIRI (HIJAU MUDA) */
         .panel-kiri {
             background-color: #e2ede2;
-            border: 2px solid #000000;
-            border-radius: 6px;
+            border: 2.5px solid #000000;
+            border-radius: 8px;
             padding: 10px;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
             position: relative;
         }
-        .field-tampilan {
+
+        .field-box {
             background-color: #ffffff;
-            border: 1px solid #000000;
+            border: 1.5px solid #000000;
             border-radius: 5px;
-            height: 32px;
+            height: 35px;
             display: flex;
             align-items: center;
             padding-left: 8px;
             font-size: 13px;
-            color: #333;
             font-weight: bold;
+            color: #333333;
         }
 
-        /* CONTAINER IFRAME UNTUK POPUP MENU */
-        .iframe-wrapper {
-            position: absolute;
-            left: -10px;
-            top: 140px; /* Atur posisi munculnya tepat di bawah tombol pilih */
-            width: 340px;
-            height: 300px;
-            z-index: 100;
-            display: none; /* Sembunyi secara default */
-            border: none;
+        /* TOMBOL < PILIH > SANGAT MIRIP GAMBAR */
+        .btn-pilih {
+            background-color: #ffffff;
+            border: 1.5px solid #bd2a2a;
+            color: #bd2a2a;
+            font-weight: bold;
+            font-size: 13px;
+            padding: 8px 0;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            letter-spacing: 0.5px;
+            box-shadow: 1px 1px 0px #000000;
         }
-        .iframe-wrapper iframe {
+
+        /* CONTAINER POPUP IFRAME (UNTUK PILIH.HTML DI DALAM FOLDER) */
+        .iframe-container {
+            position: absolute;
+            left: -5px;
+            top: 165px; /* Muncul pas di bawah tombol pilih */
+            width: 310px;
+            height: 250px;
+            z-index: 100;
+            display: none; /* Sembunyi sebelum diklik */
+            border: 2.5px solid #000000;
+            border-radius: 6px;
+            box-shadow: 4px 4px 0px #000;
+            background-color: white;
+        }
+
+        .iframe-container iframe {
             width: 100%;
             height: 100%;
             border: none;
         }
-        .btn-pilih {
+
+        /* GRID PAPAN ANGKA KANAN (2 KOLOM - SESUAI GAMBAR) */
+        .grid-angka-kanan {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+
+        .btn-num {
             background-color: #ffffff;
-            border: 1px solid #c96f6f;
-            color: #bd2a2a;
+            border: 2.5px solid #000000;
+            border-radius: 6px;
+            padding: 12px 0;
+            font-size: 20px;
             font-weight: bold;
-            font-size: 14px;
-            padding: 6px 0;
-            border-radius: 4px;
             cursor: pointer;
+            box-shadow: 1.5px 1.5px 0px #000000;
             text-align: center;
-            user-select: none;
+            transition: transform 0.05s;
+        }
+
+        .btn-num:active {
+            transform: translate(1.5px, 1.5px);
+            box-shadow: 0px 0px 0px #000;
+        }
+
+        /* Tombol Kuning Panah Kiri */
+        .btn-kuning {
+            background-color: #ffeeb3;
+        }
+
+        /* Tombol Orange Delete */
+        .btn-orange {
+            background-color: #ffcab0;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
 
-    <!-- KOTAK KALKULATOR ANDA -->
-    <!-- (Bagian Layar Display dan Tombol Angka tetap seperti sebelumnya) -->
-
-    <div class="panel-kiri">
-        <div class="field-tampilan" id="fieldMenu">- Menu -</div>
-        <div class="field-tampilan" id="fieldVal1">Input 1</div>
-        <div class="field-tampilan" id="fieldVal2">Input 2</div>
+    <div class="kalkulator-box">
         
-        <!-- Tombol Pilih Utama -->
-        <div class="btn-pilih" onclick="toggleMenuFolder()">&lt; PILIH &gt;</div>
+        <!-- DISPLAY UTAMA -->
+        <div class="display-screen">
+            <div class="indicator-merah" id="txtIndikator">0</div>
+            <div class="main-number" id="txtDisplay">0</div>
+        </div>
 
-        <!-- BINGKAI LAYAR VIRTUAL UNTUK MEMANGGIL FILE DI DALAM FOLDER -->
-        <div class="iframe-wrapper" id="containerMenu">
-            <!-- Sesuaikan "Folder/pilih.html" dengan nama folder asli Anda di komputer -->
-            <iframe src="Folder/pilih.html" id="layarMenu"></iframe>
+        <!-- BARIS OPERASI -->
+        <div class="row-operasi">
+            <button class="btn-ops" onclick="pressOps('+')">+</button>
+            <button class="btn-ops" onclick="pressOps('-')">-</button>
+            <button class="btn-ops" onclick="pressOps('×')">×</button>
+            <button class="btn-ops" onclick="pressOps(':')">:</button>
+            <button class="btn-ops" onclick="hitungHasil()">=</button>
+        </div>
+
+        <!-- BAGIAN BAWAH -->
+        <div class="area-bawah">
+            
+            <!-- PANEL KIRI (HIJAU) -->
+            <div class="panel-kiri">
+                <div class="field-box" id="boxMenu">- Menu -</div>
+                <div class="field-box" id="boxVal1"></div>
+                <div class="field-box" id="boxVal2"></div>
+                
+                <!-- Tombol Pilih Pemicu Iframe -->
+                <div class="btn-pilih" onclick="toggleMenuIframe()">&lt; PILIH &gt;</div>
+
+                <!-- BINGKAI POPUP MENU (Mengambil dari Folder/pilih.html) -->
+                <div class="iframe-container" id="popupIframeMenu">
+                    <iframe src="Folder/pilih.html"></iframe>
+                </div>
+            </div>
+
+            <!-- GRID ANGKA (2 KOLOM PRESISI SESUAI MATRIKS DI GAMBAR ANDA) -->
+            <div class="grid-angka-kanan">
+                <button class="btn-num" onclick="pressNum(6)">6</button>
+                <button class="btn-num" onclick="pressNum(1)">1</button>
+                
+                <button class="btn-num" onclick="pressNum(7)">7</button>
+                <button class="btn-num" onclick="pressNum(2)">2</button>
+                
+                <button class="btn-num" onclick="pressNum(8)">8</button>
+                <button class="btn-num" onclick="pressNum(3)">3</button>
+                
+                <button class="btn-num" onclick="pressNum(9)">9</button>
+                <button class="btn-num" onclick="pressNum(4)">4</button>
+                
+                <button class="btn-num" onclick="pressNum(0)">0</button>
+                <button class="btn-num" onclick="pressNum(5)">5</button>
+                
+                <button class="btn-num btn-kuning" onclick="pressBackspace()">←</button>
+                <button class="btn-num btn-orange" onclick="pressDelete()">DELETE</button>
+            </div>
+
         </div>
     </div>
 
     <script>
-        const containerMenu = document.getElementById('containerMenu');
-        const fieldMenu = document.getElementById('fieldMenu');
-        const layarHasil = document.getElementById('layarHasil');
-        const indikatorMerah = document.getElementById('indikatorMerah');
+        const popupIframeMenu = document.getElementById('popupIframeMenu');
+        const boxMenu = document.getElementById('boxMenu');
+        const txtDisplay = document.getElementById('txtDisplay');
+        const txtIndikator = document.getElementById('txtIndikator');
         
-        let menuAktif = '';
+        let angkaSkor = '';
+        let rumusAktif = '';
 
-        // Fungsi membuka & menutup menu dari dalam folder
-        function toggleMenuFolder() {
-            if (containerMenu.style.display === "block") {
-                containerMenu.style.display = "none";
-            } else {
-                containerMenu.style.display = "block";
-            }
+        // Buka-tutup tirai menu dari dalam folder
+        function toggleMenuIframe() {
+            popupIframeMenu.style.display = (popupIframeMenu.style.display === "block") ? "none" : "block";
         }
 
-        /* =======================================================
-           FUNGSI SINKRONISASI GLOBAL (DIPANGGIL OLEH FILE DI DALAM FOLDER)
-           ======================================================= */
-        window.terimaDataDariFolder = function(namaMenu, kodeOperasi) {
-            // 1. Ubah teks menu di kalkulator utama
-            fieldMenu.innerText = namaMenu;
-            if(indikatorMerah) indikatorMerah.innerText = kodeOperasi.toUpperCase();
+        // FUNGSI GLOBAL: Menerima data sinkronisasi dari Folder/pilih.html
+        window.terimaDataDariFolder = function(namaTerpilih, kodeRumus) {
+            boxMenu.innerText = namaTerpilih;
+            txtIndikator.innerText = kodeRumus.toUpperCase();
+            rumusAktif = kodeRumus;
             
-            // 2. Set variabel rumus yang aktif ke mesin hitung
-            menuAktif = kodeOperasi;
-            
-            // 3. Tutup otomatis pop-up iframe menu
-            containerMenu.style.display = "none";
-            
-            // 4. Reset angka input kalkulator setiap ganti rumus
-            if(typeof inputSkor !== 'undefined') inputSkor = '';
-            console.log("Kalkulator Utama Sinkron! Rumus Aktif: " + menuAktif);
+            popupIframeMenu.style.display = "none"; // Sembunyikan otomatis
+            angkaSkor = '';
+            txtDisplay.innerText = '0';
         };
-    </script>
-</body>
-</html>
+
+        // Kontrol Tombol Angka Kustom
+        function pressNum(num) {
+            if (angkaSkor === '0') angkaSkor = '';
+            angkaSkor += num;
+            txtDisplay.innerText = angkaSkor;
+        }
+
+        function pressDelete() {
+            angkaSkor = '';
+            txtDisplay.innerText = '0';
+        }
+
+        function pressBackspace() {
+            angkaSkor = angkaSkor.slice(0, -1);
+            txtDisplay.innerText = angkaSkor || '0';
+        }
+
+        // Eksekusi Rumus Matematika Sinkron
+        function hitungHasil() {
+            let n = parseFloat(angkaSkor) || 0;
+            let hasil = 0;
+
+            if(!rumusAktif) {
+                alert("Silakan klik tombol < PILIH > terlebih dahulu!");
+                return;
+            }
+
+            if(rumusAktif === 'sin') {
+                hasil = Math.sin(n * Math.PI / 180).toFixed(4);
+            } else if(rumusAktif === 'cos') {
+                hasil = Math.cos(n * Math.PI / 180).toFixed(4);
