@@ -88,24 +88,7 @@
         <div class="baris-menu" onclick="pilihMenu(this)">
             <span>a0</span>
             <input type="radio" name="pilihan" value="a0">
-        </div>
- <div class="menu-wrapper">
-    <div class="baris-sudut" onclick="pilihMenuUtama(this)">
-        <span>sudut</span>
-        <input type="radio" name="pilihan" value="sudut" id="radioSudut">
-    </div>
-    <ul class="anak-sudut" id="subMenuSudut">
-        <li onclick="pilihAnakSudut('sin', event)">
-            <input type="radio" name="sub_pilihan" value="sin"> <span>sin</span>
-        </li>
-        <li onclick="pilihAnakSudut('cos', event)">
-            <input type="radio" name="sub_pilihan" value="cos"> <span>cos</span>
-        </li>
-        <li onclick="pilihAnakSudut('tan', event)">
-            <input type="radio" name="sub_pilihan" value="tan"> <span>tan</span>
-        </li>
-    </ul>
-     
+        </div>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dropdown Dinamis</title>
@@ -185,10 +168,21 @@
  
     <details>
         <summary>
-            <span>-- Pilih --</span>
+            <span>-- sudut --</span>
             <span>▼</span>
         </summary>
-</div>
+    </div>     
+    <ul class="anak-sudut" id="subMenuSudut">
+        <li onclick="pilihAnakSudut('sin', event)">
+            <input type="radio" name="sub_pilihan" value="sin"> <span>sin</span>
+        </li>
+        <li onclick="pilihAnakSudut('cos', event)">
+            <input type="radio" name="sub_pilihan" value="cos"> <span>cos</span>
+        </li>
+        <li onclick="pilihAnakSudut('tan', event)">
+            <input type="radio" name="sub_pilihan" value="tan"> <span>tan</span>
+        </li>
+    </ul>
         <div class="baris-menu sub-menu" onclick="pilihMenu(this)">
             <span>a1</span>
             <input type="radio" name="pilihan" value="a1">
