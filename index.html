@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalkulator Pecahan Vertikal</title>
+    <title>Kalkulator Pecahan Berlapis</title>
     <style>
         /* --- CSS DASAR KALKULATOR --- */
         body {
@@ -28,7 +28,7 @@
         /* DISPLAY UTAMA: Rata kiri atas, mendukung scroll */
         .display-container {
             width: 100%;
-            height: 200px;
+            height: 220px;
             border: 2px solid #000;
             margin-bottom: 15px;
             background-color: #fff;
@@ -41,16 +41,17 @@
             font-size: 1.3rem;
         }
 
-        /* CSS Membuat Efek Pecahan Bertingkat Tanpa Library Luar */
+        /* STYLING KHUSUS UNTUK PECAHAN BERLAPIS */
         .frac {
             display: inline-flex;
             flex-direction: column;
             vertical-align: middle;
             text-align: center;
-            padding: 0 4px;
+            padding: 2px 6px;
+            margin: 2px 4px;
         }
         .num {
-            border-bottom: 2px solid #d13438;
+            border-bottom: 2px solid #d13438; /* Garis Pecahan Merah */
             padding-bottom: 2px;
         }
         .den {
@@ -61,12 +62,12 @@
             margin-bottom: 15px;
             border-bottom: 1px dashed #ccc;
             padding-bottom: 8px;
-            line-height: 1.8;
+            line-height: 2;
         }
 
         .current-line {
             min-height: 40px;
-            line-height: 1.8;
+            line-height: 2;
         }
 
         /* Grid Tombol Operator Atas */
@@ -132,9 +133,16 @@
             cursor: pointer;
         }
 
+        /* Tombol Bawah Dibagi Dua Pas */
+        .backspace-btn {
+            background-color: #fff2cc !important;
+            font-size: 1.4rem !important;
+        }
+
         .delete-btn {
-            grid-column: span 2;
             background-color: #f8cbad !important;
+            font-size: 0.95rem !important;
+            font-weight: bold;
         }
 
         button:active {
@@ -153,65 +161,87 @@
 
         <!-- Baris Tombol Operator -->
         <div class="operator-row">
-            <button onclick="input('+')">+</button>
-            <button onclick="input('-')">-</button>
-            <button onclick="input('*')">×</button>
-            <button onclick="input('/')">÷</button>
+            <button onclick="inputOperator('+')">+</button>
+            <button onclick="inputOperator('-')">-</button>
+            <button onclick="inputOperator('*')">×</button>
+            <button onclick="inputOperator('/')">÷</button> <!-- Tetap menjadi Bagi Biasa -->
             <button onclick="hitung()">=</button>
         </div>
 
         <div class="main-grid">
             <!-- Sisi Kiri Menu Hijau -->
             <div class="left-menu">
-                <button onclick="input('(')">(</button>
-                <button onclick="input(')')">)</button>
-                <button onclick="input('/')">Pecahan</button>
-                <button onclick="input('%')">%</button>
+                <button onclick="inputSymbol('(')">(</button>
+                <button onclick="inputSymbol(')')">)</button>
+                <button onclick="inputFraction()">Pecahan</button> <!-- Khusus Membuat Struktur Susun -->
+                <button onclick="inputSymbol('%')">%</button>
             </div>
 
             <!-- Sisi Kanan Angka -->
             <div class="number-grid">
-                <button onclick="input('6')">6</button>
-                <button onclick="input('1')">1</button>
-                <button onclick="input('7')">7</button>
-                <button onclick="input('2')">2</button>
-                <button onclick="input('8')">8</button>
-                <button onclick="input('3')">3</button>
-                <button onclick="input('9')">9</button>
-                <button onclick="input('4')">4</button>
-                <button onclick="input('0')">0</button>
-                <button onclick="input('5')">5</button>
+                <button onclick="inputNumber('6')">6</button>
+                <button onclick="inputNumber('1')">1</button>
+                <button onclick="inputNumber('7')">7</button>
+                <button onclick="inputNumber('2')">2</button>
+                <button onclick="inputNumber('8')">8</button>
+                <button onclick="inputNumber('3')">3</button>
+                <button onclick="inputNumber('9')">9</button>
+                <button onclick="inputNumber('4')">4</button>
+                <button onclick="inputNumber('0')">0</button>
+                <button onclick="inputNumber('5')">5</button>
+                
+                <button class="backspace-btn" onclick="backspace()">←</button>
                 <button class="delete-btn" onclick="hapus()">DELETE</button>
             </div>
         </div>
     </div>
 
-    <!-- --- JAVASCRIPT MURNI ANTI-GAGAL --- -->
+    <!-- --- JAVASCRIPT LOGIKA PECAHAN BERLAPIS SEBENARNYA --- -->
     <script>
         let rumusMentah = "";
         const currentLine = document.getElementById("current-input-line");
         const historyLog = document.getElementById("history-log");
         const displayScreen = document.getElementById("display-screen");
 
-        // 1. Fungsi menerima ketikan tombol apa saja
-        function input(karakter) {
-            rumusMentah += karakter;
+        function inputNumber(num) {
+            rumusMentah += num;
             renderVisual();
         }
 
-        // 2. Mengubah teks rumus biasa menjadi tampilan pecahan susun HTML
+        function inputOperator(op) {
+            rumusMentah += " " + op + " ";
+            renderVisual();
+        }
+
+        function inputSymbol(sym) {
+            rumusMentah += sym;
+            renderVisual();
+        }
+
+        // FUNGSI KHUSUS TOMBOL PECAHAN: Menggunakan penanda khusus '|' agar sistem tahu ini pembagian vertikal
+        function inputFraction() {
+            rumusMentah += "|"; 
+            renderVisual();
+        }
+
+        // Menerjemahkan karakter spesial '|' menjadi elemen visual bertingkat (lapis demi lapis)
         function buatTampilanPecahan(teks) {
             if (!teks) return "0";
             
-            let hasil = teks.replace(/\*/g, " × "); // Ubah visual bintang ke tanda kali
+            let hasil = teks.replace(/\*/g, " × ");
+            hasil = hasil.replace(/\//g, " ÷ "); // Garis miring biasa dicetak sebagai simbol bagi biasa
 
-            // Regex mendeteksi format (angka/kurung) / (angka/kurung) untuk diubah ke pecahan bertingkat
-            let regexPecahan = /(\([^\)]+\)|[0-9\.]+%?)\/([0-9\.]+%?|\([^\)]+\))/g;
-            while (regexPecahan.test(hasil)) {
+            // Deteksi penanda khusus '|' untuk membungkus elemen kiri dan kanan menjadi pecahan vertical susun
+            let regexPecahan = /((?:[0-9\.]+%?|\([^\)]+\)|<span class="frac">.*?<\/span>)+)\|((?:[0-9\.]+%?|\([^\)]+\)|<span class="frac">.*?<\/span>)+)/g;
+            
+            let teksLama;
+            do {
+                teksLama = hasil;
                 hasil = hasil.replace(regexPecahan, function(match, atas, bawah) {
                     return `<span class="frac"><span class="num">${atas}</span><span class="den">${bawah}</span></span>`;
                 });
-            }
+            } while (hasil !== teksLama);
+
             return hasil;
         }
 
@@ -219,36 +249,44 @@
             currentLine.innerHTML = buatTampilanPecahan(rumusMentah);
         }
 
-        // 3. Fungsi menghitung hasil ketika menekan tombol '='
         function hitung() {
             let ekspresi = rumusMentah.trim();
             if (!ekspresi) return;
 
             try {
-                // Sempurnakan logika persen (%) agar dibaca pembagian /100 oleh system
-                let hitungEkspresi = ekspresi.replace(/([0-9\.]+)\s*%/g, "($1/100)");
+                // Kembalikan tanda '|' menjadi pembagian '/' murni komputer sebelum di-eval
+                let hitungEkspresi = ekspresi.replace(/\|/g, "/");
+                hitungEkspresi = hitungEkspresi.replace(/([0-9\.]+)\s*%/g, "($1/100)");
                 
                 let hasilAngka = eval(hitungEkspresi);
                 
-                // Mencegah error pembagian dengan nol (Infinity)
                 if (!isFinite(hasilAngka)) throw new Error();
 
                 let hasilAkhir = Number(hasilAngka.toFixed(4)).toString();
 
-                // Cetak riwayat ke baris atasnya
                 historyLog.innerHTML += `<div class="history-item">${buatTampilanPecahan(rumusMentah)}<br>= ${hasilAkhir}</div>`;
                 
-                // Hasil dijadikan awalan baru untuk kelanjutan hitungan
                 rumusMentah = hasilAkhir;
             } catch (err) {
                 historyLog.innerHTML += `<div class="history-item">${buatTampilanPecahan(rumusMentah)}<br>= Error</div>`;
                 rumusMentah = "";
             }
             renderVisual();
-            displayScreen.scrollTop = displayScreen.scrollHeight; // Auto gulung ke bawah
+            displayScreen.scrollTop = displayScreen.scrollHeight;
         }
 
-        // 4. Tombol DELETE
+        function backspace() {
+            if (rumusMentah.length > 0) {
+                // Jika karakter terakhir berupa spasi dari operator, potong lebih banyak agar rapi
+                if (rumusMentah.endsWith(" ")) {
+                    rumusMentah = rumusMentah.slice(0, -3);
+                } else {
+                    rumusMentah = rumusMentah.slice(0, -1);
+                }
+                renderVisual();
+            }
+        }
+
         function hapus() {
             rumusMentah = "";
             historyLog.innerHTML = "";
@@ -257,3 +295,4 @@
     </script>
 </body>
 </html>
+Cara Mengujinya Sekarang:Ketik 5 lalu tekan tombol Pecahan, lalu ketik 2. Layar akan mencetak pecahan susun \(\frac{5}{2}\).Jika Anda langsung menekan tombol Pecahan lagi lalu ketik 3, pecahan \(\frac{5}{2}\) sebelumnya otomatis akan terangkat naik menjadi pembilang, dan angka 3 berada di bagian penyebut bawah. Menghasilkan pecahan berlapis sempurna \(\frac{\frac{5}{2}}{3}\).Jika Anda menekan tombol ÷ di baris atas, ia hanya akan memunculkan simbol bagi baris menyamping (÷) biasa tanpa merusak tumpukan pecahan berlapis
