@@ -2,250 +2,79 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalkulator Multi - Dropdown 4 Level</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            padding: 30px;
-            background-color: #f5f5f5;
-        }
- 
-        /* LEVEL 1: KOTAK UTAMA (INDUK) */
-        .dropdown-induk {
-            width: 340px;
-            background-color: #ffffff;
-            border: 2px solid #333333;
-            border-radius: 8px;
-            overflow: hidden;
-            cursor: pointer;
-        }
- 
-        /* HEADER INDUK */
-        .dropdown-induk > summary {
-            padding: 15px;
-            font-weight: bold;
-            background-color: #eaeaea;
-            list-style: none;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            user-select: none;
-        }
-
-        .dropdown-induk > summary::-webkit-details-marker {
-            display: none;
-        }
-
-        /* LEVEL 2 & 3: MENU ANAK (SUB-DROPDOWN BERSARANG) */
-        .dropdown-anak {
-            border-top: 1px solid #eeeeee;
-            background-color: #fafafa;
-        }
-
-        /* HEADER ANAK LEVEL 2 (SUDUT) */
-        .level-2 > summary {
-            padding: 12px 15px 12px 25px; /* Menjorok tingkat pertama */
-            font-weight: 600;
-            list-style: none;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: #333333;
-        }
-
-        /* HEADER ANAK LEVEL 3 (ALGORITMA DI DALAM SUDUT) */
-        .level-3 > summary {
-            padding: 11px 15px 11px 45px; /* Menjorok tingkat kedua */
-            font-weight: 600;
-            list-style: none;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: #555555;
-            background-color: #f0f0f0;
-        }
-
-        .dropdown-anak > summary::-webkit-details-marker {
-            display: none;
-        }
-
-        /* LEVEL 4: ITEM LIST AKHIR DENGAN RADIO BUTTON */
-        .list-akhir {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            background-color: #ffffff;
-        }
-
-        /* Opsi langsung di bawah Sudut (sin, cos, tan) */
-        .level-2 .list-akhir li {
-            padding: 10px 15px 10px 45px; 
-        }
-
-        /* Opsi di dalam Algoritma (Faktorial, FPB, dll) */
-        .level-3 .list-akhir li {
-            padding: 10px 15px 10px 65px; /* Menjorok paling dalam */
-            background-color: #fbfbfb;
-        }
-
-        .list-akhir li {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-top: 1px solid #eeeeee;
-            cursor: pointer;
-            color: #555555;
-            transition: background 0.2s;
-        }
-
-        .list-akhir li:hover {
-            background-color: #ecf5ff;
-            color: #409eff;
-        }
- 
-        /* SEMBUNYIKAN RADIO FISIK */
-        .list-akhir input[type="radio"] {
-            display: none;
-        }
- 
-        /* LINGKARAN RADIO KUSTOM */
-        .list-akhir li::after {
-            content: '';
-            width: 12px;
-            height: 12px;
-            border: 2px solid #666666;
-            border-radius: 50%;
-            display: inline-block;
-            transition: all 0.2s;
-        }
- 
-        /* STATUS AKTIF / TERPILIH */
-        .list-akhir li.terpilih {
-            background-color: #ecf5ff !important;
-            color: #409eff;
-            font-weight: bold;
-        }
-
-        .list-akhir li.terpilih::after {
-            background-color: #409eff;
-            border-color: #409eff;
-            box-shadow: 0 0 0 3px rgba(64,158,255,0.2);
-        }
-
-        /* Animasi indikator panah folder */
-        .dropdown-anak[open] > summary span.panah-anak {
-            transform: rotate(90deg);
-        }
-        .panah-anak {
-            font-size: 10px;
-            transition: transform 0.2s;
-            display: inline-block;
-        }
+        body { margin: 0; padding: 5px; font-family: 'Segoe UI', Arial, sans-serif; background: transparent; }
+        
+        /* DROPDOWN BERTINGKAT STYLE */
+        .dropdown-induk { width: 310px; background-color: #ffffff; border: 2px solid #000000; border-radius: 6px; overflow: hidden; box-shadow: 3px 3px 0px #000; }
+        .dropdown-induk summary { padding: 10px; font-weight: bold; background-color: #eaeaea; list-style: none; cursor: pointer; }
+        .dropdown-induk summary::-webkit-details-marker { display: none; }
+        
+        .dropdown-anak { border-top: 1px solid #ddd; background-color: #fafafa; }
+        .level-2 > summary { padding: 10px 10px 10px 20px; font-weight: bold; }
+        .level-3 > summary { padding: 8px 10px 8px 35px; background-color: #f0f0f0; font-size: 14px; }
+        
+        .list-akhir { list-style: none; padding: 0; margin: 0; background-color: #ffffff; }
+        .level-2 .list-akhir li { padding: 8px 10px 8px 30px; }
+        .level-3 .list-akhir li { padding: 8px 10px 8px 50px; background-color: #fbfbfb; }
+        
+        .list-akhir li { border-top: 1px solid #eee; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-size: 14px; color: #333; }
+        .list-akhir li:hover { background-color: #ecf5ff; color: #409eff; }
+        
+        /* RADIO BUTTON KUSTOM */
+        .list-akhir input[type="radio"] { display: none; }
+        .list-akhir li::after { content: ''; width: 10px; height: 10px; border: 1px solid #666; border-radius: 50%; display: inline-block; }
+        .list-akhir li.terpilih { background-color: #ecf5ff !important; font-weight: bold; color: #409eff; }
+        .list-akhir li.terpilih::after { background-color: #409eff; border-color: #409eff; }
     </style>
 </head>
 <body>
- 
-    <!-- LEVEL 1: INDUK UTAMA -->
-    <details class="dropdown-induk" id="menuUtama">
-        <summary>
-            <span id="textHeaderUtama">-- Pilih Menu --</span>
-            <span>▼</span>
-        </summary>
- 
-        <!-- LEVEL 2: FOLDER SUDUT -->
+
+    <details class="dropdown-induk" open>
+        <summary>Pilih Rumus / Kategori</summary>
+        
+        <!-- LEVEL 2: SUDUT -->
         <details class="dropdown-anak level-2">
-            <summary>
-                <span>📁 -- sudut --</span>
-                <span class="panah-anak">▶</span>
-            </summary>
+            <summary>📁 -- sudut --</summary>
             
-            <!-- Item langsung di bawah folder Sudut -->
             <ul class="list-akhir">
-                <li onclick="pilihOpsi Akhir('Sudut: sin', this, event)">
-                    <input type="radio" name="pilihan_kalkulator" value="sin">
-                    <span>sin</span>
+                <li onclick="kirimKeKalkulatorUtama('Sudut: sin', 'sin', event)">
+                    <span>sin</span><input type="radio" name="pilihan_rumus">
                 </li>
-                <li onclick="pilihOpsi Akhir('Sudut: cos', this, event)">
-                    <input type="radio" name="pilihan_kalkulator" value="cos">
-                    <span>cos</span>
-                </li>
-                <li onclick="pilihOpsi Akhir('Sudut: tan', this, event)">
-                    <input type="radio" name="pilihan_kalkulator" value="tan">
-                    <span>tan</span>
+                <li onclick="kirimKeKalkulatorUtama('Sudut: cos', 'cos', event)">
+                    <span>cos</span><input type="radio" name="pilihan_rumus">
                 </li>
             </ul>
 
-            <!-- LEVEL 3: FOLDER ALGORITMA (DI DALAM SUDUT) -->
+            <!-- LEVEL 3: ALGORITMA DI DALAM SUDUT -->
             <details class="dropdown-anak level-3">
-                <summary>
-                    <span>📁 -- algoritma --</span>
-                    <span class="panah-anak">▶</span>
-                </summary>
-                
-                <!-- LEVEL 4: ANGIN/ANAK DARI ALGORITMA -->
+                <summary>📁 -- algoritma --</summary>
                 <ul class="list-akhir">
-                    <li onclick="pilihOpsi Akhir('Sudut &gt; Algoritma: Faktorial', this, event)">
-                        <input type="radio" name="pilihan_kalkulator" value="faktorial">
-                        <span>Faktorial (!)</span>
+                    <li onclick="kirimKeKalkulatorUtama('Algoritma: Faktorial', 'faktorial', event)">
+                        <span>Faktorial (!)</span><input type="radio" name="pilihan_rumus">
                     </li>
-                    <li onclick="pilihOpsi Akhir('Sudut &gt; Algoritma: FPB', this, event)">
-                        <input type="radio" name="pilihan_kalkulator" value="fpb">
-                        <span>FPB</span>
-                    </li>
-                    <li onclick="pilihOpsi Akhir('Sudut &gt; Algoritma: KPK', this, event)">
-                        <input type="radio" name="pilihan_kalkulator" value="kpk">
-                        <span>KPK</span>
+                    <li onclick="kirimKeKalkulatorUtama('Algoritma: FPB', 'fpb', event)">
+                        <span>FPB</span><input type="radio" name="pilihan_rumus">
                     </li>
                 </ul>
             </details>
         </details>
-
-        <!-- CONTOH FOLDER LAIN DI LUAR SUDUT (SAMPEL SAJA) -->
-        <details class="dropdown-anak level-2">
-            <summary>
-                <span>📁 -- matriks --</span>
-                <span class="panah-anak">▶</span>
-            </summary>
-            <ul class="list-akhir">
-                <li onclick="pilihOpsi Akhir('Matriks: Determinan', this, event)">
-                    <input type="radio" name="pilihan_kalkulator" value="det">
-                    <span>Determinan</span>
-                </li>
-            </ul>
-        </details>
- 
     </details>
- 
+
     <script>
-        const indukMenu = document.getElementById('menuUtama');
-        const textHeaderUtama = document.getElementById('textHeaderUtama');
+        function kirimKeKalkulatorUtama(namaMenu, kodeOperasi, event) {
+            event.stopPropagation();
+            
+            // 1. Atur efek visual radio terpilih di dalam iframe ini
+            document.querySelectorAll('.list-akhir li').forEach(li => li.classList.remove('terpilih'));
+            event.currentTarget.classList.add('terpilih');
+            event.currentTarget.querySelector('input[type="radio"]').checked = true;
 
-        // Fungsi ketika item radio di level paling akhir diklik
-        function pilihOpsi Akhir(namaTerpilih, elemenAktif, event) {
-            // Stop propagasi agar folder pembungkusnya tidak ikut menutup/kacau
-            event.stopPropagation(); 
-            event.preventDefault();
-
-            // Matikan status terpilih dari semua list item yang ada di dokumen
-            document.querySelectorAll('.list-akhir li').forEach(li => {
-                li.classList.remove('terpilih');
-            });
- 
-            // Tandai item yang baru saja diklik
-            elemenAktif.classList.add('terpilih');
- 
-            // Centang radio button kustom di dalamnya
-            const radioAsli = elemenAktif.querySelector('input[type="radio"]');
-            if (radioAsli) {
-                radioAsli.checked = true;
+            // 2. KUNCI SINKRONISASI SEBERANG FOLDER:
+            // Menggunakan 'window.parent' untuk menembus keluar folder dan mengontrol index.html
+            if (window.parent && typeof window.parent.terimaDataDariFolder === 'function') {
+                window.parent.terimaDataDariFolder(namaMenu, kodeOperasi);
             }
-
-            // Set teks header paling atas sesuai item yang dipilih
-            textHeaderUtama.innerText = namaTerpilih;
-
-            // Tutup total dropdown induk utama
-            indukMenu.removeAttribute('open');
         }
     </script>
 </body>
