@@ -7,7 +7,7 @@
     <style>
         body {
             font-family: 'Segoe UI', Arial, sans-serif;
-            background-color: #1a1d24; /* Background gelap agar kalkulator menonjol */
+            background-color: #1a1d24;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -15,7 +15,7 @@
             margin: 0;
         }
 
-        /* CONTAINER UTAMA KALKULATOR (STYLE NEO-BRUTALISME) */
+        /* CONTAINER UTAMA NEO-BRUTALISME */
         .kalkulator-box {
             width: 340px;
             background-color: #ffffff;
@@ -25,7 +25,7 @@
             box-shadow: 5px 5px 0px #000000;
         }
 
-        /* DISPLAY SKRIN ATAS */
+        /* SCREEN DISPLAY */
         .display-screen {
             width: 100%;
             height: 130px;
@@ -53,6 +53,7 @@
             font-weight: bold;
             color: #000000;
             margin: 0;
+            word-break: break-all;
         }
 
         /* BARIS TOMBOL OPERASI (+ - * : =) */
@@ -64,7 +65,7 @@
         }
 
         .btn-ops {
-            background-color: #ffdecb; /* Warna pastel orange muda */
+            background-color: #ffdecb;
             border: 2.5px solid #000000;
             border-radius: 6px;
             padding: 10px 0;
@@ -72,22 +73,16 @@
             font-weight: bold;
             cursor: pointer;
             box-shadow: 1.5px 1.5px 0px #000000;
-            transition: transform 0.05s;
         }
 
-        .btn-ops:active {
-            transform: translate(1.5px, 1.5px);
-            box-shadow: 0px 0px 0px #000;
-        }
-
-        /* BAGIAN AREA BAWAH (PANEL HIJAU KIRI & GRID ANGKA) */
+        /* AREA BAWAH */
         .area-bawah {
             display: grid;
             grid-template-columns: 1fr 1.8fr;
             gap: 12px;
         }
 
-        /* PANEL KIRI (HIJAU MUDA) */
+        /* PANEL KIRI (HIJAU) */
         .panel-kiri {
             background-color: #e2ede2;
             border: 2.5px solid #000000;
@@ -107,12 +102,11 @@
             display: flex;
             align-items: center;
             padding-left: 8px;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: bold;
             color: #333333;
         }
 
-        /* TOMBOL < PILIH > SANGAT MIRIP GAMBAR */
         .btn-pilih {
             background-color: #ffffff;
             border: 1.5px solid #bd2a2a;
@@ -123,19 +117,19 @@
             border-radius: 5px;
             cursor: pointer;
             text-align: center;
-            letter-spacing: 0.5px;
             box-shadow: 1px 1px 0px #000000;
+            user-select: none;
         }
 
-        /* CONTAINER POPUP IFRAME (UNTUK PILIH.HTML DI DALAM FOLDER) */
+        /* IFRAME POPUP MENU */
         .iframe-container {
             position: absolute;
             left: -5px;
-            top: 165px; /* Muncul pas di bawah tombol pilih */
+            top: 165px;
             width: 310px;
             height: 250px;
             z-index: 100;
-            display: none; /* Sembunyi sebelum diklik */
+            display: none;
             border: 2.5px solid #000000;
             border-radius: 6px;
             box-shadow: 4px 4px 0px #000;
@@ -148,7 +142,7 @@
             border: none;
         }
 
-        /* GRID PAPAN ANGKA KANAN (2 KOLOM - SESUAI GAMBAR) */
+        /* GRID PAPAN ANGKA */
         .grid-angka-kanan {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -165,31 +159,16 @@
             cursor: pointer;
             box-shadow: 1.5px 1.5px 0px #000000;
             text-align: center;
-            transition: transform 0.05s;
         }
 
-        .btn-num:active {
-            transform: translate(1.5px, 1.5px);
-            box-shadow: 0px 0px 0px #000;
-        }
-
-        /* Tombol Kuning Panah Kiri */
-        .btn-kuning {
-            background-color: #ffeeb3;
-        }
-
-        /* Tombol Orange Delete */
-        .btn-orange {
-            background-color: #ffcab0;
-            font-size: 14px;
-        }
+        .btn-kuning { background-color: #ffeeb3; }
+        .btn-orange { background-color: #ffcab0; font-size: 14px; }
     </style>
 </head>
 <body>
 
     <div class="kalkulator-box">
-        
-        <!-- DISPLAY UTAMA -->
+        <!-- DISPLAY -->
         <div class="display-screen">
             <div class="indicator-merah" id="txtIndikator">0</div>
             <div class="main-number" id="txtDisplay">0</div>
@@ -206,72 +185,69 @@
 
         <!-- BAGIAN BAWAH -->
         <div class="area-bawah">
-            
-            <!-- PANEL KIRI (HIJAU) -->
+            <!-- PANEL KIRI -->
             <div class="panel-kiri">
                 <div class="field-box" id="boxMenu">- Menu -</div>
-                <div class="field-box" id="boxVal1"></div>
-                <div class="field-box" id="boxVal2"></div>
+                <div class="field-box" id="boxVal1">Input 1: -</div>
+                <div class="field-box" id="boxVal2">Input 2: -</div>
                 
-                <!-- Tombol Pilih Pemicu Iframe -->
                 <div class="btn-pilih" onclick="toggleMenuIframe()">&lt; PILIH &gt;</div>
 
-                <!-- BINGKAI POPUP MENU (Mengambil dari Folder/pilih.html) -->
                 <div class="iframe-container" id="popupIframeMenu">
+                    <!-- Pastikan nama folder huruf besar/kecilnya sesuai -->
                     <iframe src="Folder/pilih.html"></iframe>
                 </div>
             </div>
 
-            <!-- GRID ANGKA (2 KOLOM PRESISI SESUAI MATRIKS DI GAMBAR ANDA) -->
+            <!-- GRID ANGKA SESUAI MATRIKS GAMBAR -->
             <div class="grid-angka-kanan">
                 <button class="btn-num" onclick="pressNum(6)">6</button>
                 <button class="btn-num" onclick="pressNum(1)">1</button>
-                
                 <button class="btn-num" onclick="pressNum(7)">7</button>
-                <button class="btn-num" onclick="pressNum(2)">2</button>
-                
+                <button class="btn-num" onclick="pressNum(2)/">2</button>
                 <button class="btn-num" onclick="pressNum(8)">8</button>
                 <button class="btn-num" onclick="pressNum(3)">3</button>
-                
                 <button class="btn-num" onclick="pressNum(9)">9</button>
                 <button class="btn-num" onclick="pressNum(4)">4</button>
-                
                 <button class="btn-num" onclick="pressNum(0)">0</button>
                 <button class="btn-num" onclick="pressNum(5)">5</button>
-                
                 <button class="btn-num btn-kuning" onclick="pressBackspace()">←</button>
                 <button class="btn-num btn-orange" onclick="pressDelete()">DELETE</button>
             </div>
-
         </div>
     </div>
 
     <script>
         const popupIframeMenu = document.getElementById('popupIframeMenu');
         const boxMenu = document.getElementById('boxMenu');
+        const boxVal1 = document.getElementById('boxVal1');
+        const boxVal2 = document.getElementById('boxVal2');
         const txtDisplay = document.getElementById('txtDisplay');
         const txtIndikator = document.getElementById('txtIndikator');
         
         let angkaSkor = '';
         let rumusAktif = '';
+        let memoriAngka = 0;
+        let operasiAktif = '';
 
-        // Buka-tutup tirai menu dari dalam folder
         function toggleMenuIframe() {
             popupIframeMenu.style.display = (popupIframeMenu.style.display === "block") ? "none" : "block";
         }
 
-        // FUNGSI GLOBAL: Menerima data sinkronisasi dari Folder/pilih.html
+        // FUNGSI GLOBAL SINKRONISASI DROPDOWN DARI DALAM FOLDER
         window.terimaDataDariFolder = function(namaTerpilih, kodeRumus) {
             boxMenu.innerText = namaTerpilih;
             txtIndikator.innerText = kodeRumus.toUpperCase();
             rumusAktif = kodeRumus;
             
-            popupIframeMenu.style.display = "none"; // Sembunyikan otomatis
+            popupIframeMenu.style.display = "none";
             angkaSkor = '';
             txtDisplay.innerText = '0';
+            boxVal1.innerText = "Input 1: -";
+            boxVal2.innerText = "Input 2: -";
         };
 
-        // Kontrol Tombol Angka Kustom
+        // INPUT ANGKA PAPAN KETIK
         function pressNum(num) {
             if (angkaSkor === '0') angkaSkor = '';
             angkaSkor += num;
@@ -280,7 +256,11 @@
 
         function pressDelete() {
             angkaSkor = '';
+            memoriAngka = 0;
+            operasiAktif = '';
             txtDisplay.innerText = '0';
+            boxVal1.innerText = "Input 1: -";
+            boxVal2.innerText = "Input 2: -";
         }
 
         function pressBackspace() {
@@ -288,17 +268,29 @@
             txtDisplay.innerText = angkaSkor || '0';
         }
 
-        // Eksekusi Rumus Matematika Sinkron
+        // FUNGSI OPERASI UTAMA (+, -, *, :)
+        function pressOps(ops) {
+            if (!angkaSkor && txtDisplay.innerText !== '0') {
+                memoriAngka = parseFloat(txtDisplay.innerText);
+            } else {
+                memoriAngka = parseFloat(angkaSkor) || 0;
+            }
+            operasiAktif = ops;
+            boxVal1.innerText = "Input 1: " + memoriAngka;
+            boxVal2.innerText = "Ops: " + ops;
+            angkaSkor = '';
+        }
+
+        // EKSEKUSI HASIL AKHIR (=)
         function hitungHasil() {
-            let n = parseFloat(angkaSkor) || 0;
+            let angkaKedua = parseFloat(angkaSkor) || 0;
             let hasil = 0;
 
-            if(!rumusAktif) {
-                alert("Silakan klik tombol < PILIH > terlebih dahulu!");
-                return;
-            }
-
-            if(rumusAktif === 'sin') {
-                hasil = Math.sin(n * Math.PI / 180).toFixed(4);
-            } else if(rumusAktif === 'cos') {
-                hasil = Math.cos(n * Math.PI / 180).toFixed(4);
+            // Jika operasi standar (+ - * :) aktif
+            if (operasiAktif) {
+                boxVal2.innerText = "Input 2: " + angkaKedua;
+                if (operasiAktif === '+') hasil = memoriAngka + angkaKedua;
+                else if (operasiAktif === '-') hasil = memoriAngka - angkaKedua;
+                else if (operasiAktif === '×') hasil = memoriAngka * angkaKedua;
+                else if (operasiAktif === ':') hasil = angkaKedua !== 0 ? memoriAngka / angkaKedua : "Error";
+                
