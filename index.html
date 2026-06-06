@@ -3,38 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalkulator Multi - Dropdown Menu</title>
+    <title>Kalkulator Multi - Dropdown Multi Level</title>
     <style>
         body {
             font-family: 'Segoe UI', Arial, sans-serif;
             padding: 30px;
-            background-color: #f0f2f5;
+            background-color: #f5f5f5;
         }
  
-        /* Kotak Utama Dropdown */
-        details {
+        /* 1. KOTAK UTAMA (INDUK) */
+        .dropdown-induk {
             width: 320px;
             background-color: #ffffff;
-            border: 1px solid #dcdfe6;
+            border: 2px solid #333333;
             border-radius: 8px;
             overflow: hidden;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            margin-bottom: 20px;
-            transition: all 0.3s ease;
-        }
-
-        details[open] {
-            box-shadow: 0 6px 16px rgba(0,0,0,0.1);
-            border-color: #409eff;
         }
  
-        /* Tampilan Header Dropdown */
-        summary {
-            padding: 14px 18px;
-            font-weight: 600;
-            color: #303133;
-            background-color: #ffffff;
+        /* HEADER INDUK */
+        .dropdown-induk > summary {
+            padding: 15px;
+            font-weight: bold;
+            background-color: #eaeaea;
             list-style: none;
             display: flex;
             justify-content: space-between;
@@ -42,181 +33,198 @@
             user-select: none;
         }
 
-        summary::-webkit-details-marker {
+        .dropdown-induk > summary::-webkit-details-marker {
             display: none;
         }
 
-        summary span.panah {
-            font-size: 11px;
-            color: #909399;
-            transition: transform 0.3s ease;
-        }
-
-        details[open] summary span.panah {
-            transform: rotate(180deg);
-        }
- 
-        /* Desain Item Menu Utama */
-        .baris-menu {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 18px;
-            border-top: 1px solid #f2f6fc;
-            cursor: pointer;
-            color: #606266;
-            transition: all 0.2s;
-        }
- 
-        .baris-menu:hover {
-            background-color: #f5f7fa;
-            color: #409eff;
-        }
- 
-        /* Desain List Sub-Menu (Anak Sudut) */
-        .anak-sudut {
-            list-style: none;
-            padding: 0;
-            margin: 0;
+        /* 2. MENU ANAK (SUB-DROPDOWN BERULANG) */
+        .dropdown-anak {
+            border-top: 1px solid #cccccc;
             background-color: #fafafa;
         }
 
-        .anak-sudut li {
+        /* HEADER ANAK */
+        .dropdown-anak > summary {
+            padding: 12px 15px 12px 25px; /* Menjorok sedikit ke kanan */
+            font-weight: 600;
+            list-style: none;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 11px 18px 11px 40px;
-            border-top: 1px solid #f2f6fc;
-            cursor: pointer;
-            color: #606266;
-            font-size: 14px;
-            transition: all 0.2s;
+            color: #444444;
         }
 
-        .anak-sudut li:hover {
+        .dropdown-anak > summary::-webkit-details-marker {
+            display: none;
+        }
+
+        /* 3. MENU CUCU (ITEM LIST DENGAN RADIO BUTTON) */
+        .list-cucu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            background-color: #ffffff;
+        }
+
+        .list-cucu li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px 10px 45px; /* Menjorok paling kanan */
+            border-top: 1px solid #eeeeee;
+            cursor: pointer;
+            color: #555555;
+            transition: background 0.2s;
+        }
+
+        .list-cucu li:hover {
             background-color: #ecf5ff;
             color: #409eff;
         }
  
-        /* Sembunyikan Tombol Radio Fisik */
-        .baris-menu input[type="radio"],
-        .anak-sudut input[type="radio"] {
+        /* SEMBUNYIKAN RADIO FISIK */
+        .list-cucu input[type="radio"] {
             display: none;
         }
  
-        /* Membuat Bulatan Radio Buatan (Kustom) */
-        .baris-menu::after,
-        .anak-sudut li::after {
+        /* LINGKARAN RADIO KUSTOM PADA CUCU */
+        .list-cucu li::after {
             content: '';
-            width: 8px;
-            height: 8px;
-            border: 2px solid #dcdfe6;
+            width: 12px;
+            height: 12px;
+            border: 2px solid #666666;
             border-radius: 50%;
             display: inline-block;
             transition: all 0.2s;
         }
  
-        /* Gaya Radio Saat Item Terpilih */
-        .baris-menu.terpilih,
-        .anak-sudut li.terpilih {
+        /* JIKA CUCU TERPILIH */
+        .list-cucu li.terpilih {
             background-color: #ecf5ff;
             color: #409eff;
             font-weight: bold;
         }
 
-        .baris-menu.terpilih::after,
-        .anak-sudut li.terpilih::after {
+        .list-cucu li.terpilih::after {
             background-color: #409eff;
             border-color: #409eff;
             box-shadow: 0 0 0 3px rgba(64,158,255,0.2);
+        }
+
+        /* Efek rotasi panah mini untuk menu anak */
+        .dropdown-anak[open] > summary span.panah-anak {
+            transform: rotate(90deg);
+        }
+        .panah-anak {
+            font-size: 10px;
+            transition: transform 0.2s;
+            display: inline-block;
         }
     </style>
 </head>
 <body>
  
-    <!-- Dropdown Menu Utama -->
-    <details id="dropdownKalkulator">
+    <!-- INDUK UTAMA -->
+    <details class="dropdown-induk" id="menuUtama">
         <summary>
-            <span id="labelHeader">-- Pilih Menu --</span>
-            <span class="panah">▼</span>
+            <span id="textHeaderUtama">-- Pilih --</span>
+            <span>▼</span>
         </summary>
-        
-        <!-- Pilihan Utama: a0 -->
-        <div class="baris-menu" onclick="pilihMenu('a0', this)">
-            <span>Metode a0</span>
-            <input type="radio" name="pilihan" value="a0">
-        </div>
+ 
+        <!-- ANAK KELOMPOK 1: SUDUT -->
+        <details class="dropdown-anak">
+            <summary>
+                <span>📁 -- sudut --</span>
+                <span class="panah-anak">▶</span>
+            </summary>
+            
+            <!-- CUCU KELOMPOK 1 -->
+            <ul class="list-cucu">
+                <li onclick="pilihCucu('Sudut: sin', this, event)">
+                    <input type="radio" name="pilihan_kalkulator" value="sin">
+                    <span>sin</span>
+                </li>
+                <li onclick="pilihCucu('Sudut: cos', this, event)">
+                    <input type="radio" name="pilihan_kalkulator" value="cos">
+                    <span>cos</span>
+                </li>
+                <li onclick="pilihCucu('Sudut: tan', this, event)">
+                    <input type="radio" name="pilihan_kalkulator" value="tan">
+                    <span>tan</span>
+                </li>
+            </ul>
+        </details>
 
-        <!-- Sub-Menu Kelompok Trigonometri (Sudut) -->
-        <ul class="anak-sudut">
-            <li onclick="pilihSubMenu('Sudut: SIN', this)">
-                <input type="radio" name="pilihan" value="sin"> <span>Fungsi Sinus (sin)</span>
-            </li>
-            <li onclick="pilihSubMenu('Sudut: COS', this)">
-                <input type="radio" name="pilihan" value="cos"> <span>Fungsi Cosinus (cos)</span>
-            </li>
-            <li onclick="pilihSubMenu('Sudut: TAN', this)">
-                <input type="radio" name="pilihan" value="tan"> <span>Fungsi Tangen (tan)</span>
-            </li>
-        </ul>
+        <!-- ANAK KELOMPOK 2: LOGARITMA -->
+        <details class="dropdown-anak">
+            <summary>
+                <span>📁 -- logaritma --</span>
+                <span class="panah-anak">▶</span>
+            </summary>
+            
+            <!-- CUCU KELOMPOK 2 -->
+            <ul class="list-cucu">
+                <li onclick="pilihCucu('Log: ln', this, event)">
+                    <input type="radio" name="pilihan_kalkulator" value="ln">
+                    <span>ln (Natural Log)</span>
+                </li>
+                <li onclick="pilihCucu('Log: log10', this, event)">
+                    <input type="radio" name="pilihan_kalkulator" value="log10">
+                    <span>log10</span>
+                </li>
+            </ul>
+        </details>
 
-        <!-- Pilihan Utama Lainnya -->
-        <div class="baris-menu" onclick="pilihMenu('Metode a1', this)">
-            <span>Metode a1</span>
-            <input type="radio" name="pilihan" value="a1">
-        </div>
+        <!-- ANAK KELOMPOK 3: MATRIKS (CONTOH LAIN) -->
+        <details class="dropdown-anak">
+            <summary>
+                <span>📁 -- matriks --</span>
+                <span class="panah-anak">▶</span>
+            </summary>
+            
+            <ul class="list-cucu">
+                <li onclick="pilihCucu('Matriks: Determinan', this, event)">
+                    <input type="radio" name="pilihan_kalkulator" value="det">
+                    <span>Determinan</span>
+                </li>
+                <li onclick="pilihCucu('Matriks: Invers', this, event)">
+                    <input type="radio" name="pilihan_kalkulator" value="inv">
+                    <span>Invers</span>
+                </li>
+            </ul>
+        </details>
  
-        <div class="baris-menu" onclick="pilihMenu('Metode ab1', this)">
-            <span>Metode ab1</span>
-            <input type="radio" name="pilihan" value="ab1">
-        </div>
- 
-        <div class="baris-menu" onclick="pilihMenu('Metode b0', this)">
-            <span>Metode b0</span>
-            <input type="radio" name="pilihan" value="b0">
-        </div>
- 
-        <div class="baris-menu" onclick="pilihan" onclick="pilihMenu('Metode bb1', this)">
-            <span>Metode bb1</span>
-            <input type="radio" name="pilihan" value="bb1">
-        </div>
     </details>
  
     <script>
-        const kotakDropdown = document.getElementById('dropdownKalkulator');
-        const teksHeader = document.getElementById('labelHeader');
+        const indukMenu = document.getElementById('menuUtama');
+        const textHeaderUtama = document.getElementById('textHeaderUtama');
 
-        // Bersihkan tanda terpilih sebelumnya di semua elemen
-        function resetPilihan() {
-            document.querySelectorAll('.baris-menu, .anak-sudut li').forEach(item => {
-                item.classList.remove('terpilih');
+        // Fungsi khusus saat menu CUCU diklik
+        function pilihCucu(namaTerpilih, elemenAktif, event) {
+            // 1. Mencegah menu Anak menutup ketika Cucu diklik
+            event.stopPropagation(); 
+            event.preventDefault();
+
+            // 2. Hapus status 'terpilih' dari semua Cucu di seluruh menu
+            document.querySelectorAll('.list-cucu li').forEach(li => {
+                li.classList.remove('terpilih');
             });
-        }
+ 
+            // 3. Aktifkan visual terpilih pada Cucu yang diklik saja
+            elemenAktif.classList.add('terpilih');
+ 
+            // 4. Centang input radio asli yang tersembunyi di dalamnya
+            const radioAsli = elemenAktif.querySelector('input[type="radio"]');
+            if (radioAsli) {
+                radioAsli.checked = true;
+            }
 
-        // Fungsi untuk Menu Utama
-        function pilihMenu(namaMenu, elemen) {
-            resetPilihan();
-            
-            // Aktifkan visual dan radio button
-            elemen.classList.add('terpilih');
-            elemen.querySelector('input[type="radio"]').checked = true;
-            
-            // Ubah teks header sesuai pilihan & tutup dropdown otomatis
-            teksHeader.innerText = namaMenu;
-            kotakDropdown.removeAttribute('open');
-        }
+            // 5. Ganti teks header INDUK utama menjadi nama Cucu yang dipilih
+            textHeaderUtama.innerText = namaTerpilih;
 
-        // Fungsi untuk Sub-Menu (Sin, Cos, Tan)
-        function pilihSubMenu(namaSub, elemen) {
-            resetPilihan();
-            
-            // Aktifkan visual dan radio button
-            elemen.classList.add('terpilih');
-            elemen.querySelector('input[type="radio"]').checked = true;
-            
-            // Ubah teks header sesuai pilihan & tutup dropdown otomatis
-            teksHeader.innerText = namaSub;
-            kotakDropdown.removeAttribute('open');
+            // 6. Tutup dropdown INDUK secara otomatis
+            indukMenu.removeAttribute('open');
         }
     </script>
 </body>
