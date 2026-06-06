@@ -1,227 +1,223 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dropdown Dinamis</title>
-    <style>
-        body {
-            Arial, sans-serif;
-            padding: 30px;
-            background-color: #f5f5f5;
-        }
- 
-        /* Kotak Utama */
-        details {
-            width: 300px;
-            background-color: #ffffff;
-            border: 2px solid #333333;
-            border-radius: 8px;
-            overflow: hidden;
-            cursor: pointer;
-        }
- 
-        /* Tampilan Header */
-        summary {
-            padding: 15px;
-            font-weight: bold;
-            background-color: #eaeaea;
-            list-style: none;
-            display: flex;
-            justify-content: space-between;
-        }
- 
-        /* Desain Baris Menu */
-        .baris-menu {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 15px;
-            border-top: 1px solid #cccccc;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
- 
-        .baris-menu:hover {
-            background-color: #f9f9f9;
-        }
- 
-        /* Sub-Menu Menjorok ke Kanan */
-        .sub-menu {
-            padding-left: 45px;
-            background-color: #fafafa;
-        }
- 
-        /* 1. SEMBUNYIKAN SEMUA TOMBOL RADIO BAWAAN */
-        .baris-menu input[type="radio"] {
-            display: none;
-        }
- 
-        /* 2. KUNCI CSS: Buat bulatan radio tiruan yang hanya muncul saat aktif */
-        .baris-menu::after {
-            content: '';
-            width: 12px;
-            height: 12px;
-            border: 2px solid #666666;
-            border-radius: 50%;
-            display: inline-block;
-            visibility: hidden; /* Sembunyikan lingkaran secara default */
-        }
- 
-        /* 3. Tampilkan lingkaran & beri warna hitam/biru saat kelas '.terpilih' aktif */
-        .baris-menu.terpilih::after {
-            visibility: visible;
-            background-color: #333333; /* Warna isi bulatan saat diklik */
-            border-color: #333333;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Multi - Dropdown Menu</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            padding: 30px;
+            background-color: #f0f2f5;
+        }
+ 
+        /* Kotak Utama Dropdown */
+        details {
+            width: 320px;
+            background-color: #ffffff;
+            border: 1px solid #dcdfe6;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        details[open] {
+            box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+            border-color: #409eff;
+        }
+ 
+        /* Tampilan Header Dropdown */
+        summary {
+            padding: 14px 18px;
+            font-weight: 600;
+            color: #303133;
+            background-color: #ffffff;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+        }
+
+        summary::-webkit-details-marker {
+            display: none;
+        }
+
+        summary span.panah {
+            font-size: 11px;
+            color: #909399;
+            transition: transform 0.3s ease;
+        }
+
+        details[open] summary span.panah {
+            transform: rotate(180deg);
+        }
+ 
+        /* Desain Item Menu Utama */
+        .baris-menu {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 18px;
+            border-top: 1px solid #f2f6fc;
+            cursor: pointer;
+            color: #606266;
+            transition: all 0.2s;
+        }
+ 
+        .baris-menu:hover {
+            background-color: #f5f7fa;
+            color: #409eff;
+        }
+ 
+        /* Desain List Sub-Menu (Anak Sudut) */
+        .anak-sudut {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            background-color: #fafafa;
+        }
+
+        .anak-sudut li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 11px 18px 11px 40px;
+            border-top: 1px solid #f2f6fc;
+            cursor: pointer;
+            color: #606266;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .anak-sudut li:hover {
+            background-color: #ecf5ff;
+            color: #409eff;
+        }
+ 
+        /* Sembunyikan Tombol Radio Fisik */
+        .baris-menu input[type="radio"],
+        .anak-sudut input[type="radio"] {
+            display: none;
+        }
+ 
+        /* Membuat Bulatan Radio Buatan (Kustom) */
+        .baris-menu::after,
+        .anak-sudut li::after {
+            content: '';
+            width: 8px;
+            height: 8px;
+            border: 2px solid #dcdfe6;
+            border-radius: 50%;
+            display: inline-block;
+            transition: all 0.2s;
+        }
+ 
+        /* Gaya Radio Saat Item Terpilih */
+        .baris-menu.terpilih,
+        .anak-sudut li.terpilih {
+            background-color: #ecf5ff;
+            color: #409eff;
+            font-weight: bold;
+        }
+
+        .baris-menu.terpilih::after,
+        .anak-sudut li.terpilih::after {
+            background-color: #409eff;
+            border-color: #409eff;
+            box-shadow: 0 0 0 3px rgba(64,158,255,0.2);
+        }
+    </style>
 </head>
 <body>
- 
-    <details>
-        <summary>
-            <span>-- Pilih --</span>
-            <span>▼</span>
-        </summary>
- 
-        <!-- Setiap baris memiliki fungsi onclick untuk memicu JavaScript -->
-        <div class="baris-menu" onclick="pilihMenu(this)">
-            <span>a0</span>
-            <input type="radio" name="pilihan" value="a0">
+ 
+    <!-- Dropdown Menu Utama -->
+    <details id="dropdownKalkulator">
+        <summary>
+            <span id="labelHeader">-- Pilih Menu --</span>
+            <span class="panah">▼</span>
+        </summary>
+        
+        <!-- Pilihan Utama: a0 -->
+        <div class="baris-menu" onclick="pilihMenu('a0', this)">
+            <span>Metode a0</span>
+            <input type="radio" name="pilihan" value="a0">
         </div>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dropdown Dinamis</title>
-    <style>
-        body {
-            Arial, sans-serif;
-            padding: 30px;
-            background-color: #f5f5f5;
-        }
- 
-        /* Kotak Utama */
-        details {
-            width: 300px;
-            background-color: #ffffff;
-            border: 2px solid #333333;
-            border-radius: 8px;
-            overflow: hidden;
-            cursor: pointer;
-        }
- 
-        /* Tampilan Header */
-        summary {
-            padding: 15px;
-            font-weight: bold;
-            background-color: #eaeaea;
-            list-style: none;
-            display: flex;
-            justify-content: space-between;
-        }
- 
-        /* Desain Baris Menu */
-        .baris-menu {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 15px;
-            border-top: 1px solid #cccccc;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
- 
-        .baris-menu:hover {
-            background-color: #f9f9f9;
-        }
- 
-        /* Sub-Menu Menjorok ke Kanan */
-        .sub-menu {
-            padding-left: 45px;
-            background-color: #fafafa;
-        }
- 
-        /* 1. SEMBUNYIKAN SEMUA TOMBOL RADIO BAWAAN */
-        .baris-menu input[type="radio"] {
-            display: none;
-        }
- 
-        /* 2. KUNCI CSS: Buat bulatan radio tiruan yang hanya muncul saat aktif */
-        .baris-menu::after {
-            content: '';
-            width: 12px;
-            height: 12px;
-            border: 2px solid #666666;
-            border-radius: 50%;
-            display: inline-block;
-            visibility: hidden; /* Sembunyikan lingkaran secara default */
-        }
- 
-        /* 3. Tampilkan lingkaran & beri warna hitam/biru saat kelas '.terpilih' aktif */
-        .baris-menu.terpilih::after {
-            visibility: visible;
-            background-color: #333333; /* Warna isi bulatan saat diklik */
-            border-color: #333333;
-        }
-    </style>
-</head>
-<body>
- 
-    <details>
-        <summary>
-            <span>-- sudut --</span>
-            <span>▼</span>
-        </summary>
-    </div>     
-    <ul class="anak-sudut" id="subMenuSudut">
-        <li onclick="pilihAnakSudut('sin', event)">
-            <input type="radio" name="sub_pilihan" value="sin"> <span>sin</span>
-        </li>
-        <li onclick="pilihAnakSudut('cos', event)">
-            <input type="radio" name="sub_pilihan" value="cos"> <span>cos</span>
-        </li>
-        <li onclick="pilihAnakSudut('tan', event)">
-            <input type="radio" name="sub_pilihan" value="tan"> <span>tan</span>
-        </li>
-    </ul>
-        <div class="baris-menu sub-menu" onclick="pilihMenu(this)">
-            <span>a1</span>
-            <input type="radio" name="pilihan" value="a1">
-        </div>
- 
-        <div class="baris-menu sub-menu" onclick="pilihMenu(this)">
-            <span>b1</span>
-            <input type="radio" name="pilihan" value="ab1">
-        </div>
- 
-        <div class="baris-menu" onclick="pilihMenu(this)">
-            <span>b0</span>
-            <input type="radio" name="pilihan" value="b0">
-        </div>
- 
-        <div class="baris-menu sub-menu" onclick="pilihMenu(this)">
-            <span>b1</span>
-            <input type="radio" name="pilihan" value="bb1">
-        </div>
-    </details>
- 
-    <!-- JAVASCRIPT UNTUK MEMINDAHKAN RADIO -->
-    <script>
-        function pilihMenu(elemenAktif) {
-            // 1. Hapus kelas 'terpilih' dari semua baris menu agar radio sebelumnya hilang
-            document.querySelectorAll('.baris-menu').forEach(baris => {
-                baris.classList.remove('terpilih');
-            });
- 
-            // 2. Tambahkan kelas 'terpilih' hanya pada baris yang baru saja diklik
-            elemenAktif.classList.add('terpilih');
- 
-            // 3. Cari tag <input type="radio"> di dalam baris tersebut lalu centang (check) nilainya
-            const radioAsli = elemenAktif.querySelector('input[type="radio"]');
-            if (radioAsli) {
-                radioAsli.checked = true;
-            }
-        }
-    </script>
- 
+
+        <!-- Sub-Menu Kelompok Trigonometri (Sudut) -->
+        <ul class="anak-sudut">
+            <li onclick="pilihSubMenu('Sudut: SIN', this)">
+                <input type="radio" name="pilihan" value="sin"> <span>Fungsi Sinus (sin)</span>
+            </li>
+            <li onclick="pilihSubMenu('Sudut: COS', this)">
+                <input type="radio" name="pilihan" value="cos"> <span>Fungsi Cosinus (cos)</span>
+            </li>
+            <li onclick="pilihSubMenu('Sudut: TAN', this)">
+                <input type="radio" name="pilihan" value="tan"> <span>Fungsi Tangen (tan)</span>
+            </li>
+        </ul>
+
+        <!-- Pilihan Utama Lainnya -->
+        <div class="baris-menu" onclick="pilihMenu('Metode a1', this)">
+            <span>Metode a1</span>
+            <input type="radio" name="pilihan" value="a1">
+        </div>
+ 
+        <div class="baris-menu" onclick="pilihMenu('Metode ab1', this)">
+            <span>Metode ab1</span>
+            <input type="radio" name="pilihan" value="ab1">
+        </div>
+ 
+        <div class="baris-menu" onclick="pilihMenu('Metode b0', this)">
+            <span>Metode b0</span>
+            <input type="radio" name="pilihan" value="b0">
+        </div>
+ 
+        <div class="baris-menu" onclick="pilihan" onclick="pilihMenu('Metode bb1', this)">
+            <span>Metode bb1</span>
+            <input type="radio" name="pilihan" value="bb1">
+        </div>
+    </details>
+ 
+    <script>
+        const kotakDropdown = document.getElementById('dropdownKalkulator');
+        const teksHeader = document.getElementById('labelHeader');
+
+        // Bersihkan tanda terpilih sebelumnya di semua elemen
+        function resetPilihan() {
+            document.querySelectorAll('.baris-menu, .anak-sudut li').forEach(item => {
+                item.classList.remove('terpilih');
+            });
+        }
+
+        // Fungsi untuk Menu Utama
+        function pilihMenu(namaMenu, elemen) {
+            resetPilihan();
+            
+            // Aktifkan visual dan radio button
+            elemen.classList.add('terpilih');
+            elemen.querySelector('input[type="radio"]').checked = true;
+            
+            // Ubah teks header sesuai pilihan & tutup dropdown otomatis
+            teksHeader.innerText = namaMenu;
+            kotakDropdown.removeAttribute('open');
+        }
+
+        // Fungsi untuk Sub-Menu (Sin, Cos, Tan)
+        function pilihSubMenu(namaSub, elemen) {
+            resetPilihan();
+            
+            // Aktifkan visual dan radio button
+            elemen.classList.add('terpilih');
+            elemen.querySelector('input[type="radio"]').checked = true;
+            
+            // Ubah teks header sesuai pilihan & tutup dropdown otomatis
+            teksHeader.innerText = namaSub;
+            kotakDropdown.removeAttribute('open');
+        }
+    </script>
 </body>
 </html>
