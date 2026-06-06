@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalkulator Multi - Sesuai Gambar</title>
+    <title>Kalkulator Vertikal Kompleks</title>
     <style>
+        /* --- CSS DASAR KALKULATOR --- */
         body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background-color: #1a1d24;
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f7ebe1;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -15,282 +16,238 @@
             margin: 0;
         }
 
-        /* CONTAINER UTAMA NEO-BRUTALISME */
-        .kalkulator-box {
+        .calculator {
             width: 340px;
             background-color: #ffffff;
-            border: 2.5px solid #000000;
+            border: 2px solid #000;
             border-radius: 12px;
-            padding: 14px;
+            padding: 20px;
             box-shadow: 5px 5px 0px #000000;
         }
 
-        /* SCREEN DISPLAY */
-        .display-screen {
+        /* DISPLAY UTAMA: Rata kiri atas, mendukung scroll, dan gaya pecahan */
+        .display-container {
             width: 100%;
-            height: 130px;
-            border: 2.5px solid #000000;
-            border-radius: 6px;
-            background-color: #ffffff;
-            margin-bottom: 14px;
+            height: 180px;
+            border: 2px solid #000;
+            margin-bottom: 15px;
+            background-color: #fff;
             padding: 12px;
             box-sizing: border-box;
-            display: flex;
+            text-align: left;
+            font-size: 1.2rem;
+            color: #d13438;
+            font-weight: bold;
+            overflow-y: auto;
+        }
+
+        /* CSS untuk membuat format Pecahan Bertingkat/Susun */
+        .fraction {
+            display: inline-flex;
             flex-direction: column;
-            justify-content: space-between;
+            vertical-align: middle;
+            text-align: center;
+            padding: 0 4px;
         }
 
-        .display-screen .indicator-merah {
-            color: #bd2a2a;
-            font-weight: bold;
-            font-size: 24px;
-            margin: 0;
+        .numerator {
+            border-bottom: 2px solid #d13438; /* Garis pembagi pecahan */
+            padding-bottom: 2px;
         }
 
-        .display-screen .main-number {
-            align-self: flex-end;
-            font-size: 32px;
-            font-weight: bold;
-            color: #000000;
-            margin: 0;
-            word-break: break-all;
+        .denominator {
+            padding-top: 2px;
         }
 
-        /* BARIS TOMBOL OPERASI (+ - * : =) */
-        .row-operasi {
+        .history-block {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        /* Grid Tombol Operator Atas */
+        .operator-row {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
             gap: 8px;
-            margin-bottom: 14px;
+            margin-bottom: 15px;
         }
 
-        .btn-ops {
-            background-color: #ffdecb;
-            border: 2.5px solid #000000;
-            border-radius: 6px;
-            padding: 10px 0;
-            font-size: 20px;
+        .operator-row button {
+            background-color: #fce4d6;
+            border: 2px solid #000;
+            border-radius: 5px;
+            padding: 10px;
+            font-size: 1.2rem;
             font-weight: bold;
             cursor: pointer;
-            box-shadow: 1.5px 1.5px 0px #000000;
         }
 
-        /* AREA BAWAH */
-        .area-bawah {
+        /* Grid Bagian Bawah */
+        .main-grid {
             display: grid;
-            grid-template-columns: 1fr 1.8fr;
-            gap: 12px;
+            grid-template-columns: 1.2fr 2fr;
+            gap: 15px;
         }
 
-        /* PANEL KIRI (HIJAU) */
-        .panel-kiri {
-            background-color: #e2ede2;
-            border: 2.5px solid #000000;
-            border-radius: 8px;
+        .left-space {
+            background-color: #e2efda;
+            border-radius: 5px;
             padding: 10px;
+            font-size: 0.8rem;
+            color: #555;
             display: flex;
             flex-direction: column;
             gap: 10px;
-            position: relative;
         }
 
-        .field-box {
-            background-color: #ffffff;
-            border: 1.5px solid #000000;
-            border-radius: 5px;
-            height: 35px;
-            display: flex;
-            align-items: center;
-            padding-left: 8px;
-            font-size: 12px;
-            font-weight: bold;
-            color: #333333;
-        }
-
-        .btn-pilih {
-            background-color: #ffffff;
-            border: 1.5px solid #bd2a2a;
-            color: #bd2a2a;
-            font-weight: bold;
-            font-size: 13px;
-            padding: 8px 0;
-            border-radius: 5px;
-            cursor: pointer;
-            text-align: center;
-            box-shadow: 1px 1px 0px #000000;
-            user-select: none;
-        }
-
-        /* IFRAME POPUP MENU */
-        .iframe-container {
-            position: absolute;
-            left: -5px;
-            top: 165px;
-            width: 310px;
-            height: 250px;
-            z-index: 100;
-            display: none;
-            border: 2.5px solid #000000;
-            border-radius: 6px;
-            box-shadow: 4px 4px 0px #000;
-            background-color: white;
-        }
-
-        .iframe-container iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-        /* GRID PAPAN ANGKA */
-        .grid-angka-kanan {
+        .number-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 8px;
         }
 
-        .btn-num {
+        .number-grid button {
             background-color: #ffffff;
-            border: 2.5px solid #000000;
-            border-radius: 6px;
-            padding: 12px 0;
-            font-size: 20px;
+            border: 2px solid #000;
+            border-radius: 5px;
+            padding: 15px;
+            font-size: 1.3rem;
             font-weight: bold;
             cursor: pointer;
-            box-shadow: 1.5px 1.5px 0px #000000;
-            text-align: center;
         }
 
-        .btn-kuning { background-color: #ffeeb3; }
-        .btn-orange { background-color: #ffcab0; font-size: 14px; }
+        .delete-btn {
+            grid-column: span 2;
+            background-color: #f8cbad !important;
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
     </style>
 </head>
 <body>
 
-    <div class="kalkulator-box">
-        <!-- DISPLAY -->
-        <div class="display-screen">
-            <div class="indicator-merah" id="txtIndikator">0</div>
-            <div class="main-number" id="txtDisplay">0</div>
+    <div class="calculator">
+        <!-- Layar Tampilan Utama -->
+        <div id="display-screen" class="display-container">
+            <div id="history-log"></div>
+            <div id="current-input-line">0</div>
         </div>
 
-        <!-- BARIS OPERASI -->
-        <div class="row-operasi">
-            <button class="btn-ops" onclick="pressOps('+')">+</button>
-            <button class="btn-ops" onclick="pressOps('-')">-</button>
-            <button class="btn-ops" onclick="pressOps('×')">×</button>
-            <button class="btn-ops" onclick="pressOps(':')">:</button>
-            <button class="btn-ops" onclick="hitungHasil()">=</button>
+        <!-- Tombol Operator -->
+        <div class="operator-row">
+            <button onclick="appendOperator('+')">+</button>
+            <button onclick="appendOperator('-')">-</button>
+            <button onclick="appendOperator('*')">×</button>
+            <button onclick="appendOperator('/')">÷</button>
+            <button onclick="calculate()">=</button>
         </div>
 
-        <!-- BAGIAN BAWAH -->
-        <div class="area-bawah">
-            <!-- PANEL KIRI -->
-            <div class="panel-kiri">
-                <div class="field-box" id="boxMenu">- Menu -</div>
-                <div class="field-box" id="boxVal1">Input 1: -</div>
-                <div class="field-box" id="boxVal2">Input 2: -</div>
-                
-                <div class="btn-pilih" onclick="toggleMenuIframe()">&lt; PILIH &gt;</div>
-
-                <div class="iframe-container" id="popupIframeMenu">
-                    <!-- Pastikan nama folder huruf besar/kecilnya sesuai -->
-                    <iframe src="Folder/pilih.html"></iframe>
-                </div>
+        <div class="main-grid">
+            <!-- Sisi Kiri: Tambahan Tombol Pecahan Khusus Modifikasi -->
+            <div class="left-space">
+                <button onclick="makeFraction()" style="padding:5px; font-weight:bold; cursor:pointer;">[ / ] Pecahan</button>
+                <button onclick="appendOperator('%')" style="padding:5px; font-weight:bold; cursor:pointer;">%</button>
+                <button onclick="appendNumber('(')" style="padding:5px; cursor:pointer;">(</button>
+                <button onclick="appendNumber(')')" style="padding:5px; cursor:pointer;">)</button>
             </div>
 
-            <!-- GRID ANGKA SESUAI MATRIKS GAMBAR -->
-            <div class="grid-angka-kanan">
-                <button class="btn-num" onclick="pressNum(6)">6</button>
-                <button class="btn-num" onclick="pressNum(1)">1</button>
-                <button class="btn-num" onclick="pressNum(7)">7</button>
-                <button class="btn-num" onclick="pressNum(2)/">2</button>
-                <button class="btn-num" onclick="pressNum(8)">8</button>
-                <button class="btn-num" onclick="pressNum(3)">3</button>
-                <button class="btn-num" onclick="pressNum(9)">9</button>
-                <button class="btn-num" onclick="pressNum(4)">4</button>
-                <button class="btn-num" onclick="pressNum(0)">0</button>
-                <button class="btn-num" onclick="pressNum(5)">5</button>
-                <button class="btn-num btn-kuning" onclick="pressBackspace()">←</button>
-                <button class="btn-num btn-orange" onclick="pressDelete()">DELETE</button>
+            <!-- Sisi Kanan: Angka -->
+            <div class="number-grid">
+                <button onclick="appendNumber('6')">6</button>
+                <button onclick="appendNumber('1')">1</button>
+                <button onclick="appendNumber('7')">7</button>
+                <button onclick="appendNumber('2')">2</button>
+                <button onclick="appendNumber('8')">8</button>
+                <button onclick="appendNumber('3')">3</button>
+                <button onclick="appendNumber('9')">9</button>
+                <button onclick="appendNumber('4')">4</button>
+                <button onclick="appendNumber('0')">0</button>
+                <button onclick="appendNumber('5')">5</button>
+                <button class="delete-btn" onclick="clearDisplay()">DELETE</button>
             </div>
         </div>
     </div>
 
+    <!-- --- JAVASCRIPT LOGIKA PECAHAN BERTINGKAT --- -->
     <script>
-        const popupIframeMenu = document.getElementById('popupIframeMenu');
-        const boxMenu = document.getElementById('boxMenu');
-        const boxVal1 = document.getElementById('boxVal1');
-        const boxVal2 = document.getElementById('boxVal2');
-        const txtDisplay = document.getElementById('txtDisplay');
-        const txtIndikator = document.getElementById('txtIndikator');
+        let currentRawMath = ""; // Menyimpan string rumus asli untuk dievaluasi oleh eval()
         
-        let angkaSkor = '';
-        let rumusAktif = '';
-        let memoriAngka = 0;
-        let operasiAktif = '';
+        const currentInputLine = document.getElementById("current-input-line");
+        const historyLog = document.getElementById("history-log");
+        const displayScreen = document.getElementById("display-screen");
 
-        function toggleMenuIframe() {
-            popupIframeMenu.style.display = (popupIframeMenu.style.display === "block") ? "none" : "block";
+        function appendNumber(num) {
+            if (currentRawMath === "0") currentRawMath = "";
+            currentRawMath += num;
+            renderLiveView();
         }
 
-        // FUNGSI GLOBAL SINKRONISASI DROPDOWN DARI DALAM FOLDER
-        window.terimaDataDariFolder = function(namaTerpilih, kodeRumus) {
-            boxMenu.innerText = namaTerpilih;
-            txtIndikator.innerText = kodeRumus.toUpperCase();
-            rumusAktif = kodeRumus;
+        function appendOperator(op) {
+            currentRawMath += " " + op + " ";
+            renderLiveView();
+        }
+
+        // Fitur mengubah simbol garis miring '/' terakhir menjadi visual pecahan bertingkat HTML
+        function makeFraction() {
+            currentRawMath += "/";
+            renderLiveView();
+        }
+
+        // Fungsi menerjemahkan string matematika mentah menjadi kode HTML visual pecahan susun
+        function parseToVisualHTML(mathStr) {
+            if(!mathStr) return "0";
             
-            popupIframeMenu.style.display = "none";
-            angkaSkor = '';
-            txtDisplay.innerText = '0';
-            boxVal1.innerText = "Input 1: -";
-            boxVal2.innerText = "Input 2: -";
-        };
-
-        // INPUT ANGKA PAPAN KETIK
-        function pressNum(num) {
-            if (angkaSkor === '0') angkaSkor = '';
-            angkaSkor += num;
-            txtDisplay.innerText = angkaSkor;
-        }
-
-        function pressDelete() {
-            angkaSkor = '';
-            memoriAngka = 0;
-            operasiAktif = '';
-            txtDisplay.innerText = '0';
-            boxVal1.innerText = "Input 1: -";
-            boxVal2.innerText = "Input 2: -";
-        }
-
-        function pressBackspace() {
-            angkaSkor = angkaSkor.slice(0, -1);
-            txtDisplay.innerText = angkaSkor || '0';
-        }
-
-        // FUNGSI OPERASI UTAMA (+, -, *, :)
-        function pressOps(ops) {
-            if (!angkaSkor && txtDisplay.innerText !== '0') {
-                memoriAngka = parseFloat(txtDisplay.innerText);
-            } else {
-                memoriAngka = parseFloat(angkaSkor) || 0;
+            // Mengubah perkalian biasa menjadi simbol 'x'
+            let htmlResult = mathStr.replace(/\*/g, " x ");
+            
+            // Cari pola angka/tanda kurung sebelum dan sesudah tanda '/' untuk dijadikan pecahan vertikal
+            // Rumus regex ini mendeteksi struktur pembagian pembilang/penyebut
+            let fractionRegex = /(\([^\)]+\)|[0-9\.]+%?)\s*\/\s*(\([^\)]+\)|[0-9\.]+%?)/g;
+            
+            while (fractionRegex.test(htmlResult)) {
+                htmlResult = htmlResult.replace(fractionRegex, function(match, p1, p2) {
+                    return `<span class="fraction"><span class="numerator">${p1}</span><span class="denominator">${p2}</span></span>`;
+                });
             }
-            operasiAktif = ops;
-            boxVal1.innerText = "Input 1: " + memoriAngka;
-            boxVal2.innerText = "Ops: " + ops;
-            angkaSkor = '';
+            return htmlResult;
         }
 
-        // EKSEKUSI HASIL AKHIR (=)
-        function hitungHasil() {
-            let angkaKedua = parseFloat(angkaSkor) || 0;
-            let hasil = 0;
+        function renderLiveView() {
+            currentInputLine.innerHTML = parseToVisualHTML(currentRawMath);
+        }
 
-            // Jika operasi standar (+ - * :) aktif
-            if (operasiAktif) {
-                boxVal2.innerText = "Input 2: " + angkaKedua;
-                if (operasiAktif === '+') hasil = memoriAngka + angkaKedua;
-                else if (operasiAktif === '-') hasil = memoriAngka - angkaKedua;
-                else if (operasiAktif === '×') hasil = memoriAngka * angkaKedua;
-                else if (operasiAktif === ':') hasil = angkaKedua !== 0 ? memoriAngka / angkaKedua : "Error";
+        function calculate() {
+            if (!currentRawMath.trim()) return;
+
+            try {
+                // Sempurnakan logika persen (%) agar dikenali eval script (misal: 5% menjadi 5/100)
+                let executableMath = currentRawMath.replace(/([0-9\.]+)\s*%/g, "($1/100)");
                 
+                let rawResult = eval(executableMath);
+                let finalResult = Number(rawResult.toFixed(4)).toString();
+
+                // Cetak riwayat visual pembagian bertingkat ke log atas
+                let visualFormula = parseToVisualHTML(currentRawMath);
+                historyLog.innerHTML += `<div class="history-block">${visualFormula}<br>= ${finalResult}</div>`;
+                
+                // Masukkan hasil ke penampung input baru jika ingin dihitung kembali
+                currentRawMath = finalResult;
+            } catch (error) {
+                historyLog.innerHTML += `<div class="history-block">${parseToVisualHTML(currentRawMath)}<br>= Error</div>`;
+                currentRawMath = "0";
+            }
+            
+            renderLiveView();
+            displayScreen.scrollTop = displayScreen.scrollHeight; // Auto scroll kebawah
+        }
+
+        function clearDisplay() {
+            currentRawMath = "0";
+            historyLog.innerHTML = "";
+            renderLiveView();
+        }
+    </script>
+</body>
+</html>
