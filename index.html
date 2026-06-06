@@ -37,7 +37,7 @@
             display: none;
         }
 
-        /* 2. MENU ANAK (SUB-DROPDOWN BERULANG) */
+        /* 2. MENU ANAK (SUB-DROPDOWN) */
         .dropdown-anak {
             border-top: 1px solid #cccccc;
             background-color: #fafafa;
@@ -45,7 +45,7 @@
 
         /* HEADER ANAK */
         .dropdown-anak > summary {
-            padding: 12px 15px 12px 25px; /* Menjorok sedikit ke kanan */
+            padding: 12px 15px 12px 25px; /* Menjorok ke kanan */
             font-weight: 600;
             list-style: none;
             display: flex;
@@ -58,7 +58,7 @@
             display: none;
         }
 
-        /* 3. MENU CUCU (ITEM LIST DENGAN RADIO BUTTON) */
+        /* 3. MENU CUCU (ITEM DENGAN RADIO BUTTON) */
         .list-cucu {
             list-style: none;
             padding: 0;
@@ -138,7 +138,7 @@
                 <span class="panah-anak">▶</span>
             </summary>
             
-            <!-- CUCU KELOMPOK 1 -->
+            <!-- CUCU KELOMPOK 1 (DENGAN TAMBAHAN RAD) -->
             <ul class="list-cucu">
                 <li onclick="pilihCucu('Sudut: sin', this, event)">
                     <input type="radio" name="pilihan_kalkulator" value="sin">
@@ -152,30 +152,38 @@
                     <input type="radio" name="pilihan_kalkulator" value="tan">
                     <span>tan</span>
                 </li>
+                <li onclick="pilihCucu('Sudut: rad', this, event)">
+                    <input type="radio" name="pilihan_kalkulator" value="rad">
+                    <span>rad (Radian)</span>
+                </li>
             </ul>
         </details>
 
-        <!-- ANAK KELOMPOK 2: LOGARITMA -->
+        <!-- ANAK KELOMPOK 2: ALGORITMA -->
         <details class="dropdown-anak">
             <summary>
-                <span>📁 -- logaritma --</span>
+                <span>📁 -- algoritma --</span>
                 <span class="panah-anak">▶</span>
             </summary>
             
             <!-- CUCU KELOMPOK 2 -->
             <ul class="list-cucu">
-                <li onclick="pilihCucu('Log: ln', this, event)">
-                    <input type="radio" name="pilihan_kalkulator" value="ln">
-                    <span>ln (Natural Log)</span>
+                <li onclick="pilihCucu('Algoritma: Faktorial', this, event)">
+                    <input type="radio" name="pilihan_kalkulator" value="faktorial">
+                    <span>Faktorial (!)</span>
                 </li>
-                <li onclick="pilihCucu('Log: log10', this, event)">
-                    <input type="radio" name="pilihan_kalkulator" value="log10">
-                    <span>log10</span>
+                <li onclick="pilihCucu('Algoritma: FPB', this, event)">
+                    <input type="radio" name="pilihan_kalkulator" value="fpb">
+                    <span>FPB (Faktor Persekutuan Terbesar)</span>
+                </li>
+                <li onclick="pilihCucu('Algoritma: KPK', this, event)">
+                    <input type="radio" name="pilihan_kalkulator" value="kpk">
+                    <span>KPK (Kelipatan Persekutuan Terkecil)</span>
                 </li>
             </ul>
         </details>
 
-        <!-- ANAK KELOMPOK 3: MATRIKS (CONTOH LAIN) -->
+        <!-- ANAK KELOMPOK 3: MATRIKS -->
         <details class="dropdown-anak">
             <summary>
                 <span>📁 -- matriks --</span>
@@ -200,30 +208,29 @@
         const indukMenu = document.getElementById('menuUtama');
         const textHeaderUtama = document.getElementById('textHeaderUtama');
 
-        // Fungsi khusus saat menu CUCU diklik
+        // Fungsi saat menu CUCU diklik
         function pilihCucu(namaTerpilih, elemenAktif, event) {
-            // 1. Mencegah menu Anak menutup ketika Cucu diklik
             event.stopPropagation(); 
             event.preventDefault();
 
-            // 2. Hapus status 'terpilih' dari semua Cucu di seluruh menu
+            // Hapus status 'terpilih' dari semua Cucu di seluruh menu
             document.querySelectorAll('.list-cucu li').forEach(li => {
                 li.classList.remove('terpilih');
             });
  
-            // 3. Aktifkan visual terpilih pada Cucu yang diklik saja
+            // Aktifkan visual terpilih pada Cucu yang diklik
             elemenAktif.classList.add('terpilih');
  
-            // 4. Centang input radio asli yang tersembunyi di dalamnya
+            // Centang input radio asli yang tersembunyi
             const radioAsli = elemenAktif.querySelector('input[type="radio"]');
             if (radioAsli) {
                 radioAsli.checked = true;
             }
 
-            // 5. Ganti teks header INDUK utama menjadi nama Cucu yang dipilih
+            // Ganti teks header INDUK utama menjadi nama Cucu yang dipilih
             textHeaderUtama.innerText = namaTerpilih;
 
-            // 6. Tutup dropdown INDUK secara otomatis
+            // Tutup dropdown INDUK secara otomatis
             indukMenu.removeAttribute('open');
         }
     </script>
