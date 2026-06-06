@@ -94,8 +94,6 @@
         <span>sudut</span>
         <input type="radio" name="pilihan" value="sudut" id="radioSudut">
     </div>
-    
-    <!-- Anak menu di bawahnya (Sub-menu) -->
     <ul class="anak-sudut" id="subMenuSudut">
         <li onclick="pilihAnakSudut('sin', event)">
             <input type="radio" name="sub_pilihan" value="sin"> <span>sin</span>
@@ -107,6 +105,89 @@
             <input type="radio" name="sub_pilihan" value="tan"> <span>tan</span>
         </li>
     </ul>
+     
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dropdown Dinamis</title>
+    <style>
+        body {
+            Arial, sans-serif;
+            padding: 30px;
+            background-color: #f5f5f5;
+        }
+ 
+        /* Kotak Utama */
+        details {
+            width: 300px;
+            background-color: #ffffff;
+            border: 2px solid #333333;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+ 
+        /* Tampilan Header */
+        summary {
+            padding: 15px;
+            font-weight: bold;
+            background-color: #eaeaea;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+        }
+ 
+        /* Desain Baris Menu */
+        .baris-menu {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            border-top: 1px solid #cccccc;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+ 
+        .baris-menu:hover {
+            background-color: #f9f9f9;
+        }
+ 
+        /* Sub-Menu Menjorok ke Kanan */
+        .sub-menu {
+            padding-left: 45px;
+            background-color: #fafafa;
+        }
+ 
+        /* 1. SEMBUNYIKAN SEMUA TOMBOL RADIO BAWAAN */
+        .baris-menu input[type="radio"] {
+            display: none;
+        }
+ 
+        /* 2. KUNCI CSS: Buat bulatan radio tiruan yang hanya muncul saat aktif */
+        .baris-menu::after {
+            content: '';
+            width: 12px;
+            height: 12px;
+            border: 2px solid #666666;
+            border-radius: 50%;
+            display: inline-block;
+            visibility: hidden; /* Sembunyikan lingkaran secara default */
+        }
+ 
+        /* 3. Tampilkan lingkaran & beri warna hitam/biru saat kelas '.terpilih' aktif */
+        .baris-menu.terpilih::after {
+            visibility: visible;
+            background-color: #333333; /* Warna isi bulatan saat diklik */
+            border-color: #333333;
+        }
+    </style>
+</head>
+<body>
+ 
+    <details>
+        <summary>
+            <span>-- Pilih --</span>
+            <span>▼</span>
+        </summary>
 </div>
         <div class="baris-menu sub-menu" onclick="pilihMenu(this)">
             <span>a1</span>
