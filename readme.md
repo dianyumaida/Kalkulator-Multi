@@ -4,18 +4,18 @@ README.md
 Aplikasi kalkulator web responsif yang dirancang untuk melakukan perhitungan geometri bangun ruang serta konversi satuan teknik spesifik dari beban massa ke tekanan udara. Proyek ini dibuat menggunakan kombinasi teknologi web dasar (**HTML5, CSS3, dan JavaScript Vanilla**) sehingga sangat ringan dan cepat diakses.
 
 ## ✨ Fitur Utama
-*   📐 **Kalkulator Kotak:** Menghitung luas permukaan dan keliling persegi secara instan.
+*   📐 **Kalkulator Kubus:** Menghitung luas permukaan dan keliling persegi secara instan.
 *   🔺 **Kalkulator Segitiga:** Menghitung luas total segitiga berdasarkan nilai alas dan tinggi.
+*   ⚖️ **Balok:** .
+*   ⚖️ **Segiempat:** .
+*   ⚖️ **Sudut:** .
 *   🏀 **Kalkulator Bola:** Menghitung volume ruang dan luas permukaan total bola.
-*   ⚖️ **Konversi Kg ke PSI:** Mengonversi beban massa (kg) pada luas area tertentu (cm²) menjadi satuan tekanan udara (PSI).
+*   ⚖️ **Konversi:** .
+*      **Kurs:**Nilai mata uang.
 
 ---
 
-## 🚀 Rumus Konversi Tekanan
-Karena satuan **Kilogram (kg)** merupakan satuan massa dan **PSI (Pound per Square Inch)** merupakan satuan tekanan, aplikasi ini menggunakan variabel luas penampang permukaan dalam centimeter persegi (cm²) dengan rumus standar fisik berikut:
-
-$$\text{Tekanan (PSI)} = \left( \frac{\text{Beban (kg)}}{\text{Luas Area (cm}^2\text{)}} \right) \times 14.2233$$
-
+## 🚀 Rumus 
 ---
 
 ## 🛠️ Teknologi yang Digunakan
