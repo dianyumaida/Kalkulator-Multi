@@ -185,12 +185,13 @@
             resultDiv.innerHTML = '<span style="color: #6c757d;">Memuat data kurs terbaru...</span>';
 
             try {
-                // Mengambil data menggunakan standar endpoint v1 Frankfurter API
-                const response = await fetch(`{fromCurrency}&symbols=${toCurrency}`);
+                // Endpoint resmi v1 Frankfurter yang valid secara global
+                const url = `https://frankfurter.dev{fromCurrency}&symbols=${toCurrency}`;
+                const response = await fetch(url);
                 
-                // Proteksi jika HTTP status bukan 200 OK
+                // Proteksi penanganan error HTTP (seperti menangkap kode 404)
                 if (!response.ok) {
-                    throw new Error(`HTTP Error! Status: ${response.status}`);
+                    throw new Error(`Endpoint tidak ditemukan atau salah parameter (HTTP ${response.status})`);
                 }
 
                 const data = await response.json();
@@ -203,11 +204,10 @@
                     // Memformat hasil dengan standar pemisah ribuan lokal Indonesia (id-ID)
                     resultDiv.innerHTML = `${amount.toLocaleString('id-ID')} ${fromCurrency} = <br><span style="color:#007bff">${convertedAmount.toLocaleString('id-ID', {minimumFractionDigits: 2})} ${toCurrency}</span>`;
                 } else {
-                    resultDiv.innerHTML = '<span style="color: #dc3545;">Kurs mata uang tujuan tidak didukung dalam respons API.</span>';
+                    resultDiv.innerHTML = '<span style="color: #dc3545;">Mata uang tujuan tidak didukung oleh API saat ini.</span>';
                 }
             } catch (error) {
                 console.error('Detail Error:', error);
-                // Menampilkan visualisasi pesan kesalahan yang lebih mudah dipahami pengguna
                 resultDiv.innerHTML = `<span style="color: #dc3545;">Gagal memuat data API.<br><small style="font-size:0.8rem;">Penyebab: ${error.message}</small></span>`;
             }
         }
@@ -221,6 +221,9 @@
             // Memicu perhitungan otomatis pasca posisi ditukar
             convertCurrency();
         }
+
+        // Jalankan fungsi otomatis saat halaman pertama kali dibuka
+        window.addEventListener('DOMContentLoaded', convertCurrency);
 
         // Memasang Event Listener pada Komponen Aksi
         convertBtn.addEventListener('click', convertCurrency);
