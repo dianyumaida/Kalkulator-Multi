@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Konverter Mata Uang Modern</title>
+    <title>Konverter Mata Uang Modern v2</title>
     <style>
         * {
             box-sizing: border-box;
@@ -152,11 +152,10 @@
         <button class="convert-btn" id="convertBtn">Konversi Sekarang</button>
 
         <!-- Wadah Tampilan Hasil -->
-        <div id="resultDiv">Klik tombol di atas untuk melihat hasil.</div>
+        <div id="resultDiv">Memuat data awal...</div>
     </div>
 
     <script>
-        // Inisialisasi komponen DOM HTML
         const amountInput = document.getElementById('amount');
         const fromCurrencySelect = document.getElementById('fromCurrency');
         const toCurrencySelect = document.getElementById('toCurrency');
@@ -164,19 +163,19 @@
         const swapBtn = document.getElementById('swapBtn');
         const resultDiv = document.getElementById('resultDiv');
 
-        // Fungsi Utama untuk Mengambil Kurs & Melakukan Konversi
+        // Fungsi Utama Konversi Mata Uang Menggunakan Frankfurter API v2 Terbaru
         async function convertCurrency() {
             const amount = parseFloat(amountInput.value);
             const fromCurrency = fromCurrencySelect.value;
             const toCurrency = toCurrencySelect.value;
 
-            // Validasi jika input jumlah tidak valid
+            // Validasi input angka
             if (isNaN(amount) || amount <= 0) {
                 resultDiv.innerHTML = '<span style="color: #dc3545;">Silakan masukkan jumlah uang yang valid.</span>';
                 return;
             }
 
-            // Jika mata uang asal dan tujuan sama, tidak perlu panggil API
+            // Validasi jika mata uang asal & tujuan sama
             if (fromCurrency === toCurrency) {
                 resultDiv.innerHTML = `${amount.toLocaleString('id-ID')} ${fromCurrency} = <br><span style="color:#007bff">${amount.toLocaleString('id-ID', {minimumFractionDigits: 2})} ${toCurrency}</span>`;
                 return;
@@ -185,49 +184,5 @@
             resultDiv.innerHTML = '<span style="color: #6c757d;">Memuat data kurs terbaru...</span>';
 
             try {
-                // Endpoint resmi v1 Frankfurter yang valid secara global
-                const url = `https://frankfurter.dev{fromCurrency}&symbols=${toCurrency}`;
-                const response = await fetch(url);
-                
-                // Proteksi penanganan error HTTP (seperti menangkap kode 404)
-                if (!response.ok) {
-                    throw new Error(`Endpoint tidak ditemukan atau salah parameter (HTTP ${response.status})`);
-                }
-
-                const data = await response.json();
-
-                // Memastikan properti data.rates terdefinisi dengan benar
-                if (data.rates && data.rates[toCurrency]) {
-                    const rate = data.rates[toCurrency];
-                    const convertedAmount = amount * rate;
-                    
-                    // Memformat hasil dengan standar pemisah ribuan lokal Indonesia (id-ID)
-                    resultDiv.innerHTML = `${amount.toLocaleString('id-ID')} ${fromCurrency} = <br><span style="color:#007bff">${convertedAmount.toLocaleString('id-ID', {minimumFractionDigits: 2})} ${toCurrency}</span>`;
-                } else {
-                    resultDiv.innerHTML = '<span style="color: #dc3545;">Mata uang tujuan tidak didukung oleh API saat ini.</span>';
-                }
-            } catch (error) {
-                console.error('Detail Error:', error);
-                resultDiv.innerHTML = `<span style="color: #dc3545;">Gagal memuat data API.<br><small style="font-size:0.8rem;">Penyebab: ${error.message}</small></span>`;
-            }
-        }
-
-        // Fungsi Fitur Tombol Tukar (Swap Posisi Dropdown)
-        function swapCurrencies() {
-            const temp = fromCurrencySelect.value;
-            fromCurrencySelect.value = toCurrencySelect.value;
-            toCurrencySelect.value = temp;
-            
-            // Memicu perhitungan otomatis pasca posisi ditukar
-            convertCurrency();
-        }
-
-        // Jalankan fungsi otomatis saat halaman pertama kali dibuka
-        window.addEventListener('DOMContentLoaded', convertCurrency);
-
-        // Memasang Event Listener pada Komponen Aksi
-        convertBtn.addEventListener('click', convertCurrency);
-        swapBtn.addEventListener('click', swapCurrencies);
-    </script>
-</body>
-</html>
+                // Perubahan Kunci: Menggunakan endpoint v2 dengan parameter query 'from' dan 'to'
+                const url = `
