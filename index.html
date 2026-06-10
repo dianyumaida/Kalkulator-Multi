@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Konverter Mata Uang Modern v2</title>
+    <title>Konverter Mata Uang Modern - Stabil</title>
     <style>
         * {
             box-sizing: border-box;
@@ -163,7 +163,7 @@
         const swapBtn = document.getElementById('swapBtn');
         const resultDiv = document.getElementById('resultDiv');
 
-        // Fungsi Utama Konversi Mata Uang Menggunakan Frankfurter API v2 Terbaru
+        // Fungsi Utama Konversi Mata Uang
         async function convertCurrency() {
             const amount = parseFloat(amountInput.value);
             const fromCurrency = fromCurrencySelect.value;
@@ -184,5 +184,44 @@
             resultDiv.innerHTML = '<span style="color: #6c757d;">Memuat data kurs terbaru...</span>';
 
             try {
-                // Perubahan Kunci: Menggunakan endpoint v2 dengan parameter query 'from' dan 'to'
-                const url = `
+                // SOLUSI UTAMA: Menggunakan endpoint publik cadangan (.app) yang jauh lebih stabil terhadap struktur rute
+                const url = `https://frankfurter.app{fromCurrency}&symbols=${toCurrency}`;
+                const response = await fetch(url);
+                
+                if (!response.ok) {
+                    throw new Error(`Koneksi API gagal (HTTP status: ${response.status})`);
+                }
+
+                const data = await response.json();
+
+                // Memproses data rates berdasarkan struktur JSON Frankfurter
+                if (data.rates && data.rates[toCurrency]) {
+                    const rate = data.rates[toCurrency];
+                    const convertedAmount = amount * rate;
+                    
+                    // Menampilkan hasil akhir ke layar
+                    resultDiv.innerHTML = `${amount.toLocaleString('id-ID')} ${fromCurrency} = <br><span style="color:#007bff">${convertedAmount.toLocaleString('id-ID', {minimumFractionDigits: 2})} ${toCurrency}</span>`;
+                } else {
+                    resultDiv.innerHTML = '<span style="color: #dc3545;">Kurs mata uang target tidak ditemukan.</span>';
+                }
+            } catch (error) {
+                console.error('Detail Error:', error);
+                resultDiv.innerHTML = `<span style="color: #dc3545;">Gagal memuat data API.<br><small style="font-size:0.8rem;">Penyebab: ${error.message}</small></span>`;
+            }
+        }
+
+        // Fungsi Tukar Posisi Dropdown Mata Uang
+        function swapCurrencies() {
+            const temp = fromCurrencySelect.value;
+            fromCurrencySelect.value = toCurrencySelect.value;
+            toCurrencySelect.value = temp;
+            convertCurrency();
+        }
+
+        // Event Triggering otomatis saat file dibuka
+        window.addEventListener('DOMContentLoaded', convertCurrency);
+        convertBtn.addEventListener('click', convertCurrency);
+        swapBtn.addEventListener('click', swapCurrencies);
+    </script>
+</body>
+</html>
