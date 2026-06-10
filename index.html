@@ -3,50 +3,160 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Konverter Mata Uang</title>
+    <title>Konverter Mata Uang Modern</title>
     <style>
-        body { font-family: sans-serif; padding: 20px; }
-        .input-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; }
-        select, input { padding: 8px; margin-right: 10px; }
-        button { padding: 8px 15px; cursor: pointer; }
-        #resultDiv { margin-top: 20px; font-weight: bold; font-size: 1.2rem; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #f4f6f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 450px;
+        }
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.6rem;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #666;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        input[type="number"], select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        input[type="number"]:focus, select:focus {
+            border-color: #007bff;
+        }
+        .currency-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .currency-row select {
+            flex: 1;
+        }
+        .swap-btn {
+            background: #e9ecef;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            padding: 12px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+        .swap-btn:hover {
+            background: #dee2e6;
+        }
+        .convert-btn {
+            width: 100%;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 14px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .convert-btn:hover {
+            background-color: #0056b3;
+        }
+        #resultDiv {
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 6px;
+            background-color: #f8f9fa;
+            border-left: 5px solid #007bff;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #333;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+        }
     </style>
 </head>
 <body>
 
-    <h2>Konverter Mata Uang</h2>
+    <div class="container">
+        <h2>Konverter Mata Uang</h2>
 
-    <div class="input-group">
-        <label for="amount">Jumlah:</label>
-        <input type="number" id="amount" value="1" min="1">
+        <!-- Input Jumlah Uang -->
+        <div class="form-group">
+            <label for="amount">Jumlah</label>
+            <input type="number" id="amount" value="1" min="0.01" step="any">
+        </div>
+
+        <!-- Pilihan Mata Uang -->
+        <div class="form-group">
+            <label>Konversi Dari / Ke</label>
+            <div class="currency-row">
+                <select id="fromCurrency">
+                    <option value="USD" selected>USD - US Dollar</option>
+                    <option value="EUR">EUR - Euro</option>
+                    <option value="IDR">IDR - Indonesian Rupiah</option>
+                    <option value="SGD">SGD - Singapore Dollar</option>
+                    <option value="AUD">AUD - Australian Dollar</option>
+                    <option value="GBP">GBP - British Pound</option>
+                    <option value="JPY">JPY - Japanese Yen</option>
+                </select>
+
+                <!-- Tombol Tukar Posisi -->
+                <button class="swap-btn" id="swapBtn" title="Tukar Mata Uang">⇆</button>
+
+                <select id="toCurrency">
+                    <option value="IDR" selected>IDR - Indonesian Rupiah</option>
+                    <option value="USD">USD - US Dollar</option>
+                    <option value="EUR">EUR - Euro</option>
+                    <option value="SGD">SGD - Singapore Dollar</option>
+                    <option value="AUD">AUD - Australian Dollar</option>
+                    <option value="GBP">GBP - British Pound</option>
+                    <option value="JPY">JPY - Japanese Yen</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Tombol Eksekusi -->
+        <button class="convert-btn" id="convertBtn">Konversi Sekarang</button>
+
+        <!-- Wadah Tampilan Hasil -->
+        <div id="resultDiv">Klik tombol di atas untuk melihat hasil.</div>
     </div>
-
-    <div class="input-group">
-        <select id="fromCurrency">
-            <option value="USD" selected>USD - US Dollar</option>
-            <option value="EUR">EUR - Euro</option>
-            <option value="IDR">IDR - Indonesian Rupiah</option>
-            <option value="SGD">SGD - Singapore Dollar</option>
-        </select>
-
-        <!-- Tombol untuk menukar arah mata uang -->
-        <button id="swapBtn">⇆ Tukar</button>
-
-        <select id="toCurrency">
-            <option value="IDR" selected>IDR - Indonesian Rupiah</option>
-            <option value="USD">USD - US Dollar</option>
-            <option value="EUR">EUR - Euro</option>
-            <option value="SGD">SGD - Singapore Dollar</option>
-        </select>
-    </div>
-
-    <button id="convertBtn">Konversi</button>
-
-    <div id="resultDiv"></div>
 
     <script>
-        // Mengambil elemen HTML
+        // Inisialisasi komponen DOM HTML
         const amountInput = document.getElementById('amount');
         const fromCurrencySelect = document.getElementById('fromCurrency');
         const toCurrencySelect = document.getElementById('toCurrency');
@@ -54,51 +164,65 @@
         const swapBtn = document.getElementById('swapBtn');
         const resultDiv = document.getElementById('resultDiv');
 
-        // Fungsi Utama Konversi Mata Uang
+        // Fungsi Utama untuk Mengambil Kurs & Melakukan Konversi
         async function convertCurrency() {
             const amount = parseFloat(amountInput.value);
             const fromCurrency = fromCurrencySelect.value;
             const toCurrency = toCurrencySelect.value;
 
-            // Jika mata uang asal dan tujuan sama
-            if (fromCurrency === toCurrency) {
-                resultDiv.innerHTML = `${amount} ${fromCurrency} = <br><span style="color:#007bff">${amount.toFixed(2)} ${toCurrency}</span>`;
+            // Validasi jika input jumlah tidak valid
+            if (isNaN(amount) || amount <= 0) {
+                resultDiv.innerHTML = '<span style="color: #dc3545;">Silakan masukkan jumlah uang yang valid.</span>';
                 return;
             }
 
-            resultDiv.innerHTML = 'Memuat data...';
+            // Jika mata uang asal dan tujuan sama, tidak perlu panggil API
+            if (fromCurrency === toCurrency) {
+                resultDiv.innerHTML = `${amount.toLocaleString('id-ID')} ${fromCurrency} = <br><span style="color:#007bff">${amount.toLocaleString('id-ID', {minimumFractionDigits: 2})} ${toCurrency}</span>`;
+                return;
+            }
+
+            resultDiv.innerHTML = '<span style="color: #6c757d;">Memuat data kurs terbaru...</span>';
 
             try {
-                // Mengambil data kurs dari API publik Frankfurter
-                const response = await fetch(`https://frankfurter.dev{fromCurrency}&symbols=${toCurrency}`);
+                // Mengambil data menggunakan standar endpoint v1 Frankfurter API
+                const response = await fetch(`{fromCurrency}&symbols=${toCurrency}`);
+                
+                // Proteksi jika HTTP status bukan 200 OK
+                if (!response.ok) {
+                    throw new Error(`HTTP Error! Status: ${response.status}`);
+                }
+
                 const data = await response.json();
 
-                // Memastikan data rates untuk mata uang tujuan tersedia
+                // Memastikan properti data.rates terdefinisi dengan benar
                 if (data.rates && data.rates[toCurrency]) {
                     const rate = data.rates[toCurrency];
                     const convertedAmount = amount * rate;
                     
-                    resultDiv.innerHTML = `${amount} ${fromCurrency} = <br><span style="color:#007bff">${convertedAmount.toLocaleString('id-ID', {minimumFractionDigits: 2})} ${toCurrency}</span>`;
+                    // Memformat hasil dengan standar pemisah ribuan lokal Indonesia (id-ID)
+                    resultDiv.innerHTML = `${amount.toLocaleString('id-ID')} ${fromCurrency} = <br><span style="color:#007bff">${convertedAmount.toLocaleString('id-ID', {minimumFractionDigits: 2})} ${toCurrency}</span>`;
                 } else {
-                    resultDiv.innerHTML = 'Kurs tidak ditemukan.';
+                    resultDiv.innerHTML = '<span style="color: #dc3545;">Kurs mata uang tujuan tidak didukung dalam respons API.</span>';
                 }
             } catch (error) {
-                console.error('Error:', error);
-                resultDiv.innerHTML = 'Gagal memuat data API.';
+                console.error('Detail Error:', error);
+                // Menampilkan visualisasi pesan kesalahan yang lebih mudah dipahami pengguna
+                resultDiv.innerHTML = `<span style="color: #dc3545;">Gagal memuat data API.<br><small style="font-size:0.8rem;">Penyebab: ${error.message}</small></span>`;
             }
         }
 
-        // Fungsi Fitur Tombol Tukar (Swap)
+        // Fungsi Fitur Tombol Tukar (Swap Posisi Dropdown)
         function swapCurrencies() {
             const temp = fromCurrencySelect.value;
             fromCurrencySelect.value = toCurrencySelect.value;
             toCurrencySelect.value = temp;
             
-            // Otomatis hitung ulang setelah ditukar
+            // Memicu perhitungan otomatis pasca posisi ditukar
             convertCurrency();
         }
 
-        // Event Listeners
+        // Memasang Event Listener pada Komponen Aksi
         convertBtn.addEventListener('click', convertCurrency);
         swapBtn.addEventListener('click', swapCurrencies);
     </script>
