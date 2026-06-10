@@ -2,17 +2,17 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Kalkulator Multirumus dengan Riwayat Data</title>
+    <title>Kalkulator Multirumus Aktif</title>
     <style>
         body { font-family: 'Segoe UI', sans-serif; padding: 30px; background: #f0f2f5; color: #333; }
-        .box { max-width: 480px; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .box { max-width: 480px; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px; margin-left: auto; margin-right: auto; }
         .opsi-box { border: 1px solid #ddd; padding: 15px; border-radius: 8px; background: #fcfcfc; margin-bottom: 20px; }
         .radio-item { margin-bottom: 10px; display: flex; align-items: center; gap: 8px; cursor: pointer; }
         .input-group { margin-bottom: 15px; }
         .flex-inputs { display: flex; gap: 10px; }
         label { font-weight: bold; display: block; margin-bottom: 5px; }
         input[type="number"], select { padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
-        input[type="number"] { flex: 2; }
+        input[type="number"] { flex: 2; width: 100%; }
         select { flex: 1; background-color: #fff; }
         button { width: 100%; padding: 12px; border: none; border-radius: 5px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 5px; }
         .btn-hitung { background: #28a745; color: white; }
@@ -28,7 +28,7 @@
 <div class="box">
     <h2>🧮 Kalkulator & Manajemen Data</h2>
     
-    <!-- Radio Button Kategori Rumus -->
+    <!-- Pilihan Rumus -->
     <div class="opsi-box">
         <label style="margin-bottom: 10px; color:#555;">Pilih Kategori Rumus:</label>
         <label class="radio-item"><input type="radio" name="rumus" value="panjang" checked> Rumus Panjang</label>
@@ -37,7 +37,7 @@
         <label class="radio-item"><input type="radio" name="rumus" value="air"> Rumus Tekanan Air</label>
     </div>
 
-    <!-- Input Utama + Dropdown Satuan -->
+    <!-- Input Utama -->
     <div class="input-group">
         <label id="labelInput1">Masukkan Nilai:</label>
         <div class="flex-inputs">
@@ -46,7 +46,7 @@
         </div>
     </div>
     
-    <!-- Input Sekunder (Waktu) -->
+    <!-- Input Waktu (Sembunyi/Tampil Otomatis) -->
     <div class="input-group" id="boxInput2" style="display: none;">
         <label>Masukkan Waktu Tempuh (detik):</label>
         <input type="number" id="input2" value="2" min="0.1" style="width:100%" step="any">
@@ -54,11 +54,11 @@
 
     <button id="btnHitung" class="btn-hitung">Proses & Simpan Data</button>
 
-    <!-- Hasil Sinkronisasi Output -->
+    <!-- Hasil Kalkulasi -->
     <div id="panelHasil"></div>
 </div>
 
-<!-- BOX BARU: Pilih Data Riwayat Tersimpan -->
+<!-- Komponen Dropdown Riwayat -->
 <div class="box">
     <h3>📂 Riwayat Data Tersimpan</h3>
     <div class="input-group">
@@ -70,12 +70,35 @@
     <button id="btnHapusRiwayat" class="btn-hapus">❌ Hapus Semua Riwayat</button>
 </div>
 
-<!-- Sinkronisasi Logika dari Folder rumus -->
-<script type="module">
-    import { hitungPanjang } from './rumus/panjang.js';
-    import { hitungKecepatan } from './rumus/kecepatan.js';
-    import { hitungAngin } from './rumus/angin.js';
-    import { hitungAir } from './rumus/air.js';
+<script>
+    // SEMUA LOGIKA RUMUS DISATUKAN DI SINI AGAR BERFUNGSI DI GITHUB PAGES
+    const LOGIKA = {
+        panjang: (nilai, asal) => {
+            let m = nilai;
+            if (asal === 'km') m = nilai * 1000;
+            if (asal === 'cm') m = nilai / 100;
+            return `• ${m.toFixed(2)} m<br>• ${(m/1000).toFixed(5)} km<br>• ${(m*100).toFixed(0)} cm`;
+        },
+        kecepatan: (jarak, waktu, asal) => {
+            if (waktu <= 0) return "Waktu tidak boleh 0";
+            let m = jarak;
+            if (asal === 'km') m = jarak * 1000;
+            const ms = m / waktu;
+            return `• Kecepatan: <b>${ms.toFixed(2)} m/s</b><br>• Kecepatan: <b>${(ms * 3.6).toFixed(2)} km/jam</b>`;
+        },
+        angin: (kecepatan, asal) => {
+            let ms = kecepatan;
+            if (asal === 'kmh') ms = kecepatan / 3.6;
+            const pa = 0.6 * Math.pow(ms, 2);
+            return `• <b>${pa.toFixed(2)} Pa</b><br>• <b>${(pa/100000).toFixed(5)} Bar</b>`;
+        },
+        air: (kecepatan, asal) => {
+            let ms = kecepatan;
+            if (asal === 'kmh') ms = kecepatan / 3.6;
+            const pa = 500 * Math.pow(ms, 2);
+            return `• <b>${pa.toFixed(2)} Pa</b><br>• <b>${(pa/100000).toFixed(4)} Bar</b>`;
+        }
+    };
 
     const radios = document.querySelectorAll('input[name="rumus"]');
     const labelInput1 = document.getElementById('labelInput1');
@@ -84,137 +107,76 @@
     const panelHasil = document.getElementById('panelHasil');
     const pilihRiwayat = document.getElementById('pilihRiwayat');
 
-    // Kumpulan opsi satuan
     const opsiSatuan = {
         panjang: `<option value="m">Meter (m)</option><option value="km">Kilometer (km)</option><option value="cm">Centimeter (cm)</option>`,
         kecepatan: `<option value="m">Meter (m)</option><option value="km">Kilometer (km)</option>`,
-        angin: `<option value="ms">m/s (Meter/Detik)</option><option value="kmh">km/jam</option>`,
-        air: `<option value="ms">m/s (Meter/Detik)</option><option value="kmh">km/jam</option>`
+        angin: `<option value="ms">m/s</option><option value="kmh">km/jam</option>`,
+        air: `<option value="ms">m/s</option><option value="kmh">km/jam</option>`
     };
 
-    // Inisialisasi awal dropdown satuan
     satuanInput1.innerHTML = opsiSatuan.panjang;
-
-    // Array lokal untuk menampung riwayat data
     let arrayRiwayat = JSON.parse(localStorage.getItem('kalkulator_history')) || [];
 
-    // Fungsi memperbarui isi dropdown pilih data riwayat
     function perbaruiDropdownRiwayat() {
         if (arrayRiwayat.length === 0) {
             pilihRiwayat.innerHTML = '<option value="">-- Belum ada riwayat tersimpan --</option>';
             return;
         }
-
         let htmlOpsi = '<option value="">-- Pilih data untuk memuat ulang hasil --</option>';
         arrayRiwayat.forEach((item, indeks) => {
             htmlOpsi += `<option value="${indeks}">[${item.jenis.toUpperCase()}] ${item.ringkasan}</option>`;
         });
         pilihRiwayat.innerHTML = htmlOpsi;
     }
-
-    // Jalankan pembaruan riwayat saat halaman pertama kali dibuka
     perbaruiDropdownRiwayat();
 
-    // Perubahan UI dinamis saat memilih jenis rumus anak
     radios.forEach(radio => {
         radio.addEventListener('change', (e) => {
             panelHasil.style.display = "none";
             const opsi = e.target.value;
             satuanInput1.innerHTML = opsiSatuan[opsi];
-
-            if (opsi === 'panjang') {
-                labelInput1.innerText = "Masukkan Nilai Panjang:";
-                boxInput2.style.display = "none";
-            } else if (opsi === 'kecepatan') {
-                labelInput1.innerText = "Masukkan Jarak Lintasan:";
-                boxInput2.style.display = "block";
-            } else {
-                labelInput1.innerText = `Masukkan Kecepatan ${opsi === 'angin' ? 'Angin' : 'Aliran Air'}:`;
-                boxInput2.style.display = "none";
-            }
+            boxInput2.style.display = (opsi === 'kecepatan') ? "block" : "none";
+            labelInput1.innerText = "Masukkan Nilai:";
         });
     });
 
-    // Proses kalkulasi ketika tombol ditekan
     document.getElementById('btnHitung').addEventListener('click', () => {
         const val1 = parseFloat(document.getElementById('input1').value);
         const val2 = parseFloat(document.getElementById('input2').value);
         const unit1 = satuanInput1.value;
         const rumusTerpilih = document.querySelector('input[name="rumus"]:checked').value;
         
-        if (isNaN(val1)) {
-            alert("Harap masukkan angka input yang valid!");
-            return;
-        }
+        if (isNaN(val1)) return alert("Masukkan angka yang valid!");
 
-        let kontenHasil = "";
-        let ringkasanData = "";
+        let hasilHTML = "";
+        if (rumusTerpilih === 'panjang') hasilHTML = LOGIKA.panjang(val1, unit1);
+        else if (rumusTerpilih === 'kecepatan') hasilHTML = LOGIKA.kecepatan(val1, val2, unit1);
+        else if (rumusTerpilih === 'angin') hasilHTML = LOGIKA.angin(val1, unit1);
+        else if (rumusTerpilih === 'air') hasilHTML = LOGIKA.air(val1, unit1);
 
-        if (rumusTerpilih === 'panjang') {
-            const hasil = hitungPanjang(val1, unit1);
-            ringkasanData = `${val1} ${unit1}`;
-            kontenHasil = `
-                <strong>Hasil Konversi Panjang Multi-Satuan:</strong><br>
-                • ${hasil.m.toFixed(2)} Meter (m)<br>
-                • ${hasil.km.toFixed(5)} Kilometer (km)<br>
-                • ${hasil.cm.toFixed(0)} Centimeter (cm)
-            `;
-        } else if (rumusTerpilih === 'kecepatan') {
-            const hasil = hitungKecepatan(val1, val2, unit1);
-            ringkasanData = `Jarak: ${val1}${unit1}, Waktu: ${val2}s`;
-            kontenHasil = `
-                <strong>Hasil Kecepatan Aliran (v = s/t):</strong><br>
-                • Jarak Asal: ${val1} ${unit1}<br>
-                • Waktu: ${val2} detik<br>
-                <hr>
-                • Kecepatan: <b>${hasil.ms.toFixed(2)} m/s</b><br>
-                • Kecepatan: <b>${hasil.kmh.toFixed(2)} km/jam</b>
-            `;
-        } else if (rumusTerpilih === 'angin') {
-            const hasil = hitungAngin(val1, unit1);
-            ringkasanData = `${val1} ${unit1}`;
-            kontenHasil = `
-                <strong>Hasil Tekanan Dinamis Angin (0.6 * v²):</strong><br>
-                • <b>${hasil.pa.toFixed(2)} Pascal (Pa)</b><br>
-                • <b>${hasil.bar.toFixed(5)} Bar</b><br>
-                • <b>${hasil.psi.toFixed(4)} Psi</b>
-            `;
-        } else if (rumusTerpilih === 'air') {
-            const hasil = hitungAir(val1, unit1);
-            ringkasanData = `${val1} ${unit1}`;
-            kontenHasil = `
-                <strong>Hasil Tekanan Dinamis Air (500 * v²):</strong><br>
-                • <b>${hasil.pa.toFixed(2)} Pascal (Pa)</b><br>
-                • <b>${hasil.bar.toFixed(4)} Bar</b><br>
-                • <b>${hasil.psi.toFixed(3)} Psi</b>
-            `;
-        }
-
-        // Tampilkan ke panel luar
-        panelHasil.innerHTML = kontenHasil;
+        panelHasil.innerHTML = `<strong>Hasil Perhitungan:</strong><br>${hasilHTML}`;
         panelHasil.style.display = "block";
 
-        // Simpan data kalkulasi ke riwayat
-        arrayRiwayat.push({
-            jenis: rumusTerpilih,
-            ringkasan: ringkasanData,
-            html: kontenHasil
-        });
+        arrayRiwayat.push({ jenis: rumusTerpilih, ringkasan: `${val1} ${unit1}`, html: hasilHTML });
         localStorage.setItem('kalkulator_history', JSON.stringify(arrayRiwayat));
-        
-        // Perbarui tampilan data pilih dropdown
         perbaruiDropdownRiwayat();
     });
 
-    // Menampilkan kembali data lama dari dropdown riwayat pilihan data
     pilihRiwayat.addEventListener('change', (e) => {
-        const indeks = e.target.value;
-        if (indeks !== "") {
-            const dataLama = arrayRiwayat[indeks];
-            panelHasil.innerHTML = dataLama.html;
+        if (e.target.value !== "") {
+            panelHasil.innerHTML = `<strong>Hasil Perhitungan:</strong><br>${arrayRiwayat[e.target.value].html}`;
             panelHasil.style.display = "block";
         }
     });
 
-    // Tombol delete untuk menghapus semua riwayat data
     document.getElementById('btnHapusRiwayat').addEventListener('click', () => {
+        if (confirm("Hapus semua riwayat?")) {
+            arrayRiwayat = [];
+            localStorage.removeItem('kalkulator_history');
+            perbaruiDropdownRiwayat();
+            panelHasil.style.display = "none";
+        }
+    });
+</script>
+</body>
+</html>
