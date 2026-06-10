@@ -2,133 +2,80 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Kalkulator Multirumus</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Kurs Mata Uang</title>
     <style>
-        body { 'Segoe UI', sans-serif; padding: 30px; background: #f0f2f5; color: #333; }
-        .box { max-width: 480px; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .opsi-box { border: 1px solid #ddd; padding: 15px; border-radius: 8px; background: #fcfcfc; 20px; }
-        .radio-item { 10px; display: flex; align-items: center; gap: 8px; cursor: pointer; }
+        body { Arial, sans-serif; background-color: #f4f4f9; display: flex; justify-content: center; padding-top: 50px; }
+        .container { background-color: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); width: 350px; }
+        h2 { text-align: center; color: #333; }
         .input-group { 15px; }
-        label { font-weight: bold; display: block; 5px; }
-        input[type="number"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background: #007bff; color: white; border: none; border-radius: 5px; font-size: 16px; font-weight: bold; cursor: pointer; }
-        button:hover { background: #0056b3; }
-        #panelHasil { 20px; padding: 15px; background: #e9f5ff; border-left: 5px solid #007bff; border-radius: 4px; display: none; 1.6; }
+        label { display: block; 5px; font-weight: bold; }
+        select, input { width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 4px; font-size: 16px; }
+        button { width: 100%; padding: 12px; background-color: #007bff; color: white; border: none; border-radius: 4px; font-size: 18px; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
+        #result { 20px; font-size: 20px; text-align: center; font-weight: bold; color: #333; }
     </style>
 </head>
 <body>
  
-<div class="box">
-    <h2>🧮 Pilih & Hitung Rumus</h2>
-    
-    <!-- Pilihan Anak Rumus via Radio Button -->
-    <div class="opsi-box">
-        <label style=" 10px; color:#555;">Pilih Kategori Rumus:</label>
-        <label class="radio-item"><input type="radio" name="rumus" value="panjang" checked> Rumus Panjang (Konversi m)</label>
-        <label class="radio-item"><input type="radio" name="rumus" value="kecepatan"> Rumus Kecepatan (v = s/t)</label>
-        <label class="radio-item"><input type="radio" name="rumus" value="angin"> Rumus Tekanan Angin (0.6 * v²)</label>
-        <label class="radio-item"><input type="radio" name="rumus" value="air"> Rumus Tekanan Air (500 * v²)</label>
-    </div>
- 
-    <!-- Form Input Dinamis -->
+<div class="container">
+    <h2>Konverter Mata Uang</h2>
     <div class="input-group">
-        <label id="labelInput1">Masukkan Nilai Panjang (meter):</label>
-        <input type="number" id="input1" value="10" step="any">
+        <label for="amount">Jumlah:</label>
+        <input type="number" id="amount" value="1">
     </div>
-    
-    <div class="input-group" id="boxInput2" style="display: none;">
-        <label id="labelInput2">Masukkan Waktu (detik):</label>
-        <input type="number" id="input2" value="2" min="0.1" step="any">
+    <div class="input-group">
+        <label for="from">Dari:</label>
+        <select id="from">
+            <option value="IDR">IDR (Rupiah Indonesia)</option>
+            <option value="USD" selected>USD (Dolar AS)</option>
+            <option value="EUR">EUR (Euro)</option>
+            <option value="SGD">SGD (Dolar Singapura)</option>
+            <option value="MYR">MYR (Ringgit Malaysia)</option>
+        </select>
     </div>
- 
-    <button id="btnHitung">Proses Perhitungan</button>
- 
-    <!-- Tampilan Sinkronisasi Hasil -->
-    <div id="panelHasil"></div>
+    <div class="input-group">
+        <label for="to">Ke:</label>
+        <select id="to">
+            <option value="IDR" selected>IDR (Rupiah Indonesia)</option>
+            <option value="USD">USD (Dolar AS)</option>
+            <option value="EUR">EUR (Euro)</option>
+            <option value="SGD">SGD (Dolar Singapura)</option>
+            <option value="MYR">MYR (Ringgit Malaysia)</option>
+        </select>
+    </div>
+    <button onclick="convertCurrency()">Hitung Konversi</button>
+    <div id="result">Hasil: -</div>
 </div>
  
-<!-- Sinkronisasi dan Import Berkas ke Folder rumus -->
-<script type="module">
-    import { hitungPanjang } from './rumus/panjang.js';
-    import { hitungKecepatan } from './rumus/kecepatan.js';
-    import { hitungAngin } from './rumus/angin.js';
-    import { hitungAir } from './rumus/air.js';
+<script>
+    async function convertCurrency() {
+        const amount = document.getElementById('amount').value;
+        const fromCurrency = document.getElementById('from').value;
+        const toCurrency = document.getElementById('to').value;
+        const resultDiv = document.getElementById('result');
  
-    const radios = document.querySelectorAll('input[name="rumus"]');
-    const labelInput1 = document.getElementById('labelInput1');
-    const boxInput2 = document.getElementById('boxInput2');
-    const panelHasil = document.getElementById('panelHasil');
- 
-    // Mengubah label dan form secara otomatis saat radio button dipindah
-    radios.forEach(radio => {
-        radio.addEventListener('change', (e) => {
-            panelHasil.style.display = "none"; // Sembunyikan hasil lama
-            const opsi = e.target.value;
- 
-            if (opsi === 'panjang') {
-                labelInput1.innerText = "Masukkan Nilai Panjang (meter):";
-                boxInput2.style.display = "none";
-            } else if (opsi === 'kecepatan') {
-                labelInput1.innerText = "Masukkan Jarak Lintasan (meter):";
-                boxInput2.style.display = "block"; // Aktifkan input waktu
-            } else if (opsi === 'angin') {
-                labelInput1.innerText = "Masukkan Kecepatan Angin (m/s):";
-                boxInput2.style.display = "none";
-            } else if (opsi === 'air') {
-                labelInput1.innerText = "Masukkan Kecepatan Aliran Air (m/s):";
-                boxInput2.style.display = "none";
-            }
-        });
-    });
- 
-    // Proses kalkulasi ketika tombol ditekan
-    document.getElementById('btnHitung').addEventListener('click', () => {
-        const val1 = parseFloat(document.getElementById('input1').value);
-        const val2 = parseFloat(document.getElementById('input2').value);
-        const rumusTerpilih = document.querySelector('input[name="rumus"]:checked').value;
-        
-        if (isNaN(val1)) {
-            alert("Harap masukkan nilai input pertama dengan benar!");
+        if (amount <= 0) {
+            alert('Masukkan jumlah uang yang valid');
             return;
         }
  
-        let kontenHasil = "";
+        try {
+            // Mengambil data kurs dari API publik Frankfurter
+            const response = await fetch(`https://frankfurter.dev{fromCurrency}/${toCurrency}`);
+            const data = await response.json();
  
-        // Eksekusi fungsi sesuai file JS dalam folder yang dituju
-        if (rumusTerpilih === 'panjang') {
-            const hasil = hitungPanjang(val1);
-            kontenHasil = `
-                <strong>Hasil Konversi Panjang:</strong><br>
-                ${val1} Meter = <b>${hasil.km.toFixed(4)} Km</b><br>
-                ${val1} Meter = <b>${hasil.cm.toFixed(0)} Cm</b>
-            `;
-        } else if (rumusTerpilih === 'kecepatan') {
-            const hasil = hitungKecepatan(val1, val2);
-            kontenHasil = `
-                <strong>Hasil Rumus Kecepatan:</strong><br>
-                Kecepatan (v) = Jarak / Waktu<br>
-                Hasil: <b>${hasil.toFixed(2)} m/s</b>
-            `;
-        } else if (rumusTerpilih === 'angin') {
-            const hasil = hitungAngin(val1);
-            kontenHasil = `
-                <strong>Hasil Tekanan Dinamis Angin:</strong><br>
-                Tekanan (P) = 0.6 * v²<br>
-                Hasil: <b>${hasil.toFixed(2)} Pascal (Pa)</b>
-            `;
-        } else if (rumusTerpilih === 'air') {
-            const hasil = hitungAir(val1);
-            kontenHasil = `
-                <strong>Hasil Tekanan Dinamis Air:</strong><br>
-                Tekanan (P) = 500 * v²<br>
-                Hasil: <b>${hasil.toFixed(2)} Pascal (Pa)</b>
-            `;
+            if (data.rate) {
+                const convertedAmount = amount * data.rate;
+                resultDiv.innerHTML = `${amount} ${fromCurrency} = <br><span style="color:#007bff">${convertedAmount.toFixed(2)} ${toCurrency}</span>`;
+            } else {
+                resultDiv.innerHTML = 'Kurs tidak ditemukan.';
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            resultDiv.innerHTML = 'Gagal memuat data API.';
         }
- 
-        // Sinkronisasi data ke tampilan luar
-        panelHasil.innerHTML = kontenHasil;
-        panelHasil.style.display = "block";
-    });
+    }
 </script>
  
 </body>
