@@ -2,106 +2,219 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalkulator Pecahan Berlapis Sukses</title>
+    <title>Kalkulator Multirumus dengan Riwayat Data</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f7ebe1; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-        .calculator { width: 360px; background-color: #ffffff; border: 2px solid #000; border-radius: 12px; padding: 20px; box-shadow: 5px 5px 0px #000000; }
-        .display-container { width: 100%; height: 280px; border: 2px solid #000; margin-bottom: 15px; background-color: #fff; padding: 12px; box-sizing: border-box; text-align: left; overflow-y: auto; color: #d13438; font-weight: bold; font-size: 1.4rem; }
-        .frac { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; padding: 4px 8px; margin: 4px; }
-        .num { border-bottom: 2px solid #d13438; padding-bottom: 4px; margin-bottom: 2px; }
-        .den { padding-top: 4px; min-height: 25px; }
-        .history-item { margin-bottom: 20px; border-bottom: 1px dashed #ccc; padding-bottom: 12px; line-height: 2.2; }
-        .current-line { min-height: 60px; line-height: 2.2; display: inline-block; }
-        .operator-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 15px; }
-        .operator-row button { background-color: #fce4d6; border: 2px solid #000; border-radius: 5px; padding: 10px; font-size: 1.2rem; font-weight: bold; cursor: pointer; }
-        .main-grid { display: grid; grid-template-columns: 1.2fr 2fr; gap: 15px; }
-        .left-menu { background-color: #e2efda; border: 2px solid #000; border-radius: 5px; padding: 8px; display: flex; flex-direction: column; gap: 8px; }
-        .left-menu button { padding: 10px 2px; font-weight: bold; font-size: 0.85rem; cursor: pointer; border: 1px solid #000; background-color: #fff; border-radius: 4px; }
-        .number-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
-        .number-grid button { background-color: #ffffff; border: 2px solid #000; border-radius: 5px; padding: 15px; font-size: 1.3rem; font-weight: bold; cursor: pointer; }
-        .backspace-btn { background-color: #fff2cc !important; font-size: 1.4rem !important; }
-        .delete-btn { background-color: #f8cbad !important; font-size: 0.95rem !important; font-weight: bold; }
-        button:active { transform: scale(0.95); }
+        body { font-family: 'Segoe UI', sans-serif; padding: 30px; background: #f0f2f5; color: #333; }
+        .box { max-width: 480px; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .opsi-box { border: 1px solid #ddd; padding: 15px; border-radius: 8px; background: #fcfcfc; margin-bottom: 20px; }
+        .radio-item { margin-bottom: 10px; display: flex; align-items: center; gap: 8px; cursor: pointer; }
+        .input-group { margin-bottom: 15px; }
+        .flex-inputs { display: flex; gap: 10px; }
+        label { font-weight: bold; display: block; margin-bottom: 5px; }
+        input[type="number"], select { padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        input[type="number"] { flex: 2; }
+        select { flex: 1; background-color: #fff; }
+        button { width: 100%; padding: 12px; border: none; border-radius: 5px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 5px; }
+        .btn-hitung { background: #28a745; color: white; }
+        .btn-hitung:hover { background: #218838; }
+        .btn-hapus { background: #dc3545; color: white; margin-top: 10px; }
+        .btn-hapus:hover { background: #c82333; }
+        #panelHasil { margin-top: 20px; padding: 15px; background: #e9f5ff; border-left: 5px solid #007bff; border-radius: 4px; display: none; line-height: 1.6; }
+        .select-riwayat { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; background: white; }
     </style>
 </head>
 <body>
-    <div class="calculator">
-        <div id="display-screen" class="display-container"><div id="history-log"></div><div id="current-input-line" class="current-line"></div></div>
-        <div class="operator-row">
-            <button onclick="window.tekanOperator('+')">+</button><button onclick="window.tekanOperator('-')">-</button>
-            <button onclick="window.tekanOperator('*')">×</button><button onclick="window.tekanOperator(':')">:</button>
-            <button onclick="window.hitung()">=</button>
-        </div>
-        <div class="main-grid">
-            <div class="left-menu">
-                <button onclick="window.tekanKarakter('(')">(</button><button onclick="window.tekanKarakter(')')">)</button>
-                <button onclick="window.tekanPecahan()">Pecahan</button><button onclick="window.tekanKarakter('%')">%</button>
-            </div>
-            <div class="number-grid">
-                <button onclick="window.tekanKarakter('6')">6</button><button onclick="window.tekanKarakter('1')">1</button>
-                <button onclick="window.tekanKarakter('7')">7</button><button onclick="window.tekanKarakter('2')">2</button>
-                <button onclick="window.tekanKarakter('8')">8</button><button onclick="window.tekanKarakter('3')">3</button>
-                <button onclick="window.tekanKarakter('9')">9</button><button onclick="window.tekanKarakter('4')">4</button>
-                <button onclick="window.tekanKarakter('0')">0</button><button onclick="window.tekanKarakter('5')">5</button>
-                <button class="backspace-btn" onclick="window.backspace()">←</button>
-                <button class="delete-btn" onclick="window.hapusAll()">DELETE</button>
-            </div>
+
+<div class="box">
+    <h2>🧮 Kalkulator & Manajemen Data</h2>
+    
+    <!-- Radio Button Kategori Rumus -->
+    <div class="opsi-box">
+        <label style="margin-bottom: 10px; color:#555;">Pilih Kategori Rumus:</label>
+        <label class="radio-item"><input type="radio" name="rumus" value="panjang" checked> Rumus Panjang</label>
+        <label class="radio-item"><input type="radio" name="rumus" value="kecepatan"> Rumus Kecepatan (v = s/t)</label>
+        <label class="radio-item"><input type="radio" name="rumus" value="angin"> Rumus Tekanan Angin</label>
+        <label class="radio-item"><input type="radio" name="rumus" value="air"> Rumus Tekanan Air</label>
+    </div>
+
+    <!-- Input Utama + Dropdown Satuan -->
+    <div class="input-group">
+        <label id="labelInput1">Masukkan Nilai:</label>
+        <div class="flex-inputs">
+            <input type="number" id="input1" value="10" step="any">
+            <select id="satuanInput1"></select>
         </div>
     </div>
-    <script>
-        const currentLine = document.getElementById("current-input-line");
-        const historyLog = document.getElementById("history-log");
-        const displayScreen = document.getElementById("display-screen");
-        let targetAktif = currentLine;
+    
+    <!-- Input Sekunder (Waktu) -->
+    <div class="input-group" id="boxInput2" style="display: none;">
+        <label>Masukkan Waktu Tempuh (detik):</label>
+        <input type="number" id="input2" value="2" min="0.1" style="width:100%" step="any">
+    </div>
 
-        function bersihkanNolAwal(el) { if (el.innerHTML === "0" || el.innerHTML === "") el.innerHTML = ""; }
+    <button id="btnHitung" class="btn-hitung">Proses & Simpan Data</button>
 
-        window.tekanKarakter = function(char) { bersihkanNolAwal(targetAktif); targetAktif.innerHTML += char; displayScreen.scrollTop = displayScreen.scrollHeight; };
-        window.tekanOperator = function(op) { bersihkanNolAwal(targetAktif); targetAktif.innerHTML += (op === "*" ? " × " : op === ":" ? " : " : " " + op + " "); displayScreen.scrollTop = displayScreen.scrollHeight; };
+    <!-- Hasil Sinkronisasi Output -->
+    <div id="panelHasil"></div>
+</div>
 
-        window.tekanPecahan = function() {
-            let kontenLama = currentLine.innerHTML; if (kontenLama === "0" || !kontenLama.trim()) return;
-            let fracSpan = document.createElement("span"); fracSpan.className = "frac";
-            let numSpan = document.createElement("span"); numSpan.className = "num"; numSpan.innerHTML = kontenLama;
-            let denSpan = document.createElement("span"); denSpan.className = "den";
-            fracSpan.appendChild(numSpan); fracSpan.appendChild(denSpan);
-            currentLine.innerHTML = ""; currentLine.appendChild(fracSpan);
-            targetAktif = denSpan; displayScreen.scrollTop = displayScreen.scrollHeight;
-        };
+<!-- BOX BARU: Pilih Data Riwayat Tersimpan -->
+<div class="box">
+    <h3>📂 Riwayat Data Tersimpan</h3>
+    <div class="input-group">
+        <label for="pilihRiwayat">Pilih Data Sebelumnya:</label>
+        <select id="pilihRiwayat" class="select-riwayat">
+            <option value="">-- Belum ada riwayat tersimpan --</option>
+        </select>
+    </div>
+    <button id="btnHapusRiwayat" class="btn-hapus">❌ Hapus Semua Riwayat</button>
+</div>
 
-        window.hitung = function() {
-            let htmlKalkulasi = currentLine.innerHTML; if (!htmlKalkulasi.trim() || htmlKalkulasi === "0") return;
-            try {
-                let rumusMurni = htmlKalkulasi.replace(/<span class="frac"><span class="num">/g, "(").replace(/<\/span><span class="den">/g, ")/(").replace(/<\/span><\/span>/g, ")").replace(/×/g, "*").replace(/:/g, "/").replace(/([0-9\.]+)\s*%/g, "($1/100)");
-                let hasilAngka = eval(rumusMurni); if (!isFinite(hasilAngka)) throw new Error();
-                let hasilAkhir = Number(hasilAngka.toFixed(4)).toString();
-                historyLog.innerHTML += `<div class="history-item">${htmlKalkulasi}<br>= ${hasilAkhir}</div>`;
-                currentLine.innerHTML = hasilAkhir;
-            } catch (err) {
-                historyLog.innerHTML += `<div class="history-item">${htmlKalkulasi}<br>= Error</div>`;
-                currentLine.innerHTML = "0";
+<!-- Sinkronisasi Logika dari Folder rumus -->
+<script type="module">
+    import { hitungPanjang } from './rumus/panjang.js';
+    import { hitungKecepatan } from './rumus/kecepatan.js';
+    import { hitungAngin } from './rumus/angin.js';
+    import { hitungAir } from './rumus/air.js';
+
+    const radios = document.querySelectorAll('input[name="rumus"]');
+    const labelInput1 = document.getElementById('labelInput1');
+    const satuanInput1 = document.getElementById('satuanInput1');
+    const boxInput2 = document.getElementById('boxInput2');
+    const panelHasil = document.getElementById('panelHasil');
+    const pilihRiwayat = document.getElementById('pilihRiwayat');
+
+    // Kumpulan opsi satuan
+    const opsiSatuan = {
+        panjang: `<option value="m">Meter (m)</option><option value="km">Kilometer (km)</option><option value="cm">Centimeter (cm)</option>`,
+        kecepatan: `<option value="m">Meter (m)</option><option value="km">Kilometer (km)</option>`,
+        angin: `<option value="ms">m/s (Meter/Detik)</option><option value="kmh">km/jam</option>`,
+        air: `<option value="ms">m/s (Meter/Detik)</option><option value="kmh">km/jam</option>`
+    };
+
+    // Inisialisasi awal dropdown satuan
+    satuanInput1.innerHTML = opsiSatuan.panjang;
+
+    // Array lokal untuk menampung riwayat data
+    let arrayRiwayat = JSON.parse(localStorage.getItem('kalkulator_history')) || [];
+
+    // Fungsi memperbarui isi dropdown pilih data riwayat
+    function perbaruiDropdownRiwayat() {
+        if (arrayRiwayat.length === 0) {
+            pilihRiwayat.innerHTML = '<option value="">-- Belum ada riwayat tersimpan --</option>';
+            return;
+        }
+
+        let htmlOpsi = '<option value="">-- Pilih data untuk memuat ulang hasil --</option>';
+        arrayRiwayat.forEach((item, indeks) => {
+            htmlOpsi += `<option value="${indeks}">[${item.jenis.toUpperCase()}] ${item.ringkasan}</option>`;
+        });
+        pilihRiwayat.innerHTML = htmlOpsi;
+    }
+
+    // Jalankan pembaruan riwayat saat halaman pertama kali dibuka
+    perbaruiDropdownRiwayat();
+
+    // Perubahan UI dinamis saat memilih jenis rumus anak
+    radios.forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            panelHasil.style.display = "none";
+            const opsi = e.target.value;
+            satuanInput1.innerHTML = opsiSatuan[opsi];
+
+            if (opsi === 'panjang') {
+                labelInput1.innerText = "Masukkan Nilai Panjang:";
+                boxInput2.style.display = "none";
+            } else if (opsi === 'kecepatan') {
+                labelInput1.innerText = "Masukkan Jarak Lintasan:";
+                boxInput2.style.display = "block";
+            } else {
+                labelInput1.innerText = `Masukkan Kecepatan ${opsi === 'angin' ? 'Angin' : 'Aliran Air'}:`;
+                boxInput2.style.display = "none";
             }
-            targetAktif = currentLine; displayScreen.scrollTop = displayScreen.scrollHeight;
-        };
+        });
+    });
 
-        window.backspace = function() {
-            if (targetAktif.innerHTML.length > 0) {
-                let teks = targetAktif.innerHTML;
-                targetAktif.innerHTML = teks.endsWith(" ") ? teks.slice(0, -3) : teks.slice(0, -1);
-            } else if (targetAktif !== currentLine) {
-                let parentFrac = targetAktif.closest(".frac");
-                if (parentFrac) {
-                    let isiPembilang = parentFrac.querySelector(".num").innerHTML;
-                    let parentDariFrac = parentFrac.parentNode;
-                    parentFrac.remove(); parentDariFrac.innerHTML = isiPembilang; targetAktif = parentDariFrac;
-                }
-            }
-            if (!currentLine.innerHTML.trim()) { currentLine.innerHTML = "0"; targetAktif = currentLine; }
-        };
+    // Proses kalkulasi ketika tombol ditekan
+    document.getElementById('btnHitung').addEventListener('click', () => {
+        const val1 = parseFloat(document.getElementById('input1').value);
+        const val2 = parseFloat(document.getElementById('input2').value);
+        const unit1 = satuanInput1.value;
+        const rumusTerpilih = document.querySelector('input[name="rumus"]:checked').value;
+        
+        if (isNaN(val1)) {
+            alert("Harap masukkan angka input yang valid!");
+            return;
+        }
 
-        window.hapusAll = function() { currentLine.innerHTML = "0"; historyLog.innerHTML = ""; targetAktif = currentLine; };
-        window.hapusAll();
-    </script>
-</body>
-</html>
+        let kontenHasil = "";
+        let ringkasanData = "";
+
+        if (rumusTerpilih === 'panjang') {
+            const hasil = hitungPanjang(val1, unit1);
+            ringkasanData = `${val1} ${unit1}`;
+            kontenHasil = `
+                <strong>Hasil Konversi Panjang Multi-Satuan:</strong><br>
+                • ${hasil.m.toFixed(2)} Meter (m)<br>
+                • ${hasil.km.toFixed(5)} Kilometer (km)<br>
+                • ${hasil.cm.toFixed(0)} Centimeter (cm)
+            `;
+        } else if (rumusTerpilih === 'kecepatan') {
+            const hasil = hitungKecepatan(val1, val2, unit1);
+            ringkasanData = `Jarak: ${val1}${unit1}, Waktu: ${val2}s`;
+            kontenHasil = `
+                <strong>Hasil Kecepatan Aliran (v = s/t):</strong><br>
+                • Jarak Asal: ${val1} ${unit1}<br>
+                • Waktu: ${val2} detik<br>
+                <hr>
+                • Kecepatan: <b>${hasil.ms.toFixed(2)} m/s</b><br>
+                • Kecepatan: <b>${hasil.kmh.toFixed(2)} km/jam</b>
+            `;
+        } else if (rumusTerpilih === 'angin') {
+            const hasil = hitungAngin(val1, unit1);
+            ringkasanData = `${val1} ${unit1}`;
+            kontenHasil = `
+                <strong>Hasil Tekanan Dinamis Angin (0.6 * v²):</strong><br>
+                • <b>${hasil.pa.toFixed(2)} Pascal (Pa)</b><br>
+                • <b>${hasil.bar.toFixed(5)} Bar</b><br>
+                • <b>${hasil.psi.toFixed(4)} Psi</b>
+            `;
+        } else if (rumusTerpilih === 'air') {
+            const hasil = hitungAir(val1, unit1);
+            ringkasanData = `${val1} ${unit1}`;
+            kontenHasil = `
+                <strong>Hasil Tekanan Dinamis Air (500 * v²):</strong><br>
+                • <b>${hasil.pa.toFixed(2)} Pascal (Pa)</b><br>
+                • <b>${hasil.bar.toFixed(4)} Bar</b><br>
+                • <b>${hasil.psi.toFixed(3)} Psi</b>
+            `;
+        }
+
+        // Tampilkan ke panel luar
+        panelHasil.innerHTML = kontenHasil;
+        panelHasil.style.display = "block";
+
+        // Simpan data kalkulasi ke riwayat
+        arrayRiwayat.push({
+            jenis: rumusTerpilih,
+            ringkasan: ringkasanData,
+            html: kontenHasil
+        });
+        localStorage.setItem('kalkulator_history', JSON.stringify(arrayRiwayat));
+        
+        // Perbarui tampilan data pilih dropdown
+        perbaruiDropdownRiwayat();
+    });
+
+    // Menampilkan kembali data lama dari dropdown riwayat pilihan data
+    pilihRiwayat.addEventListener('change', (e) => {
+        const indeks = e.target.value;
+        if (indeks !== "") {
+            const dataLama = arrayRiwayat[indeks];
+            panelHasil.innerHTML = dataLama.html;
+            panelHasil.style.display = "block";
+        }
+    });
+
+    // Tombol delete untuk menghapus semua riwayat data
+    document.getElementById('btnHapusRiwayat').addEventListener('click', () => {
