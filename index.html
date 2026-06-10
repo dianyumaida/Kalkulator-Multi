@@ -61,20 +61,23 @@
         }
  
         try {
-            // Mengambil data kurs dari API publik Frankfurter
-            const response = await fetch(`https://frankfurter.dev{fromCurrency}/${toCurrency}`);
-            const data = await response.json();
- 
-            if (data.rate) {
-                const convertedAmount = amount * data.rate;
-                resultDiv.innerHTML = `${amount} ${fromCurrency} = <br><span style="color:#007bff">${convertedAmount.toFixed(2)} ${toCurrency}</span>`;
-            } else {
-                resultDiv.innerHTML = 'Kurs tidak ditemukan.';
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            resultDiv.innerHTML = 'Gagal memuat data API.';
-        }
+  // Mengambil data kurs dari API publik Frankfurter v1 (atau gunakan api.frankfurter.dev)
+  const response = await fetch(`https://frankfurter.dev{fromCurrency}&symbols=${toCurrency}`);
+  const data = await response.json();
+
+  // Memastikan data rates untuk mata uang tujuan tersedia
+  if (data.rates && data.rates[toCurrency]) {
+    const rate = data.rates[toCurrency];
+    const convertedAmount = amount * rate;
+    
+    resultDiv.innerHTML = `${amount} ${fromCurrency} = <br><span style="color:#007bff">${convertedAmount.toFixed(2)} ${toCurrency}</span>`;
+  } else {
+    resultDiv.innerHTML = 'Kurs tidak ditemukan.';
+  }
+} catch (error) {
+  console.error('Error:', error);
+  resultDiv.innerHTML = 'Gagal memuat data API.';
+  }
     }
 </script>
  
