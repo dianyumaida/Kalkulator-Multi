@@ -3,22 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalkulator Tombol Fisik Multirumus Modular</title>
+    <title>Kalkulator Modular Pilihan Rumus dlm Tombol</title>
     <style>
         body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; background-color: #f0f2f5; margin: 0; }
         .kalkulator { width: 360px; background: white; border: 2px solid #000; border-radius: 8px; padding: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .layar { border: 2px solid #000; height: 160px; margin-bottom: 15px; padding: 10px; box-sizing: border-box; background: #fafafa; font-size: 14px; overflow-y: auto; line-height: 1.4; }
-        .menu-atas { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 15px; }
-        .btn-pink { background: #ffe3d1; border: 1px solid #000; border-radius: 6px; height: 35px; cursor: pointer; font-size: 11px; font-weight: bold; }
         .area-utama { display: flex; gap: 10px; }
-        .panel-kiri { width: 110px; background: #e2efe0; border: 1px solid #000; border-radius: 6px; padding: 8px; display: flex; flex-direction: column; gap: 8px; box-sizing: border-box; }
-        .btn-menu-anak { background: white; border: 1px solid #000; border-radius: 4px; height: 35px; cursor: pointer; font-size: 11px; width: 100%; text-align: center; }
-        .select-pilih { background: white; border: 1px solid red; border-radius: 4px; height: 35px; color: red; font-weight: bold; font-size: 11px; text-align: center; width: 100%; cursor: pointer; text-align-last: center; }
+        .panel-kiri { width: 120px; background: #e2efe0; border: 1px solid #000; border-radius: 6px; padding: 8px; display: flex; flex-direction: column; gap: 8px; box-sizing: border-box; }
+        .btn-menu-anak { background: white; border: 1px solid #000; border-radius: 4px; height: 40px; cursor: pointer; font-size: 11px; width: 100%; text-align: center; }
+        .select-rumus-utama { background: white; border: 2px solid red; border-radius: 4px; height: 45px; color: red; font-weight: bold; font-size: 12px; text-align: center; width: 100%; cursor: pointer; text-align-last: center; }
         .panel-kanan { flex: 1; display: flex; flex-direction: column; gap: 8px; }
         .grid-angka { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
-        .btn-angka { background: white; border: 1px solid #000; border-radius: 6px; height: 40px; font-size: 18px; cursor: pointer; font-weight: bold; }
+        .btn-angka { background: white; border: 1px solid #000; border-radius: 6px; height: 45px; font-size: 18px; cursor: pointer; font-weight: bold; }
+        .btn-hitung { background: #28a745; color: white; border: 1px solid #000; border-radius: 6px; height: 45px; font-size: 14px; cursor: pointer; font-weight: bold; }
         .baris-bawah { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
-        .btn-jingga { background: #ffe3d1; border: 1px solid #000; border-radius: 6px; height: 40px; font-size: 14px; cursor: pointer; font-weight: bold; }
+        .btn-jingga { background: #ffe3d1; border: 1px solid #000; border-radius: 6px; height: 45px; font-size: 14px; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -26,33 +25,29 @@
 <div class="kalkulator">
     <!-- Layar Utama -->
     <div class="layar" id="layarTampilan">
-        <div><b>Mode: PANJANG</b></div>
+        <div id="judulMode"><b>Mode: PANJANG</b></div>
         <div id="nilaiInput" style="font-size: 24px; font-weight: bold; margin-top: 5px; color: #222;">0</div>
-        <div id="infoHasil" style="margin-top: 5px; color: #555;">Pilih sub-menu, ketik angka, tekan HITUNG.</div>
-    </div>
-
-    <!-- Menu Kategori Atas -->
-    <div class="menu-atas">
-        <button class="btn-pink" id="mPanjang">PANJANG</button>
-        <button class="btn-pink" id="mKec">KEC.</button>
-        <button class="btn-pink" id="mAngin">ANGIN</button>
-        <button class="btn-pink" id="mAir">AIR</button>
-        <button class="btn-pink" id="mHitung" style="background: #28a745; color: white;">HITUNG</button>
+        <div id="infoHasil" style="margin-top: 5px; color: #555;">Klik tombol &lt; PILIH &gt; merah untuk menentukan jenis rumus.</div>
     </div>
 
     <div class="area-utama">
-        <!-- Panel Kiri (Sub-Menu Anak + Dropdown PILIH Berisi Riwayat) -->
+        <!-- Panel Kiri (Hijau): Tempat Pilihan Rumus Tersembunyi -->
         <div class="panel-kiri">
             <button class="btn-menu-anak" id="sub1">Meter</button>
             <button class="btn-menu-anak" id="sub2">KM</button>
             <button class="btn-menu-anak" id="sub3">CM</button>
             
-            <select class="select-pilih" id="pilihDataRiwayat">
-                <option value="">&lt; PILIH &gt;</option>
+            <!-- SELEKTOR RUMUS DI DALAM TOMBOL PILIH -->
+            <select class="select-rumus-utama" id="pilihRumusKontrol">
+                <option value="" disabled selected>&lt; PILIH &gt;</option>
+                <option value="panjang">RUMUS PANJANG</option>
+                <option value="kecepatan">RUMUS KECEPATAN</option>
+                <option value="angin">RUMUS ANGIN</option>
+                <option value="air">RUMUS AIR</option>
             </select>
         </div>
 
-        <!-- Panel Kanan (Numpad) -->
+        <!-- Panel Kanan (Numpad Grid) -->
         <div class="panel-kanan">
             <div class="grid-angka">
                 <button class="btn-angka num" data-val="1">1</button>
@@ -64,18 +59,19 @@
                 <button class="btn-angka num" data-val="7">7</button>
                 <button class="btn-angka num" data-val="8">8</button>
                 <button class="btn-angka num" data-val="9">9</button>
-                <button class="btn-angka num" data-val="0">0</button>
+                <button class="btn-hitung" id="mHitung">HITUNG</button>
             </div>
             
             <div class="baris-bawah">
+                <button class="btn-angka num" data-val="0">0</button>
                 <button class="btn-jingga" id="backBtn">←</button>
-                <button class="btn-jingga" id="delBtn">DELETE</button>
             </div>
+            <button class="btn-jingga" id="delBtn" style="width: 100%;">DELETE</button>
         </div>
     </div>
 </div>
 
-<!-- SINKRONISASI AKTIF: MENARIK DARI FILE BERBEDA DALAM FOLDER RUMUS -->
+<!-- SINKRONISASI MODUL: MENARIK DARI 4 FILE JAVASCRIPT DALAM FOLDER RUMUS -->
 <script type="module">
     import { hitungPanjang } from './rumus/panjang.js';
     import { hitungKecepatan } from './rumus/kecepatan.js';
@@ -85,14 +81,13 @@
     let kategoriAktif = 'panjang';
     let subAktif = 0; 
     let inputSekarang = '0';
-    let riwayatKalkulator = JSON.parse(localStorage.getItem('riwayat_tombol')) || [];
     let dataKecepatan = { jarak: 0, waktu: 1 };
 
     const labelSub = {
-        panjang: ['Dari Meter', 'Dari KM', 'Dari CM'],
+        panjang: ['Meter', 'KM', 'CM'],
         kecepatan: ['Jarak (m)', 'Waktu (s)', 'Siap Hitung'],
-        angin: ['Dari m/s', 'Dari km/j', '-'],
-        air: ['Dari m/s', 'Dari km/j', '-']
+        angin: ['m/s', 'km/jam', '-'],
+        air: ['m/s', 'km/jam', '-']
     };
 
     const opsiUnit = {
@@ -102,31 +97,23 @@
         air: ['ms', 'kmh', 'ms']
     };
 
-    function perbaruiDropdown() {
-        const drop = document.getElementById('pilihDataRiwayat');
-        let html = '<option value="">&lt; PILIH &gt;</option>';
-        riwayatKalkulator.forEach((item, idx) => {
-            html += `<option value="${idx}">[${item.kat.toUpperCase()}] ${item.input}</option>`;
-        });
-        drop.innerHTML = html;
-    }
-
-    function setKategori(kat) {
-        kategoriAktif = kat; subAktif = 0; inputSekarang = '0';
+    // SINKRONISASI DROPDOWN RUMUS UTAMA DI TOMBOL PILIH
+    document.getElementById('pilihRumusKontrol').addEventListener('change', (e) => {
+        kategoriAktif = e.target.value;
+        subAktif = 0;
+        inputSekarang = '0';
         document.getElementById('nilaiInput').innerText = '0';
-        document.getElementById('sub1').innerText = labelSub[kat][0];
-        document.getElementById('sub2').innerText = labelSub[kat][1];
-        document.getElementById('sub3').innerText = labelSub[kat][2];
-        document.getElementById('infoHasil').innerHTML = `<b>Mode: ${kat.toUpperCase()}</b><br>Ketik angka lalu tekan HITUNG.`;
-    }
+        
+        // Perbarui label tombol anak di panel hijau secara otomatis
+        document.getElementById('sub1').innerText = labelSub[kategoriAktif][0];
+        document.getElementById('sub2').innerText = labelSub[kategoriAktif][1];
+        document.getElementById('sub3').innerText = labelSub[kategoriAktif][2];
+        
+        document.getElementById('judulMode').innerHTML = `<b>Mode: ${kategoriAktif.toUpperCase()}</b>`;
+        document.getElementById('infoHasil').innerHTML = `Rumus aktif: ${kategoriAktif.toUpperCase()}. Masukkan angka dan tekan HITUNG.`;
+    });
 
-    // Event Kategori Atas
-    document.getElementById('mPanjang').addEventListener('click', () => setKategori('panjang'));
-    document.getElementById('mKec').addEventListener('click', () => setKategori('kecepatan'));
-    document.getElementById('mAngin').addEventListener('click', () => setKategori('angin'));
-    document.getElementById('mAir').addEventListener('click', () => setKategori('air'));
-
-    // Event Sub-Menu Kiri
+    // Event Sub-Menu Anak Kiri
     document.getElementById('sub1').addEventListener('click', () => { subAktif = 0; inputSekarang = '0'; document.getElementById('infoHasil').innerHTML = `Unit aktif: <b>${labelSub[kategoriAktif][0]}</b>`; });
     document.getElementById('sub2').addEventListener('click', () => { subAktif = 1; inputSekarang = '0'; document.getElementById('infoHasil').innerHTML = `Unit aktif: <b>${labelSub[kategoriAktif][1]}</b>`; });
     document.getElementById('sub3').addEventListener('click', () => { subAktif = 2; inputSekarang = '0'; document.getElementById('infoHasil').innerHTML = `Unit aktif: <b>${labelSub[kategoriAktif][2]}</b>`; });
@@ -147,36 +134,48 @@
         document.getElementById('nilaiInput').innerText = inputSekarang;
     });
 
-    // PROSES EKSEKUSI UTAMA MEMANGGIL FUNGSI DARI MASING-MASING FILE FOLDER
+    // PROSES PERHITUNGAN DATA DARI 4 FILE RUMUS EKSTERNAL
     document.getElementById('mHitung').addEventListener('click', () => {
         const nilai = parseFloat(inputSekarang);
         if (isNaN(nilai)) return;
 
         let hasilHTML = "";
-        let ringkasan = "";
         const unitAsal = opsiUnit[kategoriAktif][subAktif];
 
         if (kategoriAktif === 'panjang') {
             const hasil = hitungPanjang(nilai, unitAsal);
             hasilHTML = `• ${hasil.m.toFixed(1)} m<br>• ${hasil.km.toFixed(4)} km<br>• ${hasil.cm.toFixed(0)} cm`;
-            ringkasan = `${nilai} ${unitAsal}`;
         } 
         else if (kategoriAktif === 'kecepatan') {
             if (subAktif === 0) {
                 dataKecepatan.jarak = nilai;
-                document.getElementById('infoHasil').innerHTML = "Jarak disimpan! Klik 'Waktu (s)' di kiri lalu isi angka waktu.";
+                document.getElementById('infoHasil').innerHTML = "Jarak disimpan! Klik tombol unit ke-2 (Waktu) di kiri lalu masukkan angka.";
                 return;
             } else {
                 dataKecepatan.waktu = nilai || 1;
-                const hasil = hitungKecepatan(dataKecepatan.jarak, dataKecepatan.waktu, opsiUnit.kecepatan[0]);
+                const hasil = hitungKecepatan(dataKecepatan.jarak, dataKecepatan.waktu, opsiUnit.kecepatan);
                 hasilHTML = `• s: ${dataKecepatan.jarak} m, t: ${dataKecepatan.waktu} s<br>• v: <b>${hasil.ms.toFixed(2)} m/s</b><br>• v: <b>${hasil.kmh.toFixed(2)} km/jam</b>`;
-                ringkasan = `s:${dataKecepatan.jarak}m t:${dataKecepatan.waktu}s`;
             }
         } 
         else if (kategoriAktif === 'angin') {
             const hasil = hitungAngin(nilai, unitAsal);
-            hasilHTML = `• v: ${nilai} ${unitAsal}<br>• <b>${hasil.pa.toFixed(2)} Pa</b><br>• <b>${hasil.bar.toFixed(5)} Bar</b>`;
-            ringkasan = `${nilai} ${unitAsal}`;
+            hasilHTML = `• v: ${nilai} ${unitAsal}<br>• <b>${hasil.pa.toFixed(2)} Pa</b><br>• <b>${(hasil.pa/100000).toFixed(5)} Bar</b>`;
         } 
         else if (kategoriAktif === 'air') {
             const hasil = hitungAir(nilai, unitAsal);
+            hasilHTML = `• v: ${nilai} ${unitAsal}<br>• <b>${hasil.pa.toFixed(2)} Pa</b><br>• <b>${(hasil.pa/100000).toFixed(4)} Bar</b>`;
+        }
+
+        document.getElementById('infoHasil').innerHTML = hasilHTML;
+    });
+
+    document.getElementById('delBtn').addEventListener('click', () => {
+        inputSekarang = '0';
+        dataKecepatan = { jarak: 0, waktu: 1 };
+        document.getElementById('nilaiInput').innerText = '0';
+        document.getElementById('infoHasil').innerHTML = 'Data input dikosongkan.';
+    });
+</script>
+
+</body>
+</html>
