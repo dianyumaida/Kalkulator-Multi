@@ -4,13 +4,14 @@ README.md
 Aplikasi kalkulator web responsif yang dirancang untuk melakukan perhitungan geometri bangun ruang serta konversi satuan teknik spesifik dari beban massa ke tekanan udara. Proyek ini dibuat menggunakan kombinasi teknologi web dasar (**HTML5, CSS3, dan JavaScript Vanilla**) sehingga sangat ringan dan cepat diakses.
 
 ## ✨ Fitur Utama
-*   📐 **Kalkulator Kubus:** Menghitung luas permukaan dan keliling persegi secara instan.
-*   🔺 **Kalkulator Segitiga:** Menghitung luas total segitiga berdasarkan nilai alas dan tinggi.
-*   ⚖️ **Balok:** .
+*   📐 **Kubus:** Menghitung luas permukaan dan keliling persegi secara instan.
+*   🔺 **Segitiga:** Menghitung luas total segitiga berdasarkan nilai alas dan tinggi.
 *   ⚖️ **Segiempat:** .
-*   ⚖️ **Sudut:** .
-*   🏀 **Kalkulator Bola:** Menghitung volume ruang dan luas permukaan total bola.
+*   ⚖️ **Balok:** .
+*   ⚖️ **Bola:** .
+*   🏀 **Sudut:** Menghitung volume ruang dan luas permukaan total bola.
 *   ⚖️ **Konversi:** .
+*   ⚖️ **Pecahan:** .
 *      **Kurs:**Nilai mata uang.
 
 ---
